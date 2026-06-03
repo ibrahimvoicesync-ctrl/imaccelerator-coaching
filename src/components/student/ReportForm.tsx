@@ -26,15 +26,6 @@ interface ReportFormProps {
   autoMinutes: number;
 }
 
-const RATING_LABELS: Record<number, string> = {
-  0: "Rate your day",
-  1: "Tough day",
-  2: "Below par",
-  3: "Steady",
-  4: "Strong",
-  5: "Exceptional",
-};
-
 /* Numeric inputs — a real bordered field (box, surface, focus ring) so a filled
    value reads as editable, not as static display text. Centered value stays
    prominent without the underline-as-text ambiguity. */
@@ -157,14 +148,9 @@ export function ReportForm({ date, existingReport, autoMinutes }: ReportFormProp
 
       {/* Rate your day — the emotional beat */}
       <section className="px-6 md:px-8 pt-7 md:pt-9 pb-8 md:pb-10">
-        <div className="mb-3 flex items-baseline justify-between gap-4">
-          <span id="star-rating-label" className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted">
-            {DAILY_REPORT.fields.starRating.label}
-          </span>
-          <span className="text-base md:text-lg font-semibold tracking-tight text-ima-text leading-none">
-            {RATING_LABELS[starRating] ?? "Rate your day"}
-          </span>
-        </div>
+        <span id="star-rating-label" className="mb-3 block text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted">
+          {DAILY_REPORT.fields.starRating.label}
+        </span>
         <StarRating value={starRating} onChange={setStarRating} />
       </section>
 
