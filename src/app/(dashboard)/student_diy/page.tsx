@@ -137,12 +137,13 @@ export default async function StudentDiyDashboard() {
           </p>
         </header>
 
-        {/* Hero — Today's Work */}
+        {/* Hero — Today's Work (left) + Consistency (right) */}
         <section
-          aria-labelledby="todays-work-label"
-          className="mt-9 motion-safe:animate-fadeIn"
+          className="mt-9 grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-[14px] items-start motion-safe:animate-fadeIn"
           style={{ animationDelay: "100ms" }}
         >
+          {/* Left column — Today's Work + next-action CTA */}
+          <div className="flex flex-col gap-5">
           <div className="bg-white border border-ima-border rounded-[14px] p-6 md:p-8">
             <div className="flex items-center justify-between gap-3">
               <p
@@ -199,7 +200,7 @@ export default async function StudentDiyDashboard() {
 
           <Link
             href={nextAction.href}
-            className="group mt-5 inline-flex items-center justify-center gap-3 w-full rounded-[14px] bg-ima-primary text-white text-[15px] md:text-[17px] font-bold tracking-tight min-h-[60px] md:min-h-[64px] px-6 motion-safe:transition-all motion-safe:duration-200 ease-out hover:bg-ima-primary-hover hover:shadow-[0_14px_32px_-14px_rgba(37,99,235,0.65)] hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2"
+            className="group inline-flex items-center justify-center gap-3 w-full rounded-[14px] bg-ima-primary text-white text-[15px] md:text-[17px] font-bold tracking-tight min-h-[60px] md:min-h-[64px] px-6 motion-safe:transition-all motion-safe:duration-200 ease-out hover:bg-ima-primary-hover hover:shadow-[0_14px_32px_-14px_rgba(37,99,235,0.65)] hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2"
           >
             {nextAction.label}
             <ArrowRight
@@ -207,15 +208,11 @@ export default async function StudentDiyDashboard() {
               aria-hidden="true"
             />
           </Link>
-        </section>
+          </div>
 
-        {/* Consistency streak — a calm reason to return daily */}
-        <div
-          className="mt-[14px] motion-safe:animate-fadeIn"
-          style={{ animationDelay: "130ms" }}
-        >
+          {/* Right column — Consistency */}
           <StreakCard info={streakInfo} />
-        </div>
+        </section>
 
         {/* Deals — compact horizontal stat cards (matches coach Row A) */}
         <section
