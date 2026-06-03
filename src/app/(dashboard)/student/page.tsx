@@ -17,9 +17,11 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getStreakInfo } from "@/lib/streak";
 import { getWeeklyWorkLeaderboard } from "@/lib/leaderboard";
 import { getWeeklyHoursByDay } from "@/lib/weekly-hours";
+import { getLatestCoachComment } from "@/lib/coach-comment";
 import { StreakCard } from "@/components/student/StreakCard";
 import { WeeklyWorkLeaderboard } from "@/components/student/WeeklyWorkLeaderboard";
 import { WeeklyHoursChart } from "@/components/student/WeeklyHoursChart";
+import { CoachNoteCard } from "@/components/student/CoachNoteCard";
 import { KPI_TARGETS, ROADMAP_STEPS, WORK_TRACKER } from "@/lib/config";
 import { cn, formatHoursMinutes, getToday } from "@/lib/utils";
 import {
@@ -95,6 +97,7 @@ export default async function StudentDashboard() {
     streakInfo,
     leaderboard,
     weeklyHours,
+    coachNote,
   ] = await Promise.all([
     admin
       .from("work_sessions")
@@ -122,6 +125,7 @@ export default async function StudentDashboard() {
     getStreakInfo(user.id),
     getWeeklyWorkLeaderboard(5),
     getWeeklyHoursByDay(user.id),
+    getLatestCoachComment(user.id),
   ]);
 
   if (sessionsError) console.error("[student dashboard] Failed to load sessions:", sessionsError);
@@ -297,6 +301,15 @@ export default async function StudentDashboard() {
           {/* Right column — Consistency */}
           <StreakCard info={streakInfo} />
         </section>
+
+        {coachNote && (
+          <div
+            className="mt-[14px] motion-safe:animate-fadeIn"
+            style={{ animationDelay: "120ms" }}
+          >
+            <CoachNoteCard note={coachNote} basePath="/student" />
+          </div>
+        )}
 
         {/* KPI tracking — compact cards with progress bars */}
         <section

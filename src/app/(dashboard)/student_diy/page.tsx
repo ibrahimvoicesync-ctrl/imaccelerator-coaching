@@ -13,9 +13,11 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getStreakInfo } from "@/lib/streak";
 import { getWeeklyWorkLeaderboard } from "@/lib/leaderboard";
 import { getWeeklyHoursByDay } from "@/lib/weekly-hours";
+import { getLatestCoachComment } from "@/lib/coach-comment";
 import { StreakCard } from "@/components/student/StreakCard";
 import { WeeklyWorkLeaderboard } from "@/components/student/WeeklyWorkLeaderboard";
 import { WeeklyHoursChart } from "@/components/student/WeeklyHoursChart";
+import { CoachNoteCard } from "@/components/student/CoachNoteCard";
 import { ROADMAP_STEPS, WORK_TRACKER } from "@/lib/config";
 import { cn, formatHoursMinutes, getToday } from "@/lib/utils";
 import type { Database } from "@/lib/types";
@@ -51,6 +53,7 @@ export default async function StudentDiyDashboard() {
     streakInfo,
     leaderboard,
     weeklyHours,
+    coachNote,
   ] = await Promise.all([
     admin
       .from("work_sessions")
@@ -67,6 +70,7 @@ export default async function StudentDiyDashboard() {
     getStreakInfo(user.id),
     getWeeklyWorkLeaderboard(5),
     getWeeklyHoursByDay(user.id),
+    getLatestCoachComment(user.id),
   ]);
 
   if (sessionsError) console.error("[student_diy dashboard] Failed to load sessions:", sessionsError);
@@ -213,6 +217,15 @@ export default async function StudentDiyDashboard() {
           {/* Right column — Consistency */}
           <StreakCard info={streakInfo} />
         </section>
+
+        {coachNote && (
+          <div
+            className="mt-[14px] motion-safe:animate-fadeIn"
+            style={{ animationDelay: "120ms" }}
+          >
+            <CoachNoteCard note={coachNote} basePath="/student_diy" />
+          </div>
+        )}
 
         {/* Deals — compact horizontal stat cards (matches coach Row A) */}
         <section

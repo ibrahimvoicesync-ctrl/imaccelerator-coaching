@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { verifyOrigin } from "@/lib/csrf";
+import { notifyStudent } from "@/lib/push-notify";
 
 const commentSchema = z.object({
   comment: z.string().min(1, "Comment is required").max(1000, "Comment must be 1000 characters or less"),
@@ -112,6 +113,22 @@ export async function POST(
     console.error("Failed to upsert report comment:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  // Notify the student that their coach replied — a genuine re-engagement
+  // trigger (a mentor responded to them), not a manufactured one. Best-effort:
+  // notifyStudent never throws, so it can't break the comment save.
+  const { data: studentRow } = await admin
+    .from("users")
+    .select("role")
+    .eq("id", report.student_id)
+    .single();
+  const base = studentRow?.role === "student_diy" ? "/student_diy" : "/student";
+  await notifyStudent(report.student_id, {
+    title: "Your coach replied",
+    body: "You have new feedback on your daily report.",
+    url: `${base}/report/history`,
+    tag: "ima-coach-feedback",
+  });
 
   return NextResponse.json({ data });
 }
