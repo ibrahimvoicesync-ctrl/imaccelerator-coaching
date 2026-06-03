@@ -21,9 +21,9 @@ export default function StudentRoadmapError({
     <div className="py-12 flex items-center justify-center" role="alert">
       <Card className="max-w-md w-full mx-4">
         <CardContent className="pt-6 flex flex-col items-center text-center">
-          <AlertTriangle className="h-12 w-12 text-[#DC2626] mb-4" aria-hidden="true" />
-          <h1 className="text-[22px] md:text-[24px] font-semibold tracking-[-0.01em] leading-tight text-[#1A1A17] mb-2">Something went wrong</h1>
-          <p className="text-sm text-[#7A7466] mb-6">
+          <AlertTriangle className="h-12 w-12 text-ima-error mb-4" aria-hidden="true" />
+          <h1 className="text-[22px] md:text-[24px] font-semibold tracking-[-0.01em] leading-tight text-ima-text mb-2">Something went wrong</h1>
+          <p className="text-sm text-ima-text-secondary mb-6">
             We couldn&apos;t load this page. Please try again.
           </p>
           <div className="flex gap-3">

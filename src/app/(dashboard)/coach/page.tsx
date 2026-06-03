@@ -296,25 +296,25 @@ export default async function CoachDashboard() {
       label: "Total Students",
       value: String(studentList.length),
       icon: Users,
-      iconBg: "bg-[#E8EEFF]",
-      iconColor: "text-[#4A6CF7]",
-      valueColor: "text-[#1A1A17]",
+      iconBg: "bg-ima-surface-accent",
+      iconColor: "text-ima-primary",
+      valueColor: "text-ima-text",
     },
     {
       label: "At Risk",
       value: String(atRiskStudents.length),
       icon: AlertTriangle,
-      iconBg: "bg-[#FDF3E0]",
-      iconColor: "text-[#D97706]",
-      valueColor: atRiskStudents.length > 0 ? "text-[#DC2626]" : "text-[#1A1A17]",
+      iconBg: "bg-ima-warning/10",
+      iconColor: "text-ima-warning",
+      valueColor: atRiskStudents.length > 0 ? "text-ima-error" : "text-ima-text",
     },
     {
       label: "Reports Pending",
       value: String(pendingReviewCount),
       icon: FileText,
-      iconBg: "bg-[#F1EEE6]",
-      iconColor: "text-[#7A7466]",
-      valueColor: "text-[#1A1A17]",
+      iconBg: "bg-ima-surface-light",
+      iconColor: "text-ima-text-secondary",
+      valueColor: "text-ima-text",
     },
   ];
 
@@ -323,50 +323,50 @@ export default async function CoachDashboard() {
       label: "Deals Closed",
       value: dealsClosedLabel,
       icon: Briefcase,
-      iconBg: "bg-[#E8EEFF]",
-      iconColor: "text-[#4A6CF7]",
+      iconBg: "bg-ima-surface-accent",
+      iconColor: "text-ima-primary",
       href: "/coach/analytics#deals",
     },
     {
       label: "Revenue Generated",
       value: revenueLabel,
       icon: DollarSign,
-      iconBg: "bg-[#E2F5E9]",
-      iconColor: "text-[#16A34A]",
+      iconBg: "bg-ima-success/10",
+      iconColor: "text-ima-success",
       href: "/coach/analytics#revenue",
     },
     {
       label: "Avg Roadmap Step",
       value: avgStepLabel,
       icon: MapIcon,
-      iconBg: "bg-[#E8EEFF]",
-      iconColor: "text-[#4A6CF7]",
+      iconBg: "bg-ima-surface-accent",
+      iconColor: "text-ima-primary",
       href: "/coach/analytics#roadmap",
     },
     {
       label: "Emails Sent",
       value: emailsSentLabel,
       icon: Mail,
-      iconBg: "bg-[#FDF3E0]",
-      iconColor: "text-[#D97706]",
+      iconBg: "bg-ima-warning/10",
+      iconColor: "text-ima-warning",
       href: "/coach/analytics#emails",
     },
   ];
 
   return (
     <div
-      className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-[#FAFAF7]"
+      className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg"
     >
       <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
         {/* Greeting */}
         <header className="motion-safe:animate-fadeIn">
-          <p className="text-xs font-semibold tracking-[0.2em] text-[#8A8474] uppercase">
+          <p className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
             {eyebrow.toUpperCase()}
           </p>
-          <h1 className="mt-3 text-3xl md:text-4xl font-semibold leading-tight text-[#1A1A17] tracking-tight">
+          <h1 className="mt-3 text-3xl md:text-4xl font-semibold leading-tight text-ima-text tracking-tight">
             {greeting}, {firstName}!
           </h1>
-          <p className="mt-2 text-sm text-[#7A7466] leading-relaxed">
+          <p className="mt-2 text-sm text-ima-text-secondary leading-relaxed">
             Here&apos;s how your students are doing
           </p>
         </header>
@@ -380,7 +380,7 @@ export default async function CoachDashboard() {
           {statA.map((s) => (
             <div
               key={s.label}
-              className="flex items-center gap-4 bg-white border border-[#EDE9E0] rounded-[12px] px-[18px] py-[16px] min-h-[72px]"
+              className="flex items-center gap-4 bg-white border border-ima-border rounded-[12px] px-[18px] py-[16px] min-h-[72px]"
             >
               <div
                 className={`w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0 ${s.iconBg}`}
@@ -393,7 +393,7 @@ export default async function CoachDashboard() {
                 >
                   {s.value}
                 </p>
-                <p className="mt-[6px] text-xs text-[#8A8474]">{s.label}</p>
+                <p className="mt-[6px] text-xs text-ima-text-secondary">{s.label}</p>
               </div>
             </div>
           ))}
@@ -410,7 +410,7 @@ export default async function CoachDashboard() {
               key={s.label}
               href={s.href}
               aria-label={`${s.label}: ${s.value}. View in analytics.`}
-              className="flex items-center gap-4 bg-white border border-[#EDE9E0] rounded-[12px] px-[18px] py-[16px] min-h-[72px] motion-safe:transition-[transform,border-color] hover:-translate-y-[1px] hover:border-[#D8D2C4] focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2"
+              className="flex items-center gap-4 bg-white border border-ima-border rounded-[12px] px-[18px] py-[16px] min-h-[72px] motion-safe:transition-[transform,border-color] hover:-translate-y-[1px] hover:border-ima-border focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2"
             >
               <div
                 className={`w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0 ${s.iconBg}`}
@@ -418,10 +418,10 @@ export default async function CoachDashboard() {
                 <s.icon className={`h-[18px] w-[18px] ${s.iconColor}`} aria-hidden="true" />
               </div>
               <div className="min-w-0">
-                <p className="text-2xl font-semibold leading-none tabular-nums text-[#1A1A17]">
+                <p className="text-2xl font-semibold leading-none tabular-nums text-ima-text">
                   {s.value}
                 </p>
-                <p className="mt-[6px] text-xs text-[#8A8474]">{s.label}</p>
+                <p className="mt-[6px] text-xs text-ima-text-secondary">{s.label}</p>
               </div>
             </Link>
           ))}
@@ -434,25 +434,25 @@ export default async function CoachDashboard() {
           style={{ animationDelay: "150ms" }}
         >
           {/* Recent Submissions */}
-          <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6">
+          <div className="bg-white border border-ima-border rounded-[14px] p-6">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <h2 className="text-sm font-semibold text-[#1A1A17] leading-tight">
+                <h2 className="text-sm font-semibold text-ima-text leading-tight">
                   Recent Submissions
                 </h2>
-                <p className="mt-1 text-xs text-[#8A8474]">
+                <p className="mt-1 text-xs text-ima-text-secondary">
                   3 most recent reports from your students
                 </p>
               </div>
               <Link
                 href="/coach/reports"
-                className="inline-flex items-center gap-1 text-xs font-medium text-[#4A6CF7] hover:text-[#3852D8] min-h-[44px] shrink-0 focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 rounded-md px-1"
+                className="inline-flex items-center gap-1 text-xs font-medium text-ima-primary hover:text-ima-primary-hover min-h-[44px] shrink-0 focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 rounded-md px-1"
               >
                 See all reports
                 <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
             </div>
-            <div className="h-px bg-[#EDE9E0] mt-4" aria-hidden="true" />
+            <div className="h-px bg-ima-surface-light mt-4" aria-hidden="true" />
 
             {dashboard.recent_reports.length === 0 ? (
               <div className="mt-4">
@@ -470,20 +470,20 @@ export default async function CoachDashboard() {
                   const rel = formatRelative(r.submitted_at, dashboardNowMs);
                   const isLast = i === arr.length - 1;
                   return (
-                    <li key={r.id} className={!isLast ? "border-b border-[#F3EFE4]" : ""}>
+                    <li key={r.id} className={!isLast ? "border-b border-ima-surface-light" : ""}>
                       <Link
                         href={`/coach/reports#${r.id}`}
                         aria-label={`${r.student_name} submitted a report, rated ${rating} of 5 stars, ${rel.toLowerCase()}`}
-                        className="flex items-center gap-3 py-3 min-h-[52px] motion-safe:transition-colors hover:bg-[#FAFAF7] -mx-2 px-2 rounded-md focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2"
+                        className="flex items-center gap-3 py-3 min-h-[52px] motion-safe:transition-colors hover:bg-ima-bg -mx-2 px-2 rounded-md focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2"
                       >
-                        <div className="w-8 h-8 rounded-full bg-[#F1EEE6] border border-[#EDE9E0] flex items-center justify-center text-xs font-semibold text-[#5A5648] shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-ima-surface-light border border-ima-border flex items-center justify-center text-xs font-semibold text-ima-text-secondary shrink-0">
                           {initials(r.student_name)}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-semibold text-[#1A1A17] truncate leading-tight">
+                          <p className="text-sm font-semibold text-ima-text truncate leading-tight">
                             {r.student_name}
                           </p>
-                          <p className="mt-[3px] text-[10px] font-medium text-[#8A8474] tracking-widest uppercase">
+                          <p className="mt-[3px] text-[10px] font-medium text-ima-text-secondary tracking-widest uppercase">
                             {rel}
                           </p>
                         </div>
@@ -496,8 +496,8 @@ export default async function CoachDashboard() {
                               key={n}
                               className={
                                 n <= rating
-                                  ? "h-[13px] w-[13px] text-[#F59E0B] fill-[#F59E0B]"
-                                  : "h-[13px] w-[13px] text-[#EDE9E0]"
+                                  ? "h-[13px] w-[13px] text-ima-warning fill-ima-warning"
+                                  : "h-[13px] w-[13px] text-ima-text-secondary"
                               }
                               aria-hidden="true"
                             />
@@ -512,12 +512,12 @@ export default async function CoachDashboard() {
           </div>
 
           {/* Top 3 This Week */}
-          <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6">
-            <h2 className="text-sm font-semibold text-[#1A1A17] leading-tight">
+          <div className="bg-white border border-ima-border rounded-[14px] p-6">
+            <h2 className="text-sm font-semibold text-ima-text leading-tight">
               Top 3 This Week
             </h2>
-            <p className="mt-1 text-xs text-[#8A8474]">Hours worked since Monday</p>
-            <div className="h-px bg-[#EDE9E0] mt-4" aria-hidden="true" />
+            <p className="mt-1 text-xs text-ima-text-secondary">Hours worked since Monday</p>
+            <div className="h-px bg-ima-surface-light mt-4" aria-hidden="true" />
 
             {dashboard.top_hours_week.length === 0 ? (
               <div className="mt-4">
@@ -538,18 +538,18 @@ export default async function CoachDashboard() {
                       <Link
                         href={`/coach/students/${r.student_id}`}
                         aria-label={`View ${r.student_name} — ${hoursLabel}`}
-                        className="flex items-center gap-3 py-3 min-h-[52px] -mx-2 px-2 rounded-md motion-safe:transition-colors hover:bg-[#FAFAF7] focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2"
+                        className="flex items-center gap-3 py-3 min-h-[52px] -mx-2 px-2 rounded-md motion-safe:transition-colors hover:bg-ima-bg focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2"
                       >
-                        <span className="inline-flex items-center justify-center rounded-[6px] bg-[#4A6CF7] text-white text-[10px] font-semibold tracking-wider px-[7px] py-[3px] shrink-0 tabular-nums">
+                        <span className="inline-flex items-center justify-center rounded-[6px] bg-ima-primary text-white text-[10px] font-semibold tracking-wider px-[7px] py-[3px] shrink-0 tabular-nums">
                           #{rank}
                         </span>
-                        <div className="w-8 h-8 rounded-full bg-[#F1EEE6] border border-[#EDE9E0] flex items-center justify-center text-xs font-semibold text-[#5A5648] shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-ima-surface-light border border-ima-border flex items-center justify-center text-xs font-semibold text-ima-text-secondary shrink-0">
                           {initials(r.student_name)}
                         </div>
-                        <p className="text-sm font-semibold text-[#1A1A17] truncate flex-1 leading-tight">
+                        <p className="text-sm font-semibold text-ima-text truncate flex-1 leading-tight">
                           {r.student_name}
                         </p>
-                        <p className="text-sm font-semibold text-[#1A1A17] tabular-nums shrink-0">
+                        <p className="text-sm font-semibold text-ima-text tabular-nums shrink-0">
                           {hoursLabel}
                         </p>
                       </Link>
@@ -569,20 +569,20 @@ export default async function CoachDashboard() {
             className="mt-8 motion-safe:animate-fadeIn"
             style={{ animationDelay: "200ms" }}
           >
-            <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6">
+            <div className="bg-white border border-ima-border rounded-[14px] p-6">
               <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-[8px] bg-[#FDF3E0] flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-[8px] bg-ima-warning/10 flex items-center justify-center shrink-0">
                   <AlertTriangle
-                    className="h-[18px] w-[18px] text-[#D97706]"
+                    className="h-[18px] w-[18px] text-ima-warning"
                     aria-hidden="true"
                   />
                 </div>
                 <div className="min-w-0">
-                  <h2 className="text-sm font-semibold text-[#1A1A17] leading-tight">
+                  <h2 className="text-sm font-semibold text-ima-text leading-tight">
                     {atRiskStudents.length} Student
                     {atRiskStudents.length !== 1 ? "s" : ""} Needing Attention
                   </h2>
-                  <p className="mt-1 text-xs text-[#8A8474]">
+                  <p className="mt-1 text-xs text-ima-text-secondary">
                     Review and reach out before they fall behind
                   </p>
                 </div>
@@ -593,24 +593,24 @@ export default async function CoachDashboard() {
                   <li key={student.id}>
                     <Link
                       href={`/coach/students/${student.id}`}
-                      className="group flex items-center gap-3 bg-[#FDF9F0] border border-[#F5ECD6] rounded-[10px] px-4 py-3 min-h-[56px] motion-safe:transition-[transform,background-color,border-color] hover:translate-x-[2px] hover:bg-[#FBF3E0] hover:border-[#EAD9A8] focus-visible:outline-2 focus-visible:outline-[#D97706] focus-visible:outline-offset-2"
+                      className="group flex items-center gap-3 bg-ima-surface-light border border-ima-warning/10 rounded-[10px] px-4 py-3 min-h-[56px] motion-safe:transition-[transform,background-color,border-color] hover:translate-x-[2px] hover:bg-ima-warning/10 hover:border-ima-warning/10 focus-visible:outline-2 focus-visible:outline-ima-warning focus-visible:outline-offset-2"
                     >
-                      <div className="w-10 h-10 rounded-full bg-white border border-[#EAD9A8] flex items-center justify-center text-xs font-semibold text-[#5A4A1F] shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-white border border-ima-warning/10 flex items-center justify-center text-xs font-semibold text-ima-warning shrink-0">
                         {initials(student.name)}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold text-[#1A1A17] truncate leading-tight">
+                        <p className="text-sm font-semibold text-ima-text truncate leading-tight">
                           {student.name}
                         </p>
-                        <p className="mt-[3px] text-[10px] font-medium text-[#9A6B1F] tracking-widest uppercase">
+                        <p className="mt-[3px] text-[10px] font-medium text-ima-warning tracking-widest uppercase">
                           {student.atRiskReasons.join(" · ")}
                         </p>
                       </div>
-                      <span className="inline-flex items-center px-2 py-[3px] rounded-full bg-[#FDEAEA] border border-[#F5C6C6] text-[10px] font-semibold uppercase tracking-wider text-[#DC2626] shrink-0">
+                      <span className="inline-flex items-center px-2 py-[3px] rounded-full bg-ima-error/10 border border-ima-error/10 text-[10px] font-semibold uppercase tracking-wider text-ima-error shrink-0">
                         At Risk
                       </span>
                       <ArrowRight
-                        className="h-[16px] w-[16px] text-[#9A6B1F] shrink-0 motion-safe:transition-transform group-hover:translate-x-[2px]"
+                        className="h-[16px] w-[16px] text-ima-warning shrink-0 motion-safe:transition-transform group-hover:translate-x-[2px]"
                         aria-hidden="true"
                       />
                     </Link>
@@ -627,11 +627,11 @@ export default async function CoachDashboard() {
           className="mt-10 motion-safe:animate-fadeIn"
           style={{ animationDelay: "250ms" }}
         >
-          <h2 className="text-xs font-semibold tracking-[0.2em] text-[#8A8474] uppercase">
+          <h2 className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
             My Students
           </h2>
           {enrichedStudents.length === 0 ? (
-            <div className="mt-4 bg-white border border-[#EDE9E0] rounded-[14px] p-6">
+            <div className="mt-4 bg-white border border-ima-border rounded-[14px] p-6">
               <EmptyState
                 variant="compact"
                 icon={<Users className="h-5 w-5" />}
@@ -654,10 +654,10 @@ export default async function CoachDashboard() {
                     href={`/coach/students/${student.id}`}
                     aria-label={`${student.name} — ${atRisk ? "at risk, " : ""}roadmap step ${student.currentRoadmapStep} of ${ROADMAP_STEPS.length}`}
                     className={[
-                      "block rounded-[14px] border p-6 min-h-[160px] motion-safe:transition-[transform,border-color,background-color] hover:-translate-y-[1px] focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2",
+                      "block rounded-[14px] border p-6 min-h-[160px] motion-safe:transition-[transform,border-color,background-color] hover:-translate-y-[1px] focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2",
                       atRisk
-                        ? "bg-[#FDFAF3] border-[#F0E0B8] hover:border-[#E5CE90]"
-                        : "bg-white border-[#EDE9E0] hover:border-[#D8D2C4]",
+                        ? "bg-ima-surface-light border-ima-warning/10 hover:border-ima-warning/10"
+                        : "bg-white border-ima-border hover:border-ima-border",
                     ].join(" ")}
                   >
                     {/* Header row */}
@@ -667,28 +667,28 @@ export default async function CoachDashboard() {
                           className={[
                             "w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold shrink-0 border",
                             atRisk
-                              ? "bg-white border-[#EAD9A8] text-[#5A4A1F]"
-                              : "bg-[#F1EEE6] border-[#EDE9E0] text-[#5A5648]",
+                              ? "bg-white border-ima-warning/10 text-ima-warning"
+                              : "bg-ima-surface-light border-ima-border text-ima-text-secondary",
                           ].join(" ")}
                         >
                           {initials(student.name)}
                         </div>
-                        <p className="text-sm font-semibold text-[#1A1A17] truncate">
+                        <p className="text-sm font-semibold text-ima-text truncate">
                           {student.name}
                         </p>
                       </div>
                       <div className="flex flex-col items-end gap-1 shrink-0">
                         {(student.skippedDays ?? 0) > 0 && (
-                          <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-[#FDF3E0] border border-[#F0DFB3] text-[10px] font-semibold uppercase tracking-wider text-[#9A6B1F]">
+                          <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-ima-warning/10 border border-ima-warning/10 text-[10px] font-semibold uppercase tracking-wider text-ima-warning">
                             {student.skippedDays} skipped
                           </span>
                         )}
                         {student.isNew ? (
-                          <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-[#E8EEFF] border border-[#C9D5FF] text-[10px] font-semibold uppercase tracking-wider text-[#4A6CF7]">
+                          <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-ima-surface-accent border border-ima-primary/20 text-[10px] font-semibold uppercase tracking-wider text-ima-primary">
                             New
                           </span>
                         ) : atRisk ? (
-                          <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-[#FDEAEA] border border-[#F5C6C6] text-[10px] font-semibold uppercase tracking-wider text-[#DC2626]">
+                          <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-ima-error/10 border border-ima-error/10 text-[10px] font-semibold uppercase tracking-wider text-ima-error">
                             At Risk
                           </span>
                         ) : null}
@@ -697,26 +697,26 @@ export default async function CoachDashboard() {
 
                     {/* Divider */}
                     <div
-                      className={`h-px mt-5 ${atRisk ? "bg-[#F0E0B8]" : "bg-[#EDE9E0]"}`}
+                      className={`h-px mt-5 ${atRisk ? "bg-ima-warning/10" : "bg-ima-surface-light"}`}
                       aria-hidden="true"
                     />
 
                     {/* Mini-stats grid */}
                     <div className="mt-5 grid grid-cols-3 gap-4">
                       <div>
-                        <p className="text-[10px] font-semibold tracking-[0.2em] text-[#8A8474] uppercase">
+                        <p className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
                           Last Active
                         </p>
-                        <p className="mt-[6px] text-sm font-semibold text-[#1A1A17] tabular-nums">
+                        <p className="mt-[6px] text-sm font-semibold text-ima-text tabular-nums">
                           {student.lastActiveLabel}
                         </p>
                       </div>
                       <div>
-                        <p className="text-[10px] font-semibold tracking-[0.2em] text-[#8A8474] uppercase">
+                        <p className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
                           Today&apos;s Report
                         </p>
                         {student.todayReportSubmitted ? (
-                          <p className="mt-[6px] flex items-center gap-[5px] text-sm font-semibold text-[#16A34A]">
+                          <p className="mt-[6px] flex items-center gap-[5px] text-sm font-semibold text-ima-success">
                             <CheckCircle2
                               className="h-[13px] w-[13px]"
                               aria-hidden="true"
@@ -724,9 +724,9 @@ export default async function CoachDashboard() {
                             Submitted
                           </p>
                         ) : (
-                          <p className="mt-[6px] flex items-center gap-[6px] text-sm font-semibold text-[#D97706]">
+                          <p className="mt-[6px] flex items-center gap-[6px] text-sm font-semibold text-ima-warning">
                             <span
-                              className="inline-block h-[7px] w-[7px] rounded-full bg-[#D97706]"
+                              className="inline-block h-[7px] w-[7px] rounded-full bg-ima-warning"
                               aria-hidden="true"
                             />
                             Pending
@@ -734,12 +734,12 @@ export default async function CoachDashboard() {
                         )}
                       </div>
                       <div>
-                        <p className="text-[10px] font-semibold tracking-[0.2em] text-[#8A8474] uppercase">
+                        <p className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
                           Roadmap
                         </p>
-                        <p className="mt-[6px] text-sm font-semibold text-[#1A1A17] tabular-nums">
+                        <p className="mt-[6px] text-sm font-semibold text-ima-text tabular-nums">
                           Step {student.currentRoadmapStep}
-                          <span className="text-[#8A8474]">/{ROADMAP_STEPS.length}</span>
+                          <span className="text-ima-text-secondary">/{ROADMAP_STEPS.length}</span>
                         </p>
                       </div>
                     </div>

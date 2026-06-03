@@ -2,14 +2,8 @@
 
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { JetBrains_Mono, Amiri } from "next/font/google";
+import { Amiri } from "next/font/google";
 import { createClient } from "@/lib/supabase/client";
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-mono-bold",
-});
 
 const amiri = Amiri({
   subsets: ["arabic"],
@@ -18,11 +12,7 @@ const amiri = Amiri({
   variable: "--font-arabic",
 });
 
-const MONO: React.CSSProperties = { fontFamily: "var(--font-mono-bold)" };
 const ARABIC: React.CSSProperties = { fontFamily: "var(--font-arabic)" };
-
-const GOLD_GRADIENT =
-  "linear-gradient(180deg, #FEF3C7 0%, #FDE68A 18%, #F5C842 38%, #D4A017 58%, #8B5E10 78%, #2E1F06 100%)";
 
 const ERROR_MESSAGES: Record<string, string> = {
   auth_failed: "Something went wrong. Try again.",
@@ -54,16 +44,14 @@ function LoginContent() {
 
   return (
     <main
-      className={`${jetbrainsMono.variable} ${amiri.variable} relative min-h-screen flex flex-col items-center justify-center gap-12 px-6 py-16`}
-      style={{ background: GOLD_GRADIENT }}
+      className={`${amiri.variable} relative min-h-screen flex flex-col items-center justify-center gap-12 bg-ima-bg px-4 py-16`}
     >
       <h1
         dir="rtl"
         lang="ar"
-        className="motion-safe:animate-fadeIn text-center leading-[1.35] select-none"
+        className="motion-safe:animate-fadeIn text-center leading-[1.35] select-none text-ima-text"
         style={{
           ...ARABIC,
-          color: "#2A1A07",
           fontSize: "clamp(2.25rem, 7vw, 5.25rem)",
           fontWeight: 400,
           animationDelay: "120ms",
@@ -76,20 +64,9 @@ function LoginContent() {
         className="w-full max-w-md motion-safe:animate-fadeIn"
         style={{ animationDelay: "320ms" }}
       >
-        <div
-          className="rounded-[16px] p-8 md:p-10"
-          style={{
-            background: "#FFF8E4",
-            border: "1px solid rgba(139, 94, 16, 0.35)",
-            boxShadow:
-              "0 30px 80px -30px rgba(42, 26, 7, 0.55), 0 1px 0 rgba(255, 248, 228, 0.9) inset",
-          }}
-        >
+        <div className="rounded-xl border border-ima-border bg-ima-surface p-8 shadow-sm md:p-10">
           <div className="flex flex-col items-center text-center">
-            <p
-              className="text-[11px] font-semibold tracking-[0.22em] uppercase"
-              style={{ ...MONO, color: "#8B5E10" }}
-            >
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ima-text-muted">
               Sign In
             </p>
             <span
@@ -109,17 +86,13 @@ function LoginContent() {
                 maskPosition: "center",
               }}
             />
-            <p
-              className="mt-4 text-[15px] leading-[1.5]"
-              style={{ color: "#4A3718" }}
-            >
+            <p className="mt-4 text-sm leading-relaxed text-ima-text-secondary">
               Student performance &amp; coaching platform.
             </p>
           </div>
 
           <div
-            className="mt-8 h-px"
-            style={{ background: "rgba(139, 94, 16, 0.28)" }}
+            className="mt-8 h-px bg-ima-border"
             aria-hidden="true"
           />
 
@@ -128,13 +101,7 @@ function LoginContent() {
             onClick={handleGoogleLogin}
             disabled={loading}
             aria-label="Sign in with Google"
-            className="mt-6 flex items-center justify-center gap-3 w-full min-h-[48px] rounded-[10px] px-4 text-[14px] font-semibold motion-safe:transition-all focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 disabled:opacity-60 disabled:cursor-not-allowed hover:shadow-md"
-            style={{
-              background: "#FFFDF6",
-              color: "#2A1A07",
-              border: "1px solid rgba(139, 94, 16, 0.4)",
-              boxShadow: "0 4px 12px -4px rgba(139, 94, 16, 0.28)",
-            }}
+            className="mt-6 flex w-full min-h-[48px] items-center justify-center gap-3 rounded-lg border border-ima-border bg-ima-surface px-4 text-sm font-semibold text-ima-text hover:bg-ima-bg motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <svg
               width="20"
@@ -166,29 +133,18 @@ function LoginContent() {
           {errorMessage && (
             <div
               role="alert"
-              className="mt-5 rounded-[10px] px-4 py-3 text-[13px] leading-[1.5]"
-              style={{
-                background: "rgba(220, 38, 38, 0.08)",
-                border: "1px solid rgba(220, 38, 38, 0.3)",
-                color: "#991B1B",
-              }}
+              className="mt-5 rounded-lg border border-ima-error/30 bg-ima-error/10 px-4 py-3 text-sm leading-relaxed text-ima-error"
             >
               {errorMessage}
             </div>
           )}
 
-          <p
-            className="mt-6 text-center text-[10px] font-semibold tracking-[0.22em] uppercase"
-            style={{ ...MONO, color: "#8B5E10" }}
-          >
+          <p className="mt-6 text-center text-[10px] font-semibold uppercase tracking-[0.22em] text-ima-text-muted">
             Invite-Only Access
           </p>
         </div>
 
-        <p
-          className="mt-6 text-center text-[12px]"
-          style={{ color: "#FEF3C7" }}
-        >
+        <p className="mt-6 text-center text-xs text-ima-text-secondary">
           Need an invite? Ask your coach.
         </p>
       </div>

@@ -37,7 +37,6 @@ type OptimisticAction =
   | { type: "edit"; deal: Deal }
   | { type: "delete"; id: string };
 
-const MONO: React.CSSProperties = { fontFamily: "var(--font-mono-bold)" };
 
 function dealsReducer(state: Deal[], action: OptimisticAction): Deal[] {
   switch (action.type) {
@@ -259,7 +258,7 @@ export function DealsClient({
       {/* Empty state — no hero; lead the user straight to the CTA. */}
       {!hasDeals && (
         <div
-          className="bg-white border border-[#EDE9E0] rounded-[14px] p-6 md:p-10 motion-safe:animate-fadeIn"
+          className="bg-white border border-ima-border rounded-[14px] p-6 md:p-10 motion-safe:animate-fadeIn"
           style={{ animationDelay: "50ms" }}
         >
           <EmptyState
@@ -287,18 +286,16 @@ export function DealsClient({
             className="motion-safe:animate-fadeIn"
             style={{ animationDelay: "50ms" }}
           >
-            <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6 md:p-8">
+            <div className="bg-white border border-ima-border rounded-[14px] p-6 md:p-8">
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <p
                   id="deals-hero-label"
-                  className="text-[11px] font-semibold tracking-[0.22em] text-[#8A8474] uppercase"
-                  style={MONO}
+                  className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
                 >
                   Total Revenue
                 </p>
                 <span
-                  className="inline-flex items-center gap-1.5 px-2 py-[3px] rounded-full bg-[#E8EEFF] border border-[#C9D5FF] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#4A6CF7] tabular-nums"
-                  style={MONO}
+                  className="inline-flex items-center gap-1.5 px-2 py-[3px] rounded-full bg-ima-surface-accent border border-ima-primary/20 text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-primary tabular-nums"
                 >
                   <Briefcase className="h-3 w-3" aria-hidden="true" />
                   {totals.count} {totals.count === 1 ? "deal" : "deals"} closed
@@ -306,10 +303,10 @@ export function DealsClient({
               </div>
 
               <div className="mt-6 flex items-end gap-3 flex-wrap">
-                <span className="text-6xl md:text-7xl font-semibold tabular-nums tracking-tight leading-[0.95] text-[#4A6CF7]">
+                <span className="text-6xl md:text-7xl font-semibold tabular-nums tracking-tight leading-[0.95] text-ima-primary">
                   {formatCompact(totals.revenue)}
                 </span>
-                <span className="pb-2 text-[15px] font-medium text-[#8A8474] tabular-nums">
+                <span className="pb-2 text-[15px] font-medium text-ima-text-secondary tabular-nums">
                   {formatCompact(totals.profit)} profit · all time
                 </span>
               </div>
@@ -342,7 +339,7 @@ export function DealsClient({
             />
           </section>
 
-          {/* Ledger — mono-bold kicker + primary CTA, then table/cards. */}
+          {/* Ledger — editorial kicker + primary CTA, then table/cards. */}
           <section
             aria-labelledby="deals-ledger-label"
             className="motion-safe:animate-fadeIn"
@@ -351,8 +348,7 @@ export function DealsClient({
             <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
               <p
                 id="deals-ledger-label"
-                className="text-[11px] font-semibold tracking-[0.22em] text-[#8A8474] uppercase"
-                style={MONO}
+                className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
               >
                 Ledger
               </p>
@@ -371,19 +367,18 @@ export function DealsClient({
               <div
                 role="table"
                 aria-label="Deals"
-                className="w-full overflow-hidden rounded-[14px] border border-[#EDE9E0] bg-white"
+                className="w-full overflow-hidden rounded-[14px] border border-ima-border bg-white"
               >
                 <div
                   role="row"
-                  className="grid grid-cols-[140px_1fr_1fr_160px_140px_96px] items-center gap-4 px-6 py-3 bg-[#F5F2E9] border-b border-[#EDE9E0]"
+                  className="grid grid-cols-[140px_1fr_1fr_160px_140px_96px] items-center gap-4 px-6 py-3 bg-ima-surface-light border-b border-ima-border"
                 >
                   {["Deal", "Revenue", "Profit", "Logged By", "Date"].map(
                     (h) => (
                       <span
                         key={h}
                         role="columnheader"
-                        className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8A8474]"
-                        style={MONO}
+                        className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ima-text-secondary"
                       >
                         {h}
                       </span>
@@ -404,7 +399,7 @@ export function DealsClient({
                       <div
                         key={deal.id}
                         role="row"
-                        className="group grid grid-cols-[140px_1fr_1fr_160px_140px_96px] items-center gap-4 px-6 h-16 border-b border-[#EDE9E0]/60 last:border-b-0 motion-safe:transition-colors hover:bg-[#E8EEFF]/40 focus-within:bg-[#E8EEFF]/40"
+                        className="group grid grid-cols-[140px_1fr_1fr_160px_140px_96px] items-center gap-4 px-6 h-16 border-b border-ima-border/60 last:border-b-0 motion-safe:transition-colors hover:bg-ima-surface-accent/40 focus-within:bg-ima-surface-accent/40"
                       >
                         <div
                           role="cell"
@@ -412,11 +407,10 @@ export function DealsClient({
                         >
                           <span
                             aria-hidden="true"
-                            className="h-[6px] w-[6px] rounded-full bg-[#16A34A] shrink-0"
+                            className="h-[6px] w-[6px] rounded-full bg-ima-success shrink-0"
                           />
                           <span
-                            className="text-[13px] font-semibold text-[#4A6CF7] tabular-nums truncate"
-                            style={MONO}
+                            className="text-[13px] font-semibold text-ima-primary tabular-nums truncate"
                           >
                             #{String(deal.deal_number).padStart(2, "0")}
                           </span>
@@ -424,14 +418,14 @@ export function DealsClient({
 
                         <span
                           role="cell"
-                          className="text-[14px] font-semibold text-[#1A1A17] tabular-nums"
+                          className="text-[14px] font-semibold text-ima-text tabular-nums"
                         >
                           {formatCurrency(deal.revenue)}
                         </span>
 
                         <span
                           role="cell"
-                          className="text-[14px] font-semibold text-[#16A34A] tabular-nums"
+                          className="text-[14px] font-semibold text-ima-success tabular-nums"
                         >
                           {formatCurrency(deal.profit)}
                         </span>
@@ -447,7 +441,7 @@ export function DealsClient({
 
                         <span
                           role="cell"
-                          className="flex items-center gap-2 text-[12px] text-[#8A8474] tabular-nums"
+                          className="flex items-center gap-2 text-[12px] text-ima-text-secondary tabular-nums"
                         >
                           <Calendar
                             className="h-3.5 w-3.5 shrink-0"
@@ -490,7 +484,7 @@ export function DealsClient({
                                 }}
                                 aria-label={`Edit deal #${deal.deal_number}`}
                                 disabled={isBusy}
-                                className="inline-flex h-11 w-11 items-center justify-center rounded-md text-[#8A8474] motion-safe:transition-colors hover:text-[#4A6CF7] hover:bg-[#E8EEFF] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A6CF7] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF7] disabled:opacity-50 disabled:pointer-events-none"
+                                className="inline-flex h-11 w-11 items-center justify-center rounded-md text-ima-text-secondary motion-safe:transition-colors hover:text-ima-primary hover:bg-ima-surface-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2 focus-visible:ring-offset-ima-bg disabled:opacity-50 disabled:pointer-events-none"
                               >
                                 <Pencil
                                   className="h-4 w-4"
@@ -502,7 +496,7 @@ export function DealsClient({
                                 onClick={() => setConfirmDeleteId(deal.id)}
                                 aria-label={`Delete deal #${deal.deal_number}`}
                                 disabled={isBusy}
-                                className="inline-flex h-11 w-11 items-center justify-center rounded-md text-[#8A8474] motion-safe:transition-colors hover:text-[#DC2626] hover:bg-[#FEE2E2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#DC2626] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF7] disabled:opacity-50 disabled:pointer-events-none"
+                                className="inline-flex h-11 w-11 items-center justify-center rounded-md text-ima-text-secondary motion-safe:transition-colors hover:text-ima-error hover:bg-ima-error/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-error focus-visible:ring-offset-2 focus-visible:ring-offset-ima-bg disabled:opacity-50 disabled:pointer-events-none"
                               >
                                 <Trash2
                                   className="h-4 w-4"
@@ -529,23 +523,22 @@ export function DealsClient({
                 return (
                   <li
                     key={deal.id}
-                    className="rounded-[14px] border border-[#EDE9E0] bg-white overflow-hidden"
+                    className="rounded-[14px] border border-ima-border bg-white overflow-hidden"
                   >
                     <div className="px-5 py-5 space-y-5">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-2.5 min-w-0">
                           <span
                             aria-hidden="true"
-                            className="h-[6px] w-[6px] rounded-full bg-[#16A34A] shrink-0"
+                            className="h-[6px] w-[6px] rounded-full bg-ima-success shrink-0"
                           />
                           <div className="min-w-0">
                             <p
-                              className="text-[13px] font-semibold text-[#4A6CF7] tabular-nums truncate"
-                              style={MONO}
+                              className="text-[13px] font-semibold text-ima-primary tabular-nums truncate"
                             >
                               Deal #{String(deal.deal_number).padStart(2, "0")}
                             </p>
-                            <p className="flex items-center gap-1.5 text-[11px] text-[#8A8474] tabular-nums mt-1">
+                            <p className="flex items-center gap-1.5 text-[11px] text-ima-text-secondary tabular-nums mt-1">
                               <Calendar
                                 className="h-3 w-3 shrink-0"
                                 aria-hidden="true"
@@ -657,9 +650,9 @@ export function DealsClient({
 type StatTint = "primary" | "success" | "accent";
 
 const STAT_TINTS: Record<StatTint, { bg: string; fg: string }> = {
-  primary: { bg: "bg-[#E8EEFF]", fg: "text-[#4A6CF7]" },
-  success: { bg: "bg-[#E2F5E9]", fg: "text-[#16A34A]" },
-  accent: { bg: "bg-[#F5F2E9]", fg: "text-[#7A7466]" },
+  primary: { bg: "bg-ima-surface-accent", fg: "text-ima-primary" },
+  success: { bg: "bg-ima-success/10", fg: "text-ima-success" },
+  accent: { bg: "bg-ima-surface-light", fg: "text-ima-text-secondary" },
 };
 
 function CompactStat({
@@ -675,7 +668,7 @@ function CompactStat({
 }) {
   const t = STAT_TINTS[tint];
   return (
-    <div className="flex items-start gap-4 bg-white border border-[#EDE9E0] rounded-[12px] px-[18px] py-[16px] min-h-[72px]">
+    <div className="flex items-start gap-4 bg-white border border-ima-border rounded-[12px] px-[18px] py-[16px] min-h-[72px]">
       <div
         className={cn(
           "w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0",
@@ -685,12 +678,11 @@ function CompactStat({
         <Icon className={cn("h-[18px] w-[18px]", t.fg)} aria-hidden="true" />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-[24px] md:text-[28px] font-semibold leading-none tabular-nums tracking-tight text-[#1A1A17]">
+        <p className="text-[24px] md:text-[28px] font-semibold leading-none tabular-nums tracking-tight text-ima-text">
           {value}
         </p>
         <p
-          className="mt-[8px] text-[11px] font-semibold tracking-[0.18em] text-[#8A8474] uppercase"
-          style={MONO}
+          className="mt-[8px] text-[11px] font-semibold tracking-[0.18em] text-ima-text-secondary uppercase"
         >
           {label}
         </p>
@@ -709,17 +701,16 @@ function MobileMoneyCell({
   tone: "text" | "success";
 }) {
   return (
-    <div className="rounded-[10px] border border-[#EDE9E0] bg-white px-3 py-2.5 space-y-1">
+    <div className="rounded-[10px] border border-ima-border bg-white px-3 py-2.5 space-y-1">
       <p
-        className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8A8474]"
-        style={MONO}
+        className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ima-text-secondary"
       >
         {label}
       </p>
       <p
         className={cn(
           "text-[15px] font-semibold tabular-nums tracking-tight",
-          tone === "success" ? "text-[#16A34A]" : "text-[#1A1A17]",
+          tone === "success" ? "text-ima-success" : "text-ima-text",
         )}
       >
         {value}

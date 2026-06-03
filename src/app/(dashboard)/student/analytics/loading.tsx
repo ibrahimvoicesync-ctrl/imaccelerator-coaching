@@ -1,21 +1,21 @@
 export default function AnalyticsLoading() {
   return (
-    <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-[#FAFAF7]">
+    <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg">
       <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20 space-y-10">
         {/* Masthead */}
         <div className="motion-safe:animate-pulse">
-          <div className="h-[11px] w-32 rounded bg-[#EDE9E0]" />
-          <div className="mt-3 h-9 w-72 max-w-full rounded bg-[#EDE9E0]" />
-          <div className="mt-2 h-4 w-80 max-w-full rounded bg-[#EDE9E0]" />
+          <div className="h-[11px] w-32 rounded bg-ima-surface-light" />
+          <div className="mt-3 h-9 w-72 max-w-full rounded bg-ima-surface-light" />
+          <div className="mt-2 h-4 w-80 max-w-full rounded bg-ima-surface-light" />
         </div>
 
         {/* Hero — Lifetime Hours */}
-        <div className="rounded-[14px] border border-[#EDE9E0] bg-white p-6 md:p-8 motion-safe:animate-pulse">
+        <div className="rounded-[14px] border border-ima-border bg-white p-6 md:p-8 motion-safe:animate-pulse">
           <div className="flex items-center justify-between gap-3">
-            <div className="h-3 w-32 rounded bg-[#F1EEE6]" />
-            <div className="h-5 w-28 rounded-full bg-[#F1EEE6]" />
+            <div className="h-3 w-32 rounded bg-ima-surface-light" />
+            <div className="h-5 w-28 rounded-full bg-ima-surface-light" />
           </div>
-          <div className="mt-6 h-16 md:h-20 w-56 rounded bg-[#F1EEE6]" />
+          <div className="mt-6 h-16 md:h-20 w-56 rounded bg-ima-surface-light" />
         </div>
 
         {/* KPI strip */}
@@ -24,12 +24,12 @@ export default function AnalyticsLoading() {
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className="flex items-start gap-4 rounded-[12px] border border-[#EDE9E0] bg-white px-[18px] py-[16px] min-h-[72px] motion-safe:animate-pulse"
+              className="flex items-start gap-4 rounded-[12px] border border-ima-border bg-white px-[18px] py-[16px] min-h-[72px] motion-safe:animate-pulse"
             >
-              <div className="h-9 w-9 rounded-[8px] bg-[#F1EEE6] shrink-0" />
+              <div className="h-9 w-9 rounded-[8px] bg-ima-surface-light shrink-0" />
               <div className="min-w-0 flex-1">
-                <div className="h-6 w-20 rounded bg-[#F1EEE6]" />
-                <div className="mt-[8px] h-3 w-24 rounded bg-[#F1EEE6]" />
+                <div className="h-6 w-20 rounded bg-ima-surface-light" />
+                <div className="mt-[8px] h-3 w-24 rounded bg-ima-surface-light" />
               </div>
             </div>
           ))}
@@ -40,13 +40,13 @@ export default function AnalyticsLoading() {
           {Array.from({ length: 2 }).map((_, i) => (
             <div
               key={i}
-              className="rounded-[14px] border border-[#EDE9E0] bg-white p-5 md:p-6 motion-safe:animate-pulse"
+              className="rounded-[14px] border border-ima-border bg-white p-5 md:p-6 motion-safe:animate-pulse"
             >
               <div className="flex items-baseline justify-between gap-3 mb-5">
-                <div className="h-3 w-24 rounded bg-[#F1EEE6]" />
-                <div className="h-3 w-16 rounded bg-[#F1EEE6]" />
+                <div className="h-3 w-24 rounded bg-ima-surface-light" />
+                <div className="h-3 w-16 rounded bg-ima-surface-light" />
               </div>
-              <div className="h-[240px] w-full rounded bg-[#F1EEE6]" />
+              <div className="h-[240px] w-full rounded bg-ima-surface-light" />
             </div>
           ))}
         </section>

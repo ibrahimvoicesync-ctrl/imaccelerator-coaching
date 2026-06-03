@@ -162,17 +162,17 @@ export function OwnerStudentDetailClient({
         {/* Student info */}
         <div className="flex flex-col sm:flex-row sm:items-start gap-4">
           {/* Avatar */}
-          <div className="w-14 h-14 rounded-full bg-[#4A6CF7] flex items-center justify-center text-xl font-semibold text-white shrink-0">
+          <div className="w-14 h-14 rounded-full bg-ima-primary flex items-center justify-center text-xl font-semibold text-white shrink-0">
             {initial}
           </div>
 
           {/* Name and join date */}
           <div className="flex-1">
-            <h1 className="text-xl font-semibold tracking-[-0.01em] text-[#1A1A17]">
+            <h1 className="text-xl font-semibold tracking-[-0.01em] text-ima-text">
               {student.name}
             </h1>
-            <p className="mt-[2px] text-sm text-[#7A7466]">{student.email}</p>
-            <p className="mt-[2px] text-sm tabular-nums slashed-zero text-[#7A7466]">
+            <p className="mt-[2px] text-sm text-ima-text-secondary">{student.email}</p>
+            <p className="mt-[2px] text-sm tabular-nums slashed-zero text-ima-text-secondary">
               Joined {joinDate}
             </p>
             {student.status === "suspended" && (
@@ -184,7 +184,7 @@ export function OwnerStudentDetailClient({
           <div className="flex flex-col gap-1">
             <label
               htmlFor="coach-assign"
-              className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8A8474]"
+              className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ima-text-secondary"
             >
               Assigned Coach
             </label>
@@ -198,7 +198,7 @@ export function OwnerStudentDetailClient({
                   handleAssign(val);
                 }}
                 disabled={isSaving}
-                className="rounded-lg border border-[#EDE9E0] bg-white px-3 py-2 text-sm text-[#1A1A17] min-h-[44px] min-w-[200px] focus:outline-none focus:ring-2 focus:ring-[#4A6CF7] disabled:opacity-50"
+                className="rounded-lg border border-ima-border bg-white px-3 py-2 text-sm text-ima-text min-h-[44px] min-w-[200px] focus:outline-none focus:ring-2 focus:ring-ima-primary disabled:opacity-50"
                 aria-label="Assign student to coach"
               >
                 <option value="">Unassigned</option>
@@ -209,7 +209,7 @@ export function OwnerStudentDetailClient({
                 ))}
               </select>
               {isSaving && (
-                <span className="text-xs text-[#7A7466]">Saving...</span>
+                <span className="text-xs text-ima-text-secondary">Saving...</span>
               )}
             </div>
           </div>
@@ -223,7 +223,7 @@ export function OwnerStudentDetailClient({
           {isAtRisk && (
             <div className="flex flex-col items-start sm:items-end gap-1">
               <Badge variant="error">At Risk</Badge>
-              <p className="text-sm text-[#7A7466]">
+              <p className="text-sm text-ima-text-secondary">
                 {atRiskReasons.join(", ")}
               </p>
             </div>
@@ -232,15 +232,15 @@ export function OwnerStudentDetailClient({
       </div>
 
       {milestone && (
-        <div className="flex items-center gap-3 rounded-lg bg-[#16A34A]/10 border border-[#16A34A]/20 p-4">
-          <div className="w-10 h-10 rounded-lg bg-[#16A34A]/20 flex items-center justify-center shrink-0">
-            <Trophy className="h-5 w-5 text-[#16A34A]" aria-hidden="true" />
+        <div className="flex items-center gap-3 rounded-lg bg-ima-success/10 border border-ima-success/20 p-4">
+          <div className="w-10 h-10 rounded-lg bg-ima-success/20 flex items-center justify-center shrink-0">
+            <Trophy className="h-5 w-5 text-ima-success" aria-hidden="true" />
           </div>
           <div>
-            <p className="text-sm font-semibold tracking-[-0.005em] text-[#1A1A17]">
+            <p className="text-sm font-semibold tracking-[-0.005em] text-ima-text">
               100+ Hours Milestone
             </p>
-            <p className="mt-[2px] text-xs tabular-nums slashed-zero text-[#7A7466]">
+            <p className="mt-[2px] text-xs tabular-nums slashed-zero text-ima-text-secondary">
               {milestone.totalHours} hours reached in {milestone.days} days
             </p>
           </div>

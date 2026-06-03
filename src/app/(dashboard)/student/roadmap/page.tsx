@@ -1,19 +1,10 @@
 import { CheckCircle2, PartyPopper } from "lucide-react";
-import { JetBrains_Mono } from "next/font/google";
 import { RoadmapClient } from "@/components/student/RoadmapClient";
 import { requireRole } from "@/lib/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { ROADMAP_STEPS } from "@/lib/config";
 import { cn } from "@/lib/utils";
 import type { Database } from "@/lib/types";
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-mono-bold",
-});
-
-const MONO: React.CSSProperties = { fontFamily: "var(--font-mono-bold)" };
 
 type RoadmapProgress = Database["public"]["Tables"]["roadmap_progress"]["Row"];
 
@@ -138,21 +129,20 @@ export default async function RoadmapPage() {
 
   return (
     <div
-      className={`${jetbrainsMono.variable} -mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-[#FAFAF7]`}
+      className={`-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg`}
     >
       <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
         {/* Masthead */}
         <header className="motion-safe:animate-fadeIn">
           <p
-            className="text-[11px] font-semibold tracking-[0.22em] text-[#8A8474] uppercase"
-            style={MONO}
+            className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
           >
             Roadmap
           </p>
-          <h1 className="mt-3 text-[32px] md:text-[36px] font-semibold leading-[1.05] text-[#1A1A17] tracking-[-0.02em]">
+          <h1 className="mt-3 text-[32px] md:text-[36px] font-semibold leading-[1.05] text-ima-text tracking-[-0.02em]">
             Your Roadmap
           </h1>
-          <p className="mt-2 max-w-[58ch] text-[15px] text-[#7A7466] leading-[1.55]">
+          <p className="mt-2 max-w-[58ch] text-[15px] text-ima-text-secondary leading-[1.55]">
             {ROADMAP_STEPS.length} steps from beginner to closing your first brand deal.
           </p>
         </header>
@@ -163,24 +153,22 @@ export default async function RoadmapPage() {
           className="mt-9 motion-safe:animate-fadeIn"
           style={{ animationDelay: "100ms" }}
         >
-          <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6 md:p-8">
+          <div className="bg-white border border-ima-border rounded-[14px] p-6 md:p-8">
             <div className="flex items-center justify-between gap-3">
               <p
                 id="overall-progress-label"
-                className="text-[11px] font-semibold tracking-[0.22em] text-[#8A8474] uppercase"
-                style={MONO}
+                className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
               >
                 Overall Progress
               </p>
               {allComplete ? (
-                <span className="inline-flex items-center gap-1.5 px-2 py-[3px] rounded-full bg-[#E2F5E9] border border-[#C8E6D2] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#16A34A]">
+                <span className="inline-flex items-center gap-1.5 px-2 py-[3px] rounded-full bg-ima-success/10 border border-ima-success/10 text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-success">
                   <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
                   Roadmap Complete
                 </span>
               ) : (
                 <span
-                  className="text-[10px] font-semibold tracking-[0.18em] text-[#8A8474] uppercase tabular-nums"
-                  style={MONO}
+                  className="text-[10px] font-semibold tracking-[0.18em] text-ima-text-secondary uppercase tabular-nums"
                 >
                   {remaining} Remaining
                 </span>
@@ -191,18 +179,18 @@ export default async function RoadmapPage() {
               <span
                 className={cn(
                   "text-6xl md:text-7xl font-semibold tabular-nums tracking-tight leading-[0.95]",
-                  allComplete ? "text-[#16A34A]" : "text-[#4A6CF7]",
+                  allComplete ? "text-ima-success" : "text-ima-primary",
                 )}
               >
                 {percent}%
               </span>
-              <span className="pb-2 text-[15px] font-medium text-[#8A8474] tabular-nums">
+              <span className="pb-2 text-[15px] font-medium text-ima-text-secondary tabular-nums">
                 {completedCount} / {ROADMAP_STEPS.length} steps
               </span>
             </div>
 
             <div
-              className="mt-5 h-[6px] rounded-full bg-[#F1EEE6] overflow-hidden"
+              className="mt-5 h-[6px] rounded-full bg-ima-surface-light overflow-hidden"
               role="progressbar"
               aria-valuenow={completedCount}
               aria-valuemin={0}
@@ -212,7 +200,7 @@ export default async function RoadmapPage() {
               <div
                 className={cn(
                   "h-full rounded-full motion-safe:transition-[width] duration-700 ease-out",
-                  allComplete ? "bg-[#16A34A]" : "bg-[#4A6CF7]",
+                  allComplete ? "bg-ima-success" : "bg-ima-primary",
                 )}
                 style={{ width: `${percent}%` }}
               />
@@ -231,29 +219,28 @@ export default async function RoadmapPage() {
             const stageStarted = done > 0;
             const stagePercent = total > 0 ? Math.round((done / total) * 100) : 0;
             const valueColor = stageDone
-              ? "text-[#16A34A]"
+              ? "text-ima-success"
               : stageStarted
-                ? "text-[#4A6CF7]"
-                : "text-[#1A1A17]";
+                ? "text-ima-primary"
+                : "text-ima-text";
             const barColor = stageDone
-              ? "bg-[#16A34A]"
+              ? "bg-ima-success"
               : stageStarted
-                ? "bg-[#4A6CF7]"
-                : "bg-[#8A8474]";
+                ? "bg-ima-primary"
+                : "bg-ima-surface-light";
             const dotColor = stageDone
-              ? "bg-[#16A34A]"
+              ? "bg-ima-success"
               : stageStarted
-                ? "bg-[#4A6CF7]"
-                : "bg-[#8A8474]";
+                ? "bg-ima-primary"
+                : "bg-ima-surface-light";
             return (
               <div
                 key={stage}
-                className="bg-white border border-[#EDE9E0] rounded-[14px] p-6"
+                className="bg-white border border-ima-border rounded-[14px] p-6"
               >
                 <div className="flex items-center justify-between gap-3">
                   <p
-                    className="text-[11px] font-semibold tracking-[0.18em] text-[#8A8474] uppercase"
-                    style={MONO}
+                    className="text-[11px] font-semibold tracking-[0.18em] text-ima-text-secondary uppercase"
                   >
                     {name}
                   </p>
@@ -271,17 +258,16 @@ export default async function RoadmapPage() {
                     )}
                   >
                     {done}
-                    <span className="text-[18px] md:text-[20px] font-semibold text-[#8A8474]">/{total}</span>
+                    <span className="text-[18px] md:text-[20px] font-semibold text-ima-text-secondary">/{total}</span>
                   </p>
                   <p
-                    className="text-[11px] font-semibold tabular-nums text-[#8A8474]"
-                    style={MONO}
+                    className="text-[11px] font-semibold tabular-nums text-ima-text-secondary"
                   >
                     {stagePercent}%
                   </p>
                 </div>
 
-                <p className="mt-[10px] text-[12px] text-[#8A8474]">
+                <p className="mt-[10px] text-[12px] text-ima-text-secondary">
                   {stageDone
                     ? "Stage complete"
                     : stageStarted
@@ -290,7 +276,7 @@ export default async function RoadmapPage() {
                 </p>
 
                 <div
-                  className="mt-4 h-[4px] rounded-full bg-[#F1EEE6] overflow-hidden"
+                  className="mt-4 h-[4px] rounded-full bg-ima-surface-light overflow-hidden"
                   role="progressbar"
                   aria-valuenow={done}
                   aria-valuemin={0}
@@ -313,22 +299,21 @@ export default async function RoadmapPage() {
           className="mt-10 motion-safe:animate-fadeIn"
           style={{ animationDelay: "200ms" }}
         >
-          <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6 md:p-8">
+          <div className="bg-white border border-ima-border rounded-[14px] p-6 md:p-8">
             {allComplete ? (
               <>
                 <div className="flex items-center justify-between gap-3">
                   <p
-                    className="text-[11px] font-semibold tracking-[0.22em] text-[#16A34A] uppercase"
-                    style={MONO}
+                    className="text-[11px] font-semibold tracking-[0.22em] text-ima-success uppercase"
                   >
                     Status
                   </p>
-                  <PartyPopper className="h-[18px] w-[18px] text-[#16A34A]" aria-hidden="true" />
+                  <PartyPopper className="h-[18px] w-[18px] text-ima-success" aria-hidden="true" />
                 </div>
-                <p className="mt-5 text-[22px] md:text-[24px] font-semibold tracking-[-0.01em] text-[#1A1A17] leading-tight">
+                <p className="mt-5 text-[22px] md:text-[24px] font-semibold tracking-[-0.01em] text-ima-text leading-tight">
                   Congratulations, {firstName}.
                 </p>
-                <p className="mt-3 text-[14px] text-[#7A7466] leading-relaxed">
+                <p className="mt-3 text-[14px] text-ima-text-secondary leading-relaxed">
                   You&apos;ve completed all {ROADMAP_STEPS.length} steps. Keep building on the roster you&apos;ve earned.
                 </p>
               </>
@@ -336,43 +321,39 @@ export default async function RoadmapPage() {
               <>
                 <div className="flex items-center justify-between gap-3">
                   <p
-                    className="text-[11px] font-semibold tracking-[0.22em] text-[#4A6CF7] uppercase"
-                    style={MONO}
+                    className="text-[11px] font-semibold tracking-[0.22em] text-ima-primary uppercase"
                   >
                     Current Step
                   </p>
                   <span
-                    className="text-[11px] font-semibold tabular-nums text-[#8A8474]"
-                    style={MONO}
+                    className="text-[11px] font-semibold tabular-nums text-ima-text-secondary"
                   >
                     {String(activeStepConfig.step).padStart(2, "0")} / {String(ROADMAP_STEPS.length).padStart(2, "0")}
                   </span>
                 </div>
                 <p
-                  className="mt-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8A8474]"
-                  style={MONO}
+                  className="mt-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-ima-text-secondary"
                 >
                   {activeStepConfig.stageName}
                 </p>
-                <h2 className="mt-2 text-[22px] md:text-[24px] font-semibold tracking-[-0.01em] text-[#1A1A17] leading-tight">
+                <h2 className="mt-2 text-[22px] md:text-[24px] font-semibold tracking-[-0.01em] text-ima-text leading-tight">
                   {activeStepConfig.title}
                 </h2>
-                <p className="mt-3 text-[14px] text-[#7A7466] leading-relaxed">
+                <p className="mt-3 text-[14px] text-ima-text-secondary leading-relaxed">
                   {activeStepConfig.description}
                 </p>
               </>
             ) : (
               <>
                 <p
-                  className="text-[11px] font-semibold tracking-[0.22em] text-[#4A6CF7] uppercase"
-                  style={MONO}
+                  className="text-[11px] font-semibold tracking-[0.22em] text-ima-primary uppercase"
                 >
                   Status
                 </p>
-                <p className="mt-5 text-[22px] md:text-[24px] font-semibold tracking-[-0.01em] text-[#1A1A17] leading-tight">
+                <p className="mt-5 text-[22px] md:text-[24px] font-semibold tracking-[-0.01em] text-ima-text leading-tight">
                   Ready to begin.
                 </p>
-                <p className="mt-3 text-[14px] text-[#7A7466] leading-relaxed">
+                <p className="mt-3 text-[14px] text-ima-text-secondary leading-relaxed">
                   Your roadmap is set up. Start with step 1 below when you&apos;re ready.
                 </p>
               </>
@@ -386,7 +367,7 @@ export default async function RoadmapPage() {
           className="mt-10 motion-safe:animate-fadeIn"
           style={{ animationDelay: "250ms" }}
         >
-          <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6 md:p-8">
+          <div className="bg-white border border-ima-border rounded-[14px] p-6 md:p-8">
             <RoadmapClient progress={progress} joinedAt={joinedAt} />
           </div>
         </section>

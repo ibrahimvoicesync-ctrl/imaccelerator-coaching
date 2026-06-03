@@ -168,6 +168,15 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
       });
       if (!response.ok) {
         const err = await response.json().catch((parseErr) => { console.error("[WorkTrackerClient] Failed to parse error response:", parseErr); return { error: null }; });
+        // 409 = a session is already running server-side that the client lost
+        // track of (e.g. a dropped response after the row committed). Reconcile
+        // by refreshing so the active/paused session resurfaces, rather than
+        // dead-ending on an error the student can't act on.
+        if (response.status === 409) {
+          toastRef.current.toast({ type: "error", title: "You already have a session running. Finish or discard it first." });
+          router.refresh();
+          return;
+        }
         console.error("[WorkTrackerClient] Failed to start session:", err);
         toastRef.current.toast({ type: "error", title: err.error || "Failed to start session" });
         return;
@@ -206,6 +215,13 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
             console.error("[WorkTrackerClient] Failed to parse error response:", parseErr);
             return { error: null };
           });
+          // 409 = a session is already running server-side the client lost track
+          // of. Reconcile by refreshing so it resurfaces (see handleStart).
+          if (response.status === 409) {
+            toastRef.current.toast({ type: "error", title: "You already have a session running. Finish or discard it first." });
+            router.refresh();
+            return;
+          }
           console.error("[WorkTrackerClient] Failed to start planned session:", err);
           toastRef.current.toast({ type: "error", title: err.error || "Failed to start session" });
           return;
@@ -358,6 +374,56 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
     }
   }, [sessions, showAbandonConfirm, router]);
 
+  const handleEditSession = useCallback(async (sessionId: string, minutes: number) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/work-sessions/${sessionId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ duration_minutes: minutes }),
+      });
+      if (!response.ok) {
+        const err = await response.json().catch((parseErr) => { console.error("[WorkTrackerClient] Failed to parse error response:", parseErr); return { error: null }; });
+        console.error("[WorkTrackerClient] Failed to edit session:", err);
+        toastRef.current.toast({ type: "error", title: err.error || "Failed to update session" });
+        return;
+      }
+      const updated = await response.json();
+      setSessions((prev) => prev.map((s) => (s.id === sessionId ? updated : s)));
+      toastRef.current.toast({ type: "success", title: "Session updated" });
+      router.refresh();
+    } catch (err) {
+      console.error("[WorkTrackerClient] handleEditSession error:", err);
+      toastRef.current.toast({ type: "error", title: "Something went wrong. Please try again." });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [router]);
+
+  const handleDeleteSession = useCallback(async (sessionId: string) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/work-sessions/${sessionId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) {
+        const err = await response.json().catch((parseErr) => { console.error("[WorkTrackerClient] Failed to parse error response:", parseErr); return { error: null }; });
+        console.error("[WorkTrackerClient] Failed to delete session:", err);
+        toastRef.current.toast({ type: "error", title: err.error || "Failed to delete session" });
+        return;
+      }
+      setSessions((prev) => prev.filter((s) => s.id !== sessionId));
+      toastRef.current.toast({ type: "success", title: "Entry deleted" });
+      router.refresh();
+    } catch (err) {
+      console.error("[WorkTrackerClient] handleDeleteSession error:", err);
+      toastRef.current.toast({ type: "error", title: "Something went wrong. Please try again." });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [router]);
+
   function handleSkipBreak() {
     setPhase({ kind: "idle" });
   }
@@ -386,8 +452,10 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
 
   // --- Render ---
 
-  const MONO: React.CSSProperties = { fontFamily: "var(--font-mono-bold)" };
-  const goalMet = progressPercent >= 100;
+    const goalMet = progressPercent >= 100;
+  const isCustomDuration = !(
+    WORK_TRACKER.sessionDurationOptions as readonly number[]
+  ).includes(selectedMinutes);
   const isActiveView = !!activeSession && phase.kind !== "break";
   const isPausedView = !!pausedSession && !activeSession;
   const isBreakView = phase.kind === "break";
@@ -401,24 +469,22 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
         aria-labelledby="todays-work-label"
         className="motion-safe:animate-fadeIn"
       >
-        <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6 md:p-8">
+        <div className="bg-white border border-ima-border rounded-[14px] p-6 md:p-8">
           <div className="flex items-center justify-between gap-3">
             <p
               id="todays-work-label"
-              className="text-[11px] font-semibold tracking-[0.22em] text-[#8A8474] uppercase"
-              style={MONO}
+              className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
             >
               Today&apos;s Work
             </p>
             {goalMet ? (
-              <span className="inline-flex items-center gap-1.5 px-2 py-[3px] rounded-full bg-[#E2F5E9] border border-[#C8E6D2] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#16A34A]">
-                <span className="inline-block h-[6px] w-[6px] rounded-full bg-[#16A34A]" aria-hidden="true" />
+              <span className="inline-flex items-center gap-1.5 px-2 py-[3px] rounded-full bg-ima-success/10 border border-ima-success/10 text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-success">
+                <span className="inline-block h-[6px] w-[6px] rounded-full bg-ima-success" aria-hidden="true" />
                 Goal Reached
               </span>
             ) : (
               <span
-                className="text-[10px] font-semibold tracking-[0.14em] text-[#8A8474] uppercase tabular-nums"
-                style={MONO}
+                className="text-[10px] font-semibold tracking-[0.14em] text-ima-text-secondary uppercase tabular-nums"
               >
                 {completedCount} Session{completedCount !== 1 ? "s" : ""}
               </span>
@@ -428,18 +494,18 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
           <div className="mt-5 flex items-end gap-2">
             <span
               className={`text-[44px] md:text-[52px] font-bold tabular-nums tracking-[-0.02em] leading-none ${
-                goalMet ? "text-[#16A34A]" : "text-[#4A6CF7]"
+                goalMet ? "text-ima-success" : "text-ima-primary"
               }`}
             >
               {formatHoursMinutes(totalMinutesWorked)}
             </span>
-            <span className="pb-[6px] text-[15px] font-medium text-[#8A8474] tabular-nums">
+            <span className="pb-[6px] text-[15px] font-medium text-ima-text-secondary tabular-nums">
               / {WORK_TRACKER.dailyGoalHours}h
             </span>
           </div>
 
           <div
-            className="mt-5 h-[6px] rounded-full bg-[#F1EEE6] overflow-hidden"
+            className="mt-5 h-[6px] rounded-full bg-ima-surface-light overflow-hidden"
             role="progressbar"
             aria-valuenow={totalMinutesWorked}
             aria-valuemin={0}
@@ -448,7 +514,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
           >
             <div
               className={`h-full rounded-full motion-safe:transition-[width] duration-700 ease-out ${
-                goalMet ? "bg-[#16A34A]" : "bg-[#4A6CF7]"
+                goalMet ? "bg-ima-success" : "bg-ima-primary"
               }`}
               style={{ width: `${progressPercent}%` }}
             />
@@ -463,30 +529,29 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
           className="mt-[14px] motion-safe:animate-fadeIn"
           style={{ animationDelay: "100ms" }}
         >
-          <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6 md:p-8">
+          <div className="bg-white border border-ima-border rounded-[14px] p-6 md:p-8">
             {/* Break countdown */}
             {isBreakView && phase.kind === "break" && (
               <div className="flex flex-col items-center gap-5 text-center">
                 <p
-                  className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[#8A8474]"
-                  style={MONO}
+                  className="text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-text-secondary"
                 >
                   Break
                 </p>
                 <p
-                  className="text-[56px] md:text-[72px] font-bold tabular-nums tracking-[-0.02em] text-[#1A1A17] leading-none"
+                  className="text-[56px] md:text-[72px] font-bold tabular-nums tracking-[-0.02em] text-ima-text leading-none"
                   role="timer"
                   aria-label={`Break: ${Math.floor(phase.secondsRemaining / 60)} minutes ${phase.secondsRemaining % 60} seconds remaining`}
                 >
                   {String(Math.floor(phase.secondsRemaining / 60)).padStart(2, "0")}:
                   {String(phase.secondsRemaining % 60).padStart(2, "0")}
                 </p>
-                <p className="text-[13px] text-[#7A7466] tabular-nums">
+                <p className="text-[13px] text-ima-text-secondary tabular-nums">
                   {`Next up \u00B7 Session ${String(nextCycleNumber).padStart(2, "0")}`}
                 </p>
                 <button
                   onClick={handleSkipBreak}
-                  className="bg-white border border-[#EDE9E0] text-[#1A1A17] rounded-[12px] px-6 min-h-[48px] text-[14px] font-semibold hover:border-[#D8D2C4] hover:bg-[#FAFAF7] motion-safe:transition-colors"
+                  className="bg-white border border-ima-border text-ima-text rounded-[12px] px-6 min-h-[48px] text-[14px] font-semibold hover:border-ima-border hover:bg-ima-bg motion-safe:transition-colors"
                 >
                   Skip break
                 </button>
@@ -498,8 +563,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
               <div className="flex flex-col items-center gap-8">
                 <div className="text-center w-full">
                   <p
-                    className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[#8A8474] mb-4"
-                    style={MONO}
+                    className="text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-text-secondary mb-4"
                   >
                     Session duration
                   </p>
@@ -510,8 +574,8 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
                         onClick={() => setSelectedMinutes(min)}
                         className={`min-h-[52px] min-w-[72px] px-5 rounded-[12px] text-[16px] font-semibold tabular-nums motion-safe:transition-colors ${
                           selectedMinutes === min
-                            ? "bg-[#4A6CF7] text-white"
-                            : "bg-white border border-[#EDE9E0] text-[#7A7466] hover:border-[#D8D2C4] hover:text-[#1A1A17]"
+                            ? "bg-ima-primary text-white"
+                            : "bg-white border border-ima-border text-ima-text-secondary hover:border-ima-border hover:text-ima-text"
                         }`}
                         aria-pressed={selectedMinutes === min}
                       >
@@ -520,12 +584,50 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
                       </button>
                     ))}
                   </div>
+                  {/* Custom duration — any value between 5 and 240 minutes */}
+                  <div className="mt-3 flex items-center justify-center gap-2.5">
+                    <label
+                      htmlFor="custom-session-minutes"
+                      className={`text-[11px] uppercase tracking-[0.18em] font-semibold motion-safe:transition-colors ${
+                        isCustomDuration ? "text-ima-primary" : "text-ima-text-secondary"
+                      }`}
+                    >
+                      Custom
+                    </label>
+                    <input
+                      id="custom-session-minutes"
+                      type="number"
+                      inputMode="numeric"
+                      min={WORK_TRACKER.minSessionMinutes}
+                      max={WORK_TRACKER.maxSessionMinutes}
+                      value={isCustomDuration ? selectedMinutes : ""}
+                      onChange={(e) => {
+                        const raw = parseInt(e.target.value, 10);
+                        if (Number.isNaN(raw)) {
+                          setSelectedMinutes(WORK_TRACKER.minSessionMinutes);
+                          return;
+                        }
+                        const clamped = Math.max(
+                          WORK_TRACKER.minSessionMinutes,
+                          Math.min(WORK_TRACKER.maxSessionMinutes, raw)
+                        );
+                        setSelectedMinutes(clamped);
+                      }}
+                      placeholder="min"
+                      aria-label="Custom session duration in minutes"
+                      className={`min-h-[44px] w-[88px] text-center rounded-[12px] text-[15px] font-semibold tabular-nums motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-1 ${
+                        isCustomDuration
+                          ? "bg-ima-surface-accent text-ima-primary border border-ima-primary"
+                          : "bg-white border border-ima-border text-ima-text hover:border-ima-border"
+                      }`}
+                    />
+                    <span className="text-[13px] text-ima-text-secondary">min</span>
+                  </div>
                 </div>
 
                 <div className="text-center w-full">
                   <p
-                    className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[#8A8474] mb-4"
-                    style={MONO}
+                    className="text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-text-secondary mb-4"
                   >
                     Break before next session
                   </p>
@@ -539,8 +641,8 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
                         }}
                         className={`min-h-[48px] px-5 rounded-[12px] text-[14px] font-semibold motion-safe:transition-colors ${
                           breakType === type
-                            ? "bg-[#1A1A17] text-white"
-                            : "bg-white border border-[#EDE9E0] text-[#7A7466] hover:border-[#D8D2C4] hover:text-[#1A1A17]"
+                            ? "bg-ima-text text-white"
+                            : "bg-white border border-ima-border text-ima-text-secondary hover:border-ima-border hover:text-ima-text"
                         }`}
                         aria-pressed={breakType === type}
                       >
@@ -555,8 +657,8 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
                         onClick={() => setBreakMinutes(min)}
                         className={`min-h-[48px] min-w-[60px] px-4 rounded-[12px] text-[15px] font-semibold tabular-nums motion-safe:transition-colors ${
                           breakMinutes === min
-                            ? "bg-[#E8EEFF] text-[#4A6CF7] border border-[#4A6CF7]"
-                            : "bg-white border border-[#EDE9E0] text-[#8A8474] hover:border-[#D8D2C4] hover:text-[#1A1A17]"
+                            ? "bg-ima-surface-accent text-ima-primary border border-ima-primary"
+                            : "bg-white border border-ima-border text-ima-text-secondary hover:border-ima-border hover:text-ima-text"
                         }`}
                         aria-pressed={breakMinutes === min}
                       >
@@ -569,7 +671,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
                 <button
                   onClick={handleStart}
                   disabled={isLoading}
-                  className="group w-full inline-flex items-center justify-center gap-2 rounded-[12px] bg-[#4A6CF7] text-white text-[15px] font-semibold min-h-[56px] px-4 hover:bg-[#3852D8] focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 disabled:opacity-50 motion-safe:transition-colors"
+                  className="group w-full inline-flex items-center justify-center gap-2 rounded-[12px] bg-ima-primary text-white text-[15px] font-semibold min-h-[56px] px-4 hover:bg-ima-primary-hover focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 disabled:opacity-50 motion-safe:transition-colors"
                 >
                   {isLoading ? "Starting\u2026" : `Begin session ${String(nextCycleNumber).padStart(2, "0")}`}
                   {!isLoading && (
@@ -586,12 +688,11 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
             {isActiveView && activeSession && (
               <div className="flex flex-col items-center gap-6">
                 <div
-                  className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] font-semibold text-[#4A6CF7]"
-                  style={MONO}
+                  className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] font-semibold text-ima-primary"
                 >
                   <span className="relative flex h-2 w-2" aria-hidden="true">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-[#4A6CF7] opacity-60 motion-safe:animate-ping" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-[#4A6CF7]" />
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-ima-primary opacity-60 motion-safe:animate-ping" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-ima-primary" />
                   </span>
                   In progress
                 </div>
@@ -608,40 +709,39 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
                   <button
                     onClick={() => handleComplete(activeSession.id)}
                     disabled={isLoading}
-                    className="flex-1 basis-48 bg-[#16A34A] text-white rounded-[12px] px-6 min-h-[52px] text-[15px] font-semibold hover:bg-[#148A3D] focus-visible:outline-2 focus-visible:outline-[#16A34A] focus-visible:outline-offset-2 disabled:opacity-50 motion-safe:transition-colors"
+                    className="flex-1 basis-48 bg-ima-success text-white rounded-[12px] px-6 min-h-[52px] text-[15px] font-semibold hover:bg-ima-success focus-visible:outline-2 focus-visible:outline-ima-success focus-visible:outline-offset-2 disabled:opacity-50 motion-safe:transition-colors"
                   >
                     Complete session
                   </button>
                   <button
                     onClick={() => handlePause(activeSession.id)}
                     disabled={isLoading}
-                    className="flex-1 basis-32 bg-white border border-[#EDE9E0] text-[#1A1A17] rounded-[12px] px-6 min-h-[52px] text-[14px] font-semibold hover:border-[#D8D2C4] hover:bg-[#FAFAF7] focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 disabled:opacity-50 motion-safe:transition-colors"
+                    className="flex-1 basis-32 bg-white border border-ima-border text-ima-text rounded-[12px] px-6 min-h-[52px] text-[14px] font-semibold hover:border-ima-border hover:bg-ima-bg focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 disabled:opacity-50 motion-safe:transition-colors"
                   >
                     Pause
                   </button>
                   <button
                     onClick={() => handleAbandon(activeSession.id)}
                     disabled={isLoading}
-                    className="text-[#8A8474] hover:text-[#DC2626] hover:bg-[#FDEAEA] rounded-[10px] px-4 min-h-[44px] text-[11px] uppercase tracking-[0.18em] font-semibold motion-safe:transition-colors"
-                    style={MONO}
+                    className="text-ima-text-secondary hover:text-ima-error hover:bg-ima-error/10 rounded-[10px] px-4 min-h-[44px] text-[11px] uppercase tracking-[0.18em] font-semibold motion-safe:transition-colors"
                   >
                     Abandon
                   </button>
                 </div>
 
                 {showAbandonConfirm && (
-                  <div className="bg-[#FDEAEA] border border-[#F5C6C6] rounded-[12px] p-4 text-[13px] text-[#DC2626] w-full max-w-sm text-center">
+                  <div className="bg-ima-error/10 border border-ima-error/10 rounded-[12px] p-4 text-[13px] text-ima-error w-full max-w-sm text-center">
                     <p>Are you sure? You have significant progress on this cycle.</p>
                     <div className="flex justify-center gap-3 mt-3">
                       <button
                         onClick={() => handleAbandon(activeSession.id)}
-                        className="bg-[#DC2626] text-white rounded-[10px] px-4 min-h-[44px] text-[13px] font-semibold hover:bg-[#B91C1C] motion-safe:transition-colors"
+                        className="bg-ima-error text-white rounded-[10px] px-4 min-h-[44px] text-[13px] font-semibold hover:bg-ima-error motion-safe:transition-colors"
                       >
                         Confirm Abandon
                       </button>
                       <button
                         onClick={() => setShowAbandonConfirm(false)}
-                        className="bg-white border border-[#EDE9E0] text-[#1A1A17] rounded-[10px] px-4 min-h-[44px] text-[13px] font-semibold hover:border-[#D8D2C4] motion-safe:transition-colors"
+                        className="bg-white border border-ima-border text-ima-text rounded-[10px] px-4 min-h-[44px] text-[13px] font-semibold hover:border-ima-border motion-safe:transition-colors"
                       >
                         Cancel
                       </button>
@@ -656,12 +756,11 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
               <div className="flex flex-col items-center gap-5 text-center">
                 <div className="flex flex-col items-center gap-2">
                   <p
-                    className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[#8A8474]"
-                    style={MONO}
+                    className="text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-text-secondary"
                   >
                     {`Session ${String(pausedSession.cycle_number).padStart(2, "0")} \u00B7 Paused`}
                   </p>
-                  <p className="text-[44px] md:text-[56px] font-bold tabular-nums tracking-[-0.02em] text-[#1A1A17] leading-none">
+                  <p className="text-[44px] md:text-[56px] font-bold tabular-nums tracking-[-0.02em] text-ima-text leading-none">
                     {formatPausedRemaining(
                       pausedSession.started_at,
                       pausedSession.paused_at!,
@@ -669,8 +768,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
                     )}
                   </p>
                   <p
-                    className="text-[10px] uppercase tracking-[0.22em] font-medium text-[#8A8474] mt-1"
-                    style={MONO}
+                    className="text-[10px] uppercase tracking-[0.22em] font-medium text-ima-text-secondary mt-1"
                   >
                     Remaining
                   </p>
@@ -679,33 +777,32 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
                   <button
                     onClick={() => handleResume(pausedSession.id)}
                     disabled={isLoading}
-                    className="flex-1 basis-52 bg-[#4A6CF7] text-white rounded-[12px] px-6 min-h-[52px] text-[15px] font-semibold hover:bg-[#3852D8] focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 disabled:opacity-50 motion-safe:transition-colors"
+                    className="flex-1 basis-52 bg-ima-primary text-white rounded-[12px] px-6 min-h-[52px] text-[15px] font-semibold hover:bg-ima-primary-hover focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 disabled:opacity-50 motion-safe:transition-colors"
                   >
                     Resume session
                   </button>
                   <button
                     onClick={() => handleAbandon(pausedSession.id)}
                     disabled={isLoading}
-                    className="text-[#8A8474] hover:text-[#DC2626] hover:bg-[#FDEAEA] rounded-[10px] px-4 min-h-[44px] text-[11px] uppercase tracking-[0.18em] font-semibold motion-safe:transition-colors"
-                    style={MONO}
+                    className="text-ima-text-secondary hover:text-ima-error hover:bg-ima-error/10 rounded-[10px] px-4 min-h-[44px] text-[11px] uppercase tracking-[0.18em] font-semibold motion-safe:transition-colors"
                   >
                     Abandon
                   </button>
                 </div>
 
                 {showAbandonConfirm && (
-                  <div className="bg-[#FDEAEA] border border-[#F5C6C6] rounded-[12px] p-4 text-[13px] text-[#DC2626] w-full max-w-sm text-center">
+                  <div className="bg-ima-error/10 border border-ima-error/10 rounded-[12px] p-4 text-[13px] text-ima-error w-full max-w-sm text-center">
                     <p>Are you sure? You have significant progress on this cycle.</p>
                     <div className="flex justify-center gap-3 mt-3">
                       <button
                         onClick={() => handleAbandon(pausedSession.id)}
-                        className="bg-[#DC2626] text-white rounded-[10px] px-4 min-h-[44px] text-[13px] font-semibold hover:bg-[#B91C1C] motion-safe:transition-colors"
+                        className="bg-ima-error text-white rounded-[10px] px-4 min-h-[44px] text-[13px] font-semibold hover:bg-ima-error motion-safe:transition-colors"
                       >
                         Confirm Abandon
                       </button>
                       <button
                         onClick={() => setShowAbandonConfirm(false)}
-                        className="bg-white border border-[#EDE9E0] text-[#1A1A17] rounded-[10px] px-4 min-h-[44px] text-[13px] font-semibold hover:border-[#D8D2C4] motion-safe:transition-colors"
+                        className="bg-white border border-ima-border text-ima-text rounded-[10px] px-4 min-h-[44px] text-[13px] font-semibold hover:border-ima-border motion-safe:transition-colors"
                       >
                         Cancel
                       </button>
@@ -765,24 +862,23 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
           className="mt-[14px] motion-safe:animate-fadeIn"
           style={{ animationDelay: "100ms" }}
         >
-          <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6 md:p-8">
+          <div className="bg-white border border-ima-border rounded-[14px] p-6 md:p-8">
             <div className="flex flex-col items-center gap-3 text-center">
               <p
-                className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[#16A34A]"
-                style={MONO}
+                className="text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-success"
               >
                 Plan complete
               </p>
-              <p className="text-[24px] md:text-[28px] font-bold tracking-[-0.02em] text-[#1A1A17] leading-tight">
+              <p className="text-[24px] md:text-[28px] font-bold tracking-[-0.02em] text-ima-text leading-tight">
                 {`Ready for session ${String(nextCycleNumber).padStart(2, "0")}`}
               </p>
-              <p className="text-[13px] text-[#7A7466] mb-3">
+              <p className="text-[13px] text-ima-text-secondary mb-3">
                 Extra session &mdash; no daily cap
               </p>
               <button
                 onClick={() => setPhase({ kind: "setup" })}
                 disabled={isLoading}
-                className="group w-full inline-flex items-center justify-center gap-2 rounded-[12px] bg-[#4A6CF7] text-white text-[15px] font-semibold min-h-[56px] px-4 hover:bg-[#3852D8] focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 disabled:opacity-50 motion-safe:transition-colors"
+                className="group w-full inline-flex items-center justify-center gap-2 rounded-[12px] bg-ima-primary text-white text-[15px] font-semibold min-h-[56px] px-4 hover:bg-ima-primary-hover focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 disabled:opacity-50 motion-safe:transition-colors"
               >
                 Set up session
                 <ArrowRight
@@ -799,28 +895,27 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
       {dailyReportHref && completedCount > 0 && !isFocusedView && (
         <Link
           href={dailyReportHref}
-          className="group mt-[14px] flex items-center gap-4 bg-white border border-[#EDE9E0] rounded-[14px] px-6 py-5 min-h-[84px] motion-safe:animate-fadeIn motion-safe:transition-[transform,border-color] hover:-translate-y-[1px] hover:border-[#D8D2C4] focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2"
+          className="group mt-[14px] flex items-center gap-4 bg-white border border-ima-border rounded-[14px] px-6 py-5 min-h-[84px] motion-safe:animate-fadeIn motion-safe:transition-[transform,border-color] hover:-translate-y-[1px] hover:border-ima-border focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2"
           style={{ animationDelay: "150ms" }}
         >
-          <div className="w-9 h-9 rounded-[8px] bg-[#E8EEFF] flex items-center justify-center shrink-0">
-            <FileText className="h-[18px] w-[18px] text-[#4A6CF7]" aria-hidden="true" />
+          <div className="w-9 h-9 rounded-[8px] bg-ima-surface-accent flex items-center justify-center shrink-0">
+            <FileText className="h-[18px] w-[18px] text-ima-primary" aria-hidden="true" />
           </div>
           <div className="flex-1 min-w-0 text-left">
             <p
-              className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[#4A6CF7] leading-none"
-              style={MONO}
+              className="text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-primary leading-none"
             >
               Daily report
             </p>
-            <p className="mt-[6px] text-[15px] font-semibold text-[#1A1A17] leading-tight">
+            <p className="mt-[6px] text-[15px] font-semibold text-ima-text leading-tight">
               Submit today&apos;s progress
             </p>
-            <p className="mt-[4px] text-[12px] text-[#8A8474] leading-snug">
+            <p className="mt-[4px] text-[12px] text-ima-text-secondary leading-snug">
               Share wins, roadblocks, and tomorrow&apos;s plan with your coach
             </p>
           </div>
           <ArrowRight
-            className="h-4 w-4 text-[#4A6CF7] shrink-0 motion-safe:transition-transform group-hover:translate-x-0.5"
+            className="h-4 w-4 text-ima-primary shrink-0 motion-safe:transition-transform group-hover:translate-x-0.5"
             aria-hidden="true"
           />
         </Link>
@@ -846,21 +941,18 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
           >
             <div className="flex items-baseline gap-x-3 gap-y-1 flex-wrap mb-4">
               <p
-                className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[#8A8474]"
-                style={MONO}
+                className="text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-text-secondary"
               >
                 Today&apos;s sessions
               </p>
               <p
-                className="text-[10px] uppercase tracking-[0.18em] font-medium text-[#8A8474] tabular-nums"
-                style={MONO}
+                className="text-[10px] uppercase tracking-[0.18em] font-medium text-ima-text-secondary tabular-nums"
               >
                 {`${visibleSessions.length} logged`}
               </p>
               {completedOnly > 0 && (
                 <p
-                  className="text-[10px] uppercase tracking-[0.18em] font-semibold text-[#16A34A] tabular-nums"
-                  style={MONO}
+                  className="text-[10px] uppercase tracking-[0.18em] font-semibold text-ima-success tabular-nums"
                 >
                   {`${completedOnly} win${completedOnly !== 1 ? "s" : ""}`}
                 </p>
@@ -894,6 +986,17 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
                     timeInfo={timeInfo}
                     sessionMinutes={session.session_minutes ?? WORK_TRACKER.defaultSessionMinutes}
                     onResume={onResume}
+                    onEdit={
+                      session.status === "completed"
+                        ? (mins) => handleEditSession(session.id, mins)
+                        : undefined
+                    }
+                    onDelete={
+                      session.status === "completed"
+                        ? () => handleDeleteSession(session.id)
+                        : undefined
+                    }
+                    isBusy={isLoading}
                   />
                 );
               })}
@@ -901,8 +1004,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
             {hiddenCount > 0 && !showAllSessions && (
               <button
                 onClick={() => setShowAllSessions(true)}
-                className="mt-4 text-[11px] uppercase tracking-[0.18em] font-semibold text-[#4A6CF7] hover:text-[#3852D8] min-h-[44px] motion-safe:transition-colors"
-                style={MONO}
+                className="mt-4 text-[11px] uppercase tracking-[0.18em] font-semibold text-ima-primary hover:text-ima-primary-hover min-h-[44px] motion-safe:transition-colors"
               >
                 {`Show ${hiddenCount} more session${hiddenCount !== 1 ? "s" : ""}`}
               </button>
@@ -910,8 +1012,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
             {showAllSessions && hiddenCount > 0 && (
               <button
                 onClick={() => setShowAllSessions(false)}
-                className="mt-4 text-[11px] uppercase tracking-[0.18em] font-semibold text-[#4A6CF7] hover:text-[#3852D8] min-h-[44px] motion-safe:transition-colors"
-                style={MONO}
+                className="mt-4 text-[11px] uppercase tracking-[0.18em] font-semibold text-ima-primary hover:text-ima-primary-hover min-h-[44px] motion-safe:transition-colors"
               >
                 Show less
               </button>

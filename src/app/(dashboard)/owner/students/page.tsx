@@ -1,4 +1,3 @@
-import { JetBrains_Mono } from "next/font/google";
 import { requireRole } from "@/lib/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import Link from "next/link";
@@ -8,11 +7,6 @@ import { Users, Activity, Compass, Search } from "lucide-react";
 import { PaginationControls } from "@/components/ui/PaginationControls";
 import { getTodayUTC } from "@/lib/utils";
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-mono-bold",
-});
 
 const PAGE_SIZE = 25;
 
@@ -114,22 +108,22 @@ export default async function OwnerStudentsPage({
       label: "Total Students",
       value: String(totalStudents),
       icon: Users,
-      iconBg: "bg-[#E8EEFF]",
-      iconColor: "text-[#4A6CF7]",
+      iconBg: "bg-ima-surface-accent",
+      iconColor: "text-ima-primary",
     },
     {
       label: "Active",
       value: String(activeStudents),
       icon: Activity,
-      iconBg: "bg-[#E2F5E9]",
-      iconColor: "text-[#16A34A]",
+      iconBg: "bg-ima-success/10",
+      iconColor: "text-ima-success",
     },
     {
       label: "Student DIY",
       value: String(diyStudents),
       icon: Compass,
-      iconBg: "bg-[#FDF3E0]",
-      iconColor: "text-[#D97706]",
+      iconBg: "bg-ima-warning/10",
+      iconColor: "text-ima-warning",
     },
   ];
 
@@ -144,29 +138,28 @@ export default async function OwnerStudentsPage({
 
   function statusPillCls(status: string): string {
     if (status === "active")
-      return "bg-[#E2F5E9] border-[#BBE5CA] text-[#16A34A]";
+      return "bg-ima-success/10 border-ima-success/10 text-ima-success";
     if (status === "suspended")
-      return "bg-[#FDF3E0] border-[#F0DFB3] text-[#9A6B1F]";
-    return "bg-[#F1EEE6] border-[#EDE9E0] text-[#7A7466]";
+      return "bg-ima-warning/10 border-ima-warning/10 text-ima-warning";
+    return "bg-ima-surface-light border-ima-border text-ima-text-secondary";
   }
 
   return (
     <div
-      className={`${jetbrainsMono.variable} -mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-[#FAFAF7]`}
+      className={`-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg`}
     >
       <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
         {/* Masthead */}
         <header className="motion-safe:animate-fadeIn">
           <p
-            className="text-[11px] font-semibold tracking-[0.22em] text-[#8A8474] uppercase"
-            style={{ fontFamily: "var(--font-mono-bold)" }}
+            className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
           >
             Students
           </p>
-          <h1 className="mt-3 text-[32px] md:text-[36px] font-semibold leading-[1.05] text-[#1A1A17] tracking-[-0.02em]">
+          <h1 className="mt-3 text-[32px] md:text-[36px] font-semibold leading-[1.05] text-ima-text tracking-[-0.02em]">
             Everyone in the program
           </h1>
-          <p className="mt-2 max-w-[58ch] text-[15px] text-[#7A7466] leading-[1.55]">
+          <p className="mt-2 max-w-[58ch] text-[15px] text-ima-text-secondary leading-[1.55]">
             ~{totalStudents} student{totalStudents !== 1 ? "s" : ""} on the
             platform
           </p>
@@ -181,7 +174,7 @@ export default async function OwnerStudentsPage({
           {statCards.map((s) => (
             <div
               key={s.label}
-              className="flex items-center gap-4 bg-white border border-[#EDE9E0] rounded-[12px] px-[18px] py-[16px] min-h-[72px]"
+              className="flex items-center gap-4 bg-white border border-ima-border rounded-[12px] px-[18px] py-[16px] min-h-[72px]"
             >
               <div
                 className={`w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0 ${s.iconBg}`}
@@ -192,12 +185,11 @@ export default async function OwnerStudentsPage({
                 />
               </div>
               <div className="min-w-0">
-                <p className="text-[24px] font-semibold leading-none tabular-nums slashed-zero tracking-[-0.01em] text-[#1A1A17]">
+                <p className="text-[24px] font-semibold leading-none tabular-nums slashed-zero tracking-[-0.01em] text-ima-text">
                   {s.value}
                 </p>
                 <p
-                  className="mt-[6px] text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8A8474]"
-                  style={{ fontFamily: "var(--font-mono-bold)" }}
+                  className="mt-[6px] text-[10px] font-semibold uppercase tracking-[0.14em] text-ima-text-secondary"
                 >
                   {s.label}
                 </p>
@@ -218,7 +210,7 @@ export default async function OwnerStudentsPage({
           </label>
           <div className="relative">
             <Search
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8A8474]"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-ima-text-secondary"
               aria-hidden="true"
             />
             <input
@@ -228,7 +220,7 @@ export default async function OwnerStudentsPage({
               defaultValue={search ?? ""}
               placeholder="Search by name or email…"
               aria-label="Search students by name or email"
-              className="w-full min-h-[44px] pl-10 pr-4 py-2 rounded-[10px] border border-[#EDE9E0] bg-white text-[13px] text-[#1A1A17] placeholder:text-[#8A8474] focus:outline-none focus:ring-2 focus:ring-[#4A6CF7] focus:ring-offset-1 hover:border-[#D8D2C4] motion-safe:transition-colors"
+              className="w-full min-h-[44px] pl-10 pr-4 py-2 rounded-[10px] border border-ima-border bg-white text-[13px] text-ima-text placeholder:text-ima-text-secondary focus:outline-none focus:ring-2 focus:ring-ima-primary focus:ring-offset-1 hover:border-ima-border motion-safe:transition-colors"
             />
           </div>
         </form>
@@ -236,7 +228,7 @@ export default async function OwnerStudentsPage({
         {/* Student grid */}
         {(students ?? []).length === 0 ? (
           <div
-            className="mt-6 bg-white border border-[#EDE9E0] rounded-[14px] p-6 motion-safe:animate-fadeIn"
+            className="mt-6 bg-white border border-ima-border rounded-[14px] p-6 motion-safe:animate-fadeIn"
             style={{ animationDelay: "150ms" }}
           >
             <EmptyState
@@ -275,29 +267,29 @@ export default async function OwnerStudentsPage({
                     <Link
                       href={`/owner/students/${s.id}`}
                       aria-label={`${s.name} — ${s.status}`}
-                      className="block rounded-[14px] border border-[#EDE9E0] bg-white p-5 min-h-[88px] motion-safe:transition-[transform,border-color] hover:-translate-y-[1px] hover:border-[#D8D2C4] focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2"
+                      className="block rounded-[14px] border border-ima-border bg-white p-5 min-h-[88px] motion-safe:transition-[transform,border-color] hover:-translate-y-[1px] hover:border-ima-border focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-[#F1EEE6] border border-[#EDE9E0] flex items-center justify-center text-[12px] font-semibold text-[#5A5648] shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-ima-surface-light border border-ima-border flex items-center justify-center text-[12px] font-semibold text-ima-text-secondary shrink-0">
                           {initials(s.name)}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="text-[14px] font-semibold text-[#1A1A17] truncate leading-tight">
+                          <p className="text-[14px] font-semibold text-ima-text truncate leading-tight">
                             {s.name}
                           </p>
-                          <p className="mt-[3px] text-[12px] text-[#7A7466] truncate">
+                          <p className="mt-[3px] text-[12px] text-ima-text-secondary truncate">
                             {s.email}
                           </p>
                         </div>
                         <div className="flex flex-col items-end gap-1 shrink-0">
                           {skipped > 0 && (
-                            <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-[#FDF3E0] border border-[#F0DFB3] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#9A6B1F]">
+                            <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-ima-warning/10 border border-ima-warning/10 text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-warning">
                               {skipped} skipped
                             </span>
                           )}
                           <div className="flex items-center gap-1">
                             {s.role === "student_diy" && (
-                              <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-[#E8EEFF] border border-[#C9D5FF] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#4A6CF7]">
+                              <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-ima-surface-accent border border-ima-primary/20 text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-primary">
                                 DIY
                               </span>
                             )}

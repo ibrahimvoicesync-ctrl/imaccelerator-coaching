@@ -1,19 +1,10 @@
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-import { JetBrains_Mono } from "next/font/google";
 import Link from "next/link";
 import { ReportForm } from "@/components/student/ReportForm";
 import { DueSoonIndicator } from "@/components/student/DueSoonIndicator";
 import { requireRole } from "@/lib/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { cn, formatHoursMinutes, getToday } from "@/lib/utils";
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-mono-bold",
-});
-
-const MONO: React.CSSProperties = { fontFamily: "var(--font-mono-bold)" };
 
 function formatHeroDate(dateStr: string): string {
   const date = new Date(dateStr + "T00:00:00");
@@ -65,49 +56,46 @@ export default async function DailyReportPage() {
 
   return (
     <div
-      className={`${jetbrainsMono.variable} -mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-[#FAFAF7]`}
+      className={`-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg`}
     >
       <div className="mx-auto max-w-3xl px-6 md:px-14 pt-10 md:pt-14 pb-20">
         {/* Masthead */}
         <header className="motion-safe:animate-fadeIn">
           <div className="flex items-center gap-3">
             <p
-              className="text-[11px] font-semibold tracking-[0.22em] text-[#8A8474] uppercase"
-              style={MONO}
+              className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
             >
               Daily Report
             </p>
-            <span className="h-px flex-1 bg-[#EDE9E0]" aria-hidden="true" />
+            <span className="h-px flex-1 bg-ima-surface-light" aria-hidden="true" />
             <span className="inline-flex items-center gap-1.5">
               <span
                 className={cn(
                   "h-[6px] w-[6px] rounded-full shrink-0",
-                  hasHours ? "bg-[#D97706]" : "bg-[#8A8474]/40",
+                  hasHours ? "bg-ima-warning" : "bg-ima-surface-light/40",
                 )}
                 aria-hidden="true"
               />
               <span
-                className="text-[11px] font-semibold tabular-nums text-[#1A1A17]"
-                style={MONO}
+                className="text-[11px] font-semibold tabular-nums text-ima-text"
               >
                 {formatHoursMinutes(autoMinutes)}
               </span>
               <span
-                className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8A8474]"
-                style={MONO}
+                className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ima-text-secondary"
               >
                 Tracked
               </span>
             </span>
           </div>
 
-          <h1 className="mt-4 text-5xl md:text-6xl font-semibold tracking-tight text-[#1A1A17] leading-[1.05]">
+          <h1 className="mt-4 text-5xl md:text-6xl font-semibold tracking-tight text-ima-text leading-[1.05]">
             {formatHeroDate(today)}
           </h1>
 
           <div className="mt-4 min-h-[24px]">
             {submitted && report?.submitted_at ? (
-              <p className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#16A34A]">
+              <p className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-ima-success">
                 <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
                 Submitted at {formatSubmittedTime(report.submitted_at)} · you can still edit it.
               </p>
@@ -133,7 +121,7 @@ export default async function DailyReportPage() {
         <div className="mt-10">
           <Link
             href="/student/report/history"
-            className="group inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#7A7466] hover:text-[#1A1A17] min-h-[44px] motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 rounded-md"
+            className="group inline-flex items-center gap-1.5 text-[13px] font-semibold text-ima-text-secondary hover:text-ima-text min-h-[44px] motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 rounded-md"
           >
             View past reports
             <ArrowRight

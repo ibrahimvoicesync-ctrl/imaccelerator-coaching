@@ -73,7 +73,7 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
   if (roadmap.length === 0) {
     return (
       <div role="tabpanel" id="tabpanel-roadmap" aria-labelledby="tab-roadmap">
-        <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6">
+        <div className="bg-white border border-ima-border rounded-[14px] p-6">
           <EmptyState
             variant="compact"
             icon={<Route className="h-5 w-5" />}
@@ -107,41 +107,41 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
       {/* Progress hero card */}
       <section
         aria-label="Roadmap progress"
-        className="bg-white border border-[#EDE9E0] rounded-[14px] p-5 md:p-6"
+        className="bg-white border border-ima-border rounded-[14px] p-5 md:p-6"
       >
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
             <p
-              className="text-[10px] font-semibold tracking-[0.2em] text-[#8A8474] uppercase"
+              className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
             >
               Roadmap Progress
             </p>
             <p className="mt-3 flex items-baseline gap-2 leading-none">
-              <span className="text-5xl md:text-6xl font-semibold tabular-nums tracking-tight text-[#4A6CF7]">
+              <span className="text-5xl md:text-6xl font-semibold tabular-nums tracking-tight text-ima-primary">
                 {completedCount}
               </span>
               <span
-                className="text-lg md:text-xl font-semibold tabular-nums text-[#8A8474]"
+                className="text-lg md:text-xl font-semibold tabular-nums text-ima-text-secondary"
               >
                 / {totalSteps}
               </span>
             </p>
             <p
-              className="mt-2 text-xs font-semibold tracking-widest uppercase text-[#8A8474]"
+              className="mt-2 text-xs font-semibold tracking-widest uppercase text-ima-text-secondary"
             >
               Steps Completed
             </p>
           </div>
           <div className="sm:text-right shrink-0">
             <p
-              className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#8A8474]"
+              className="text-[10px] font-semibold tracking-[0.2em] uppercase text-ima-text-secondary"
             >
               Active Step
             </p>
-            <p className="mt-2 text-sm font-semibold text-[#1A1A17] tabular-nums">
+            <p className="mt-2 text-sm font-semibold text-ima-text tabular-nums">
               {activeStep !== null ? `Step ${String(activeStep).padStart(2, "0")}` : "—"}
             </p>
-            <p className="mt-[2px] text-xs text-[#7A7466] max-w-[260px] sm:ml-auto truncate">
+            <p className="mt-[2px] text-xs text-ima-text-secondary max-w-[260px] sm:ml-auto truncate">
               {activeStep !== null
                 ? ROADMAP_STEPS.find((s) => s.step === activeStep)?.title
                 : "All caught up"}
@@ -151,7 +151,7 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
 
         <div className="mt-6">
           <div
-            className="h-[6px] bg-[#F1EEE6] rounded-full overflow-hidden"
+            className="h-[6px] bg-ima-surface-light rounded-full overflow-hidden"
             role="progressbar"
             aria-valuenow={completedCount}
             aria-valuemin={0}
@@ -159,18 +159,18 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
             aria-label={`Roadmap progress: ${completedCount} of ${totalSteps} steps completed`}
           >
             <div
-              className="h-full bg-[#4A6CF7] motion-safe:transition-all motion-safe:duration-500"
+              className="h-full bg-ima-primary motion-safe:transition-all motion-safe:duration-500"
               style={{ width: `${progressPct}%` }}
             />
           </div>
           <div className="mt-2 flex items-center justify-between">
             <span
-              className="text-xs font-semibold tracking-widest uppercase text-[#8A8474]"
+              className="text-xs font-semibold tracking-widest uppercase text-ima-text-secondary"
             >
               Overall
             </span>
             <span
-              className="text-xs font-semibold tabular-nums text-[#1A1A17]"
+              className="text-xs font-semibold tabular-nums text-ima-text"
             >
               {progressPct}%
             </span>
@@ -191,18 +191,18 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
               {/* Stage header */}
               <div className="flex items-center gap-3">
                 <span
-                  className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#8A8474] tabular-nums"
+                  className="text-[10px] font-semibold tracking-[0.2em] uppercase text-ima-text-secondary tabular-nums"
                 >
                   Stage {String(idx + 1).padStart(2, "0")}
                 </span>
                 <span
-                  className="text-xs font-semibold tracking-widest uppercase text-[#1A1A17]"
+                  className="text-xs font-semibold tracking-widest uppercase text-ima-text"
                 >
                   {stageName}
                 </span>
-                <div className="flex-1 h-px bg-[#EDE9E0]" aria-hidden="true" />
+                <div className="flex-1 h-px bg-ima-surface-light" aria-hidden="true" />
                 <span
-                  className="text-[10px] font-semibold tracking-widest uppercase text-[#8A8474] tabular-nums"
+                  className="text-[10px] font-semibold tracking-widest uppercase text-ima-text-secondary tabular-nums"
                 >
                   {stageCompleted}/{stageSteps.length}
                 </span>
@@ -230,15 +230,15 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
                       className={[
                         "bg-white border rounded-[14px] p-4 md:p-5 flex items-start gap-4 motion-safe:transition-colors",
                         isActive
-                          ? "border-[#EDE9E0] ring-1 ring-[#4A6CF7]/40"
-                          : "border-[#EDE9E0]",
+                          ? "border-ima-border ring-1 ring-ima-primary/40"
+                          : "border-ima-border",
                       ].join(" ")}
                     >
                       {/* Marker */}
                       <div className="shrink-0 mt-[2px]">
                         {isCompleted ? (
                           <span
-                            className="w-9 h-9 rounded-full bg-[#4A6CF7] flex items-center justify-center"
+                            className="w-9 h-9 rounded-full bg-ima-primary flex items-center justify-center"
                             aria-label="Completed"
                           >
                             <Check
@@ -249,21 +249,21 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
                           </span>
                         ) : isActive ? (
                           <span
-                            className="w-9 h-9 rounded-full border-[2px] border-[#4A6CF7] bg-white flex items-center justify-center"
+                            className="w-9 h-9 rounded-full border-[2px] border-ima-primary bg-white flex items-center justify-center"
                             aria-label="In progress"
                           >
                             <span
-                              className="w-[10px] h-[10px] rounded-full bg-[#4A6CF7]"
+                              className="w-[10px] h-[10px] rounded-full bg-ima-primary"
                               aria-hidden="true"
                             />
                           </span>
                         ) : (
                           <span
-                            className="w-9 h-9 rounded-full bg-[#F1EEE6] border border-[#EDE9E0] flex items-center justify-center"
+                            className="w-9 h-9 rounded-full bg-ima-surface-light border border-ima-border flex items-center justify-center"
                             aria-label="Locked"
                           >
                             <Lock
-                              className="h-[14px] w-[14px] text-[#8A8474]"
+                              className="h-[14px] w-[14px] text-ima-text-secondary"
                               aria-hidden="true"
                             />
                           </span>
@@ -273,7 +273,7 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                           <span
-                            className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#8A8474] tabular-nums"
+                            className="text-[10px] font-semibold tracking-[0.2em] uppercase text-ima-text-secondary tabular-nums"
                           >
                             Step {String(step.step).padStart(2, "0")}
                           </span>
@@ -281,22 +281,22 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
                             className={[
                               "text-sm font-semibold leading-tight tracking-tight",
                               isCompleted
-                                ? "text-[#1A1A17]"
+                                ? "text-ima-text"
                                 : isActive
-                                  ? "text-[#1A1A17]"
-                                  : "text-[#8A8474]",
+                                  ? "text-ima-text"
+                                  : "text-ima-text-secondary",
                             ].join(" ")}
                           >
                             {step.title}
                           </p>
                         </div>
-                        <p className="mt-[6px] text-sm text-[#7A7466] leading-relaxed">
+                        <p className="mt-[6px] text-sm text-ima-text-secondary leading-relaxed">
                           {step.description}
                         </p>
 
                         <div className="mt-3 flex flex-wrap items-center gap-2">
                           {ds.kind === "completed" && (
-                            <span className="inline-flex items-center px-2 py-[3px] rounded-full border text-[10px] font-semibold uppercase tracking-wider bg-[#E2F5E9] border-[#BBE5CA] text-[#16A34A]">
+                            <span className="inline-flex items-center px-2 py-[3px] rounded-full border text-[10px] font-semibold uppercase tracking-wider bg-ima-success/10 border-ima-success/10 text-ima-success">
                               Completed{" "}
                               {new Date(ds.completedAt).toLocaleDateString("en-US", {
                                 month: "short",
@@ -309,17 +309,17 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
                             </span>
                           )}
                           {ds.kind === "on-track" && (
-                            <span className="inline-flex items-center px-2 py-[3px] rounded-full border text-[10px] font-semibold uppercase tracking-wider bg-[#E2F5E9] border-[#BBE5CA] text-[#16A34A]">
+                            <span className="inline-flex items-center px-2 py-[3px] rounded-full border text-[10px] font-semibold uppercase tracking-wider bg-ima-success/10 border-ima-success/10 text-ima-success">
                               On Track — {ds.deadlineLabel}
                             </span>
                           )}
                           {ds.kind === "due-soon" && (
-                            <span className="inline-flex items-center px-2 py-[3px] rounded-full border text-[10px] font-semibold uppercase tracking-wider bg-[#FDF3E0] border-[#F0DFB3] text-[#9A6B1F]">
+                            <span className="inline-flex items-center px-2 py-[3px] rounded-full border text-[10px] font-semibold uppercase tracking-wider bg-ima-warning/10 border-ima-warning/10 text-ima-warning">
                               Due Soon — {ds.deadlineLabel}
                             </span>
                           )}
                           {ds.kind === "overdue" && (
-                            <span className="inline-flex items-center px-2 py-[3px] rounded-full border text-[10px] font-semibold uppercase tracking-wider bg-[#FDEAEA] border-[#F5C6C6] text-[#DC2626]">
+                            <span className="inline-flex items-center px-2 py-[3px] rounded-full border text-[10px] font-semibold uppercase tracking-wider bg-ima-error/10 border-ima-error/10 text-ima-error">
                               Overdue — {ds.daysOverdue}d
                             </span>
                           )}
@@ -327,7 +327,7 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
                           {isCompleted && (
                             <button
                               onClick={() => setConfirmStep(step.step)}
-                              className="inline-flex items-center gap-[4px] text-xs font-semibold tracking-wider uppercase text-[#7A7466] hover:text-[#4A6CF7] motion-safe:transition-colors min-h-[44px] px-2 focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 rounded-md ml-auto"
+                              className="inline-flex items-center gap-[4px] text-xs font-semibold tracking-wider uppercase text-ima-text-secondary hover:text-ima-primary motion-safe:transition-colors min-h-[44px] px-2 focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 rounded-md ml-auto"
                               aria-label={`Undo Step ${step.step}: ${step.title}`}
                             >
                               <RotateCcw className="h-[13px] w-[13px]" aria-hidden="true" />

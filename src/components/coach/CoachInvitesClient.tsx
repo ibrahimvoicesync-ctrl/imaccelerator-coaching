@@ -41,9 +41,9 @@ type Props = {
 type Tab = "email" | "magic";
 
 const STATUS_PILL: Record<string, string> = {
-  used: "bg-[#E2F5E9] border-[#BBE5CA] text-[#16A34A]",
-  expired: "bg-[#FDF3E0] border-[#F0DFB3] text-[#9A6B1F]",
-  active: "bg-[#E8EEFF] border-[#C9D5FF] text-[#4A6CF7]",
+  used: "bg-ima-success/10 border-ima-success/10 text-ima-success",
+  expired: "bg-ima-warning/10 border-ima-warning/10 text-ima-warning",
+  active: "bg-ima-surface-accent border-ima-primary/20 text-ima-primary",
 };
 
 export function CoachInvitesClient({ invites, magicLinks }: Props) {
@@ -221,7 +221,7 @@ export function CoachInvitesClient({ invites, magicLinks }: Props) {
       <div>
         <label
           htmlFor="coach-invite-role"
-          className="block text-xs font-semibold tracking-[0.2em] text-[#8A8474] uppercase mb-3"
+          className="block text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase mb-3"
         >
           Invite Role
         </label>
@@ -231,7 +231,7 @@ export function CoachInvitesClient({ invites, magicLinks }: Props) {
           onChange={(e) =>
             setSelectedRole(e.target.value as "student" | "student_diy")
           }
-          className="w-full sm:w-56 rounded-[10px] border border-[#EDE9E0] bg-white px-3 py-2 text-sm text-[#1A1A17] min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#4A6CF7] focus:ring-offset-1 hover:border-[#D8D2C4] motion-safe:transition-colors"
+          className="w-full sm:w-56 rounded-[10px] border border-ima-border bg-white px-3 py-2 text-sm text-ima-text min-h-[44px] focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 hover:border-ima-border motion-safe:transition-colors"
           aria-label="Select role for invite"
         >
           <option value="student">Student</option>
@@ -259,10 +259,10 @@ export function CoachInvitesClient({ invites, magicLinks }: Props) {
                 setLastWhitelistedEmail(null);
               }}
               className={cn(
-                "min-h-[44px] px-4 rounded-[10px] text-sm font-medium motion-safe:transition-colors inline-flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2",
+                "min-h-[44px] px-4 rounded-[10px] text-sm font-medium motion-safe:transition-colors inline-flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2",
                 isActive
-                  ? "bg-[#4A6CF7] text-white"
-                  : "bg-white text-[#1A1A17] border border-[#EDE9E0] hover:border-[#D8D2C4]",
+                  ? "bg-ima-primary text-white"
+                  : "bg-white text-ima-text border border-ima-border hover:border-ima-border",
               )}
             >
               <Icon className="h-4 w-4" aria-hidden="true" />
@@ -274,16 +274,16 @@ export function CoachInvitesClient({ invites, magicLinks }: Props) {
 
       {/* Email invite tab */}
       {activeTab === "email" && (
-        <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6">
-          <h2 className="text-sm font-semibold text-[#1A1A17] leading-tight">
+        <div className="bg-white border border-ima-border rounded-[14px] p-6">
+          <h2 className="text-sm font-semibold text-ima-text leading-tight">
             Whitelist an Email
           </h2>
-          <p className="mt-1 text-xs text-[#8A8474]">
+          <p className="mt-1 text-xs text-ima-text-secondary">
             The {selectedRole === "student_diy" ? "Student DIY" : "student"} can
             then sign in with Google to create their account. Expires in 72
             hours.
           </p>
-          <div className="h-px bg-[#EDE9E0] mt-4" aria-hidden="true" />
+          <div className="h-px bg-ima-surface-light mt-4" aria-hidden="true" />
           <form
             onSubmit={handleCreateInvite}
             className="mt-5 flex flex-col sm:flex-row gap-3"
@@ -315,11 +315,11 @@ export function CoachInvitesClient({ invites, magicLinks }: Props) {
 
       {/* Magic link tab */}
       {activeTab === "magic" && (
-        <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6">
-          <h2 className="text-sm font-semibold text-[#1A1A17] leading-tight">
+        <div className="bg-white border border-ima-border rounded-[14px] p-6">
+          <h2 className="text-sm font-semibold text-ima-text leading-tight">
             Generate Invite Link
           </h2>
-          <p className="mt-1 text-xs text-[#8A8474]">
+          <p className="mt-1 text-xs text-ima-text-secondary">
             Invite links can be shared with anyone. Anyone with the link can
             register as a{" "}
             {selectedRole === "student_diy"
@@ -327,7 +327,7 @@ export function CoachInvitesClient({ invites, magicLinks }: Props) {
               : "student assigned to you"}
             . No email restriction, no expiry.
           </p>
-          <div className="h-px bg-[#EDE9E0] mt-4" aria-hidden="true" />
+          <div className="h-px bg-ima-surface-light mt-4" aria-hidden="true" />
           <div className="mt-5 flex flex-col sm:flex-row items-end gap-3">
             <div className="w-32">
               <Input
@@ -360,20 +360,20 @@ export function CoachInvitesClient({ invites, magicLinks }: Props) {
 
       {/* Whitelist confirmation */}
       {lastWhitelistedEmail && (
-        <div className="bg-[#F7FBF8] border border-[#BFE4CD] rounded-[14px] p-5">
+        <div className="bg-ima-success/10 border border-ima-success/10 rounded-[14px] p-5">
           <div className="flex items-start gap-3">
-            <div className="w-9 h-9 rounded-[8px] bg-[#E2F5E9] flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 rounded-[8px] bg-ima-success/10 flex items-center justify-center shrink-0">
               <CheckCircle
-                className="h-[18px] w-[18px] text-[#16A34A]"
+                className="h-[18px] w-[18px] text-ima-success"
                 aria-hidden="true"
               />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-[#1A1A17] leading-tight">
+              <p className="text-sm font-semibold text-ima-text leading-tight">
                 Email whitelisted
               </p>
-              <p className="mt-1 text-xs text-[#7A7466]">
-                <span className="font-semibold text-[#1A1A17]">
+              <p className="mt-1 text-xs text-ima-text-secondary">
+                <span className="font-semibold text-ima-text">
                   {lastWhitelistedEmail}
                 </span>{" "}
                 can now sign in with Google at the login page. Their account
@@ -386,15 +386,15 @@ export function CoachInvitesClient({ invites, magicLinks }: Props) {
 
       {/* Copy URL display */}
       {lastUrl && activeTab === "magic" && (
-        <div className="bg-[#FCFCFF] border border-[#C9D5FF] rounded-[14px] p-5">
+        <div className="bg-ima-surface border border-ima-primary/20 rounded-[14px] p-5">
           <p
-            className="text-xs font-semibold tracking-[0.2em] uppercase text-[#8A8474]"
+            className="text-xs font-semibold tracking-[0.2em] uppercase text-ima-text-secondary"
           >
             Generated invite link
           </p>
           <div className="mt-3 flex items-center gap-2">
             <p
-              className="flex-1 text-xs text-[#1A1A17] bg-[#FAFAF7] border border-[#EDE9E0] rounded-[10px] px-3 py-2 truncate min-h-[44px] flex items-center"
+              className="flex-1 text-xs text-ima-text bg-ima-bg border border-ima-border rounded-[10px] px-3 py-2 truncate min-h-[44px] flex items-center"
               title={lastUrl}
             >
               {lastUrl}
@@ -416,12 +416,12 @@ export function CoachInvitesClient({ invites, magicLinks }: Props) {
       {/* Invite history */}
       <section>
         <h2
-          className="text-xs font-semibold tracking-[0.2em] text-[#8A8474] uppercase"
+          className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
         >
           Invite History
         </h2>
         {localInvites.length === 0 ? (
-          <div className="mt-4 bg-white border border-[#EDE9E0] rounded-[14px] p-6">
+          <div className="mt-4 bg-white border border-ima-border rounded-[14px] p-6">
             <EmptyState
               icon={<UserPlus className="h-6 w-6" />}
               title="No invites sent yet"
@@ -441,13 +441,13 @@ export function CoachInvitesClient({ invites, magicLinks }: Props) {
               return (
                 <li
                   key={invite.id}
-                  className="bg-white border border-[#EDE9E0] rounded-[14px] p-4 flex flex-col sm:flex-row sm:items-center gap-3 min-h-[44px]"
+                  className="bg-white border border-ima-border rounded-[14px] p-4 flex flex-col sm:flex-row sm:items-center gap-3 min-h-[44px]"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-[#1A1A17] truncate leading-tight">
+                    <p className="text-sm font-semibold text-ima-text truncate leading-tight">
                       {invite.email}
                     </p>
-                    <p className="mt-[3px] text-xs text-[#7A7466]">
+                    <p className="mt-[3px] text-xs text-ima-text-secondary">
                       {ROLE_LABELS[invite.role as Role] ?? invite.role}
                       {" · "}Sent {formatDate(invite.created_at)}
                       {status === "active" && (
@@ -477,12 +477,12 @@ export function CoachInvitesClient({ invites, magicLinks }: Props) {
       {/* Magic links history */}
       <section>
         <h2
-          className="text-xs font-semibold tracking-[0.2em] text-[#8A8474] uppercase"
+          className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
         >
           Invite Links
         </h2>
         {localMagicLinks.length === 0 ? (
-          <div className="mt-4 bg-white border border-[#EDE9E0] rounded-[14px] p-6">
+          <div className="mt-4 bg-white border border-ima-border rounded-[14px] p-6">
             <EmptyState
               icon={<Link2 className="h-6 w-6" />}
               title="No invite links created yet"
@@ -494,18 +494,18 @@ export function CoachInvitesClient({ invites, magicLinks }: Props) {
             {localMagicLinks.map((link) => (
               <li
                 key={link.id}
-                className="bg-white border border-[#EDE9E0] rounded-[14px] p-4 flex flex-col sm:flex-row sm:items-center gap-3 min-h-[44px]"
+                className="bg-white border border-ima-border rounded-[14px] p-4 flex flex-col sm:flex-row sm:items-center gap-3 min-h-[44px]"
               >
                 <div className="min-w-0 flex-1">
                   <p
-                    className="text-sm text-[#1A1A17] truncate"
+                    className="text-sm text-ima-text truncate"
                     title={link.code}
                   >
                     {link.code}
                   </p>
-                  <p className="mt-[3px] text-xs flex items-center gap-1.5 flex-wrap text-[#7A7466]">
+                  <p className="mt-[3px] text-xs flex items-center gap-1.5 flex-wrap text-ima-text-secondary">
                     <Clock
-                      className="h-3 w-3 text-[#8A8474]"
+                      className="h-3 w-3 text-ima-text-secondary"
                       aria-hidden="true"
                     />
                     {ROLE_LABELS[link.role as Role] ?? link.role}

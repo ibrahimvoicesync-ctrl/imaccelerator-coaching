@@ -25,7 +25,6 @@ import {
   Gift,
 } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import type { Role, NavItem } from "@/lib/config";
 import { NAVIGATION, ROLE_LABELS } from "@/lib/config";
@@ -116,8 +115,7 @@ export function Sidebar({
 
   const handleSignOut = async () => {
     try {
-      const supabase = createClient();
-      await supabase.auth.signOut();
+      await fetch("/api/auth/signout", { method: "POST", redirect: "manual" });
     } catch (err) {
       console.error("Sign out failed:", err);
     }
@@ -133,7 +131,7 @@ export function Sidebar({
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:z-[60] focus:p-4
-          focus:bg-white focus:text-[#1A1A17] focus:rounded-lg"
+          focus:bg-white focus:text-ima-text focus:rounded-lg"
       >
         Skip to main content
       </a>
@@ -142,13 +140,13 @@ export function Sidebar({
       <button
         onClick={() => setOpen(true)}
         style={{ top: "calc(1rem + env(safe-area-inset-top))" }}
-        className="fixed left-4 z-50 md:hidden bg-white border border-[#EDE9E0]
+        className="fixed left-4 z-50 md:hidden bg-white border border-ima-border
           rounded-lg shadow-sm min-h-[44px] min-w-[44px] flex items-center justify-center
           focus-visible:outline-none focus-visible:outline focus-visible:outline-2
-          focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2"
+          focus-visible:outline-ima-primary focus-visible:outline-offset-2"
         aria-label="Open navigation"
       >
-        <Menu className="h-5 w-5 text-[#1A1A17]" aria-hidden="true" />
+        <Menu className="h-5 w-5 text-ima-text" aria-hidden="true" />
       </button>
 
       {/* Backdrop — mobile overlay */}
@@ -174,7 +172,7 @@ export function Sidebar({
         aria-label="Navigation menu"
         className={cn(
           "fixed inset-y-0 left-0 z-50 w-60 h-screen",
-          "bg-white border-r border-[#EDE9E0]",
+          "bg-white border-r border-ima-border",
           "flex flex-col",
           "motion-safe:transition-transform motion-safe:duration-200 motion-safe:ease-out",
           open ? "translate-x-0" : "-translate-x-full",
@@ -187,7 +185,7 @@ export function Sidebar({
             href={`/${role}`}
             aria-label="IMA Accelerator — go to dashboard"
             className="flex items-center min-h-[44px] rounded-lg px-3
-              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A6CF7]
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary
               focus-visible:ring-offset-1"
           >
             <span
@@ -212,16 +210,16 @@ export function Sidebar({
             ref={closeButtonRef}
             onClick={close}
             className="md:hidden p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center
-              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A6CF7] rounded-lg
-              hover:bg-[#F1EEE6] motion-safe:transition-colors"
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary rounded-lg
+              hover:bg-ima-surface-light motion-safe:transition-colors"
             aria-label="Close navigation"
           >
-            <X className="h-5 w-5 text-[#7A7466]" aria-hidden="true" />
+            <X className="h-5 w-5 text-ima-text-secondary" aria-hidden="true" />
           </button>
         </div>
 
         {/* Divider below brand */}
-        <div className="mx-3 mt-6 mb-4 border-t border-[#EDE9E0]" aria-hidden="true" />
+        <div className="mx-3 mt-6 mb-4 border-t border-ima-border" aria-hidden="true" />
 
         {/* Main nav links */}
         <nav aria-label="Main navigation" className="flex-1 overflow-y-auto px-3 pb-4">
@@ -241,7 +239,7 @@ export function Sidebar({
                   {/* Render separator divider BEFORE items with separator: true */}
                   {item.separator && (
                     <div
-                      className="my-3 mx-3 border-t border-[#EDE9E0]"
+                      className="my-3 mx-3 border-t border-ima-border"
                       aria-hidden="true"
                     />
                   )}
@@ -252,17 +250,17 @@ export function Sidebar({
                     className={cn(
                       "group relative flex items-center gap-3 px-3 py-2.5 min-h-[44px] rounded-lg text-sm",
                       "motion-safe:transition-colors motion-safe:duration-150",
-                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A6CF7] focus-visible:ring-offset-1",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-1",
                       active
-                        ? "bg-[#E8EEFF] text-[#4A6CF7] font-medium"
-                        : "text-[#7A7466] hover:bg-[#F1EEE6] hover:text-[#1A1A17]"
+                        ? "bg-ima-surface-accent text-ima-primary font-medium"
+                        : "text-ima-text-secondary hover:bg-ima-surface-light hover:text-ima-text"
                     )}
                   >
                     {/* Inset accent bar — tween between active rows (ease-out-quint, no overshoot) */}
                     {active && (
                       <motion.div
                         layoutId="sidebar-active"
-                        className="absolute left-1.5 top-2 bottom-2 w-0.5 rounded-full bg-[#4A6CF7]"
+                        className="absolute left-1.5 top-2 bottom-2 w-0.5 rounded-full bg-ima-primary"
                         transition={
                           prefersReducedMotion
                             ? { duration: 0 }
@@ -275,15 +273,15 @@ export function Sidebar({
                         className={cn(
                           "h-4 w-4 shrink-0 motion-safe:transition-colors",
                           active
-                            ? "text-[#4A6CF7]"
-                            : "text-[#8A8474] group-hover:text-[#1A1A17]"
+                            ? "text-ima-primary"
+                            : "text-ima-text-secondary group-hover:text-ima-text"
                         )}
                         aria-hidden="true"
                       />
                     )}
                     <span className="truncate">{item.label}</span>
                     {hasBadge && showNumber && (
-                      <span className="ml-auto text-xs font-medium text-[#4A6CF7] tabular-nums shrink-0">
+                      <span className="ml-auto text-xs font-medium text-ima-primary tabular-nums shrink-0">
                         {displayCount}
                         <span className="sr-only"> unread</span>
                       </span>
@@ -291,7 +289,7 @@ export function Sidebar({
                     {hasBadge && !showNumber && (
                       <>
                         <span
-                          className="ml-auto h-1.5 w-1.5 rounded-full bg-[#4A6CF7] shrink-0"
+                          className="ml-auto h-1.5 w-1.5 rounded-full bg-ima-primary shrink-0"
                           aria-hidden="true"
                         />
                         <span className="sr-only">Unread</span>
@@ -305,7 +303,7 @@ export function Sidebar({
         </nav>
 
         {/* Bottom section: User info + Sign out */}
-        <div className="shrink-0 border-t border-[#EDE9E0]">
+        <div className="shrink-0 border-t border-ima-border">
           <div className="px-3 py-3">
             <div
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg"
@@ -313,14 +311,14 @@ export function Sidebar({
               aria-label="User account"
             >
               <div
-                className="h-8 w-8 rounded-full bg-[#4A6CF7] flex items-center justify-center text-xs font-semibold text-white shrink-0"
+                className="h-8 w-8 rounded-full bg-ima-primary flex items-center justify-center text-xs font-semibold text-white shrink-0"
                 aria-hidden="true"
               >
                 {userName?.charAt(0)?.toUpperCase() ?? "?"}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-[#1A1A17] truncate">{userName}</p>
-                <p className="text-xs uppercase tracking-[0.2em] text-[#8A8474] font-medium">
+                <p className="text-sm font-medium text-ima-text truncate">{userName}</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-ima-text-secondary font-medium">
                   {ROLE_LABELS[role]}
                 </p>
               </div>
@@ -328,12 +326,12 @@ export function Sidebar({
             <button
               onClick={handleSignOut}
               className="group flex items-center gap-3 w-full px-3 py-2.5 min-h-[44px] rounded-lg text-sm
-                cursor-pointer text-[#7A7466] hover:bg-[#F1EEE6] hover:text-[#DC2626]
+                cursor-pointer text-ima-text-secondary hover:bg-ima-surface-light hover:text-ima-error
                 motion-safe:transition-colors motion-safe:duration-150
-                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A6CF7] focus-visible:ring-offset-1"
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-1"
             >
               <LogOut
-                className="h-4 w-4 shrink-0 text-[#8A8474] group-hover:text-[#DC2626] motion-safe:transition-colors"
+                className="h-4 w-4 shrink-0 text-ima-text-secondary group-hover:text-ima-error motion-safe:transition-colors"
                 aria-hidden="true"
               />
               Sign Out

@@ -12,7 +12,7 @@ export default function Loading() {
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="bg-white border border-[#EDE9E0] rounded-[12px] p-4 flex items-center gap-4"
+            className="bg-white border border-ima-border rounded-[12px] p-4 flex items-center gap-4"
           >
             <Skeleton className="h-10 w-10 rounded-lg shrink-0" />
             <div className="space-y-1">

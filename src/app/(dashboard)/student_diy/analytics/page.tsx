@@ -1,5 +1,4 @@
 import { unstable_cache } from "next/cache";
-import { JetBrains_Mono } from "next/font/google";
 import { z } from "zod";
 import { requireRole } from "@/lib/session";
 import {
@@ -10,11 +9,6 @@ import {
 } from "@/lib/rpc/student-analytics";
 import { AnalyticsClient } from "@/app/(dashboard)/student/analytics/AnalyticsClient";
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-mono-bold",
-});
 
 const RangeSchema = z.enum(STUDENT_ANALYTICS_RANGES).catch("daily");
 
@@ -46,7 +40,7 @@ export default async function StudentDiyAnalyticsPage({
 
   return (
     <div
-      className={`${jetbrainsMono.variable} -mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-[#FAFAF7]`}
+      className={`-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg`}
     >
       <section
         aria-labelledby="student-analytics-h1"

@@ -44,39 +44,39 @@ const TYPE_TINT: Record<
   { iconBg: string; iconColor: string; badgeBg: string; badgeBorder: string; badgeText: string }
 > = {
   "100h_milestone": {
-    iconBg: "bg-[#E2F5E9]",
-    iconColor: "text-[#16A34A]",
-    badgeBg: "bg-[#E2F5E9]",
-    badgeBorder: "border-[#BFE4CD]",
-    badgeText: "text-[#16A34A]",
+    iconBg: "bg-ima-success/10",
+    iconColor: "text-ima-success",
+    badgeBg: "bg-ima-success/10",
+    badgeBorder: "border-ima-success/10",
+    badgeText: "text-ima-success",
   },
   "closed_deal": {
-    iconBg: "bg-[#E2F5E9]",
-    iconColor: "text-[#16A34A]",
-    badgeBg: "bg-[#E2F5E9]",
-    badgeBorder: "border-[#BFE4CD]",
-    badgeText: "text-[#16A34A]",
+    iconBg: "bg-ima-success/10",
+    iconColor: "text-ima-success",
+    badgeBg: "bg-ima-success/10",
+    badgeBorder: "border-ima-success/10",
+    badgeText: "text-ima-success",
   },
   "5_influencers": {
-    iconBg: "bg-[#E8EEFF]",
-    iconColor: "text-[#4A6CF7]",
-    badgeBg: "bg-[#E8EEFF]",
-    badgeBorder: "border-[#C9D5FF]",
-    badgeText: "text-[#4A6CF7]",
+    iconBg: "bg-ima-surface-accent",
+    iconColor: "text-ima-primary",
+    badgeBg: "bg-ima-surface-accent",
+    badgeBorder: "border-ima-primary/20",
+    badgeText: "text-ima-primary",
   },
   "brand_response": {
-    iconBg: "bg-[#E8EEFF]",
-    iconColor: "text-[#4A6CF7]",
-    badgeBg: "bg-[#E8EEFF]",
-    badgeBorder: "border-[#C9D5FF]",
-    badgeText: "text-[#4A6CF7]",
+    iconBg: "bg-ima-surface-accent",
+    iconColor: "text-ima-primary",
+    badgeBg: "bg-ima-surface-accent",
+    badgeBorder: "border-ima-primary/20",
+    badgeText: "text-ima-primary",
   },
   "tech_setup": {
-    iconBg: "bg-[#E8EEFF]",
-    iconColor: "text-[#4A6CF7]",
-    badgeBg: "bg-[#E8EEFF]",
-    badgeBorder: "border-[#C9D5FF]",
-    badgeText: "text-[#4A6CF7]",
+    iconBg: "bg-ima-surface-accent",
+    iconColor: "text-ima-primary",
+    badgeBg: "bg-ima-surface-accent",
+    badgeBorder: "border-ima-primary/20",
+    badgeText: "text-ima-primary",
   },
 };
 
@@ -287,10 +287,10 @@ export function CoachAlertsClient({
               aria-selected={active}
               onClick={() => setFilter(key)}
               className={[
-                "min-h-[44px] px-4 text-sm font-semibold rounded-[10px] border motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2",
+                "min-h-[44px] px-4 text-sm font-semibold rounded-[10px] border motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2",
                 active
-                  ? "bg-[#4A6CF7] text-white border-[#4A6CF7]"
-                  : "bg-white border-[#EDE9E0] text-[#1A1A17] hover:border-[#D8D2C4]",
+                  ? "bg-ima-primary text-white border-ima-primary"
+                  : "bg-white border-ima-border text-ima-text hover:border-ima-border",
               ].join(" ")}
             >
               {key === "active" && activeCount > 0
@@ -303,7 +303,7 @@ export function CoachAlertsClient({
 
       {/* Grouped feed */}
       {visibleGroups.length === 0 ? (
-        <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6">
+        <div className="bg-white border border-ima-border rounded-[14px] p-6">
           <EmptyState
             variant="compact"
             icon={<Bell className="h-5 w-5" aria-hidden="true" />}
@@ -333,7 +333,7 @@ export function CoachAlertsClient({
                 <div className="flex items-center justify-between gap-3 px-1">
                   <h2
                     id={`group-${group.student_id}`}
-                    className="text-xs font-semibold tracking-[0.2em] text-[#8A8474] uppercase"
+                    className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
                   >
                     {group.student_name}
                   </h2>
@@ -362,7 +362,7 @@ export function CoachAlertsClient({
                       key={row.alert_key}
                       aria-label={`milestone alert: ${row.student_name} — ${meta.label}`}
                       className={[
-                        "bg-white border border-[#EDE9E0] rounded-[14px] p-5 motion-safe:transition-colors",
+                        "bg-white border border-ima-border rounded-[14px] p-5 motion-safe:transition-colors",
                         isDismissed && "opacity-70",
                       ]
                         .filter(Boolean)
@@ -378,7 +378,7 @@ export function CoachAlertsClient({
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-4 mb-2">
                             <div className="flex items-center gap-2 min-w-0 flex-wrap">
-                              <h3 className="text-sm font-semibold text-[#1A1A17] truncate leading-tight">
+                              <h3 className="text-sm font-semibold text-ima-text truncate leading-tight">
                                 {row.student_name}
                               </h3>
                               <span
@@ -395,7 +395,7 @@ export function CoachAlertsClient({
                             )}
                           </div>
 
-                          <p className="text-sm text-[#7A7466] mb-2 leading-relaxed">
+                          <p className="text-sm text-ima-text-secondary mb-2 leading-relaxed">
                             {row.message ?? (
                               <time dateTime={row.occurred_at}>
                                 {new Date(row.occurred_at).toLocaleString()}
@@ -404,7 +404,7 @@ export function CoachAlertsClient({
                           </p>
 
                           {isDismissed && dismissedAtIso && (
-                            <p className="text-xs text-[#8A8474] mb-4">
+                            <p className="text-xs text-ima-text-secondary mb-4">
                               Dismissed{" "}
                               <time dateTime={dismissedAtIso}>
                                 {formatRelativeTime(new Date(dismissedAtIso))}
@@ -416,7 +416,7 @@ export function CoachAlertsClient({
                             <Link
                               href={`/coach/students/${row.student_id}?tab=${row.milestone_type === "closed_deal" ? "deals" : "roadmap"}`}
                               aria-label={`View ${row.student_name}`}
-                              className="text-xs font-semibold text-[#4A6CF7] hover:text-[#3852D8] min-h-[44px] inline-flex items-center focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 rounded px-1"
+                              className="text-xs font-semibold text-ima-primary hover:text-ima-primary-hover min-h-[44px] inline-flex items-center focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 rounded px-1"
                             >
                               View Student →
                             </Link>

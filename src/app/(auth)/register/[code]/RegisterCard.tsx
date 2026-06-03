@@ -66,6 +66,7 @@ export function RegisterCard({ invite, error }: RegisterCardProps) {
           type="button"
           onClick={handleGoogleLogin}
           disabled={loading}
+          aria-label="Sign in with Google"
           className="mt-6 flex items-center justify-center gap-3 rounded-lg border border-ima-border bg-ima-surface px-4 min-h-[44px] w-full text-sm font-medium text-ima-text hover:bg-ima-bg motion-safe:transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <svg

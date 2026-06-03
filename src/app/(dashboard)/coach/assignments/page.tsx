@@ -46,16 +46,16 @@ export default async function CoachAssignmentsPage() {
   }));
 
   return (
-    <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-[#FAFAF7]">
+    <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg">
       <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20 space-y-8">
         <header className="motion-safe:animate-fadeIn">
-          <p className="text-xs font-semibold tracking-[0.2em] text-[#8A8474] uppercase">
+          <p className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
             Assignments
           </p>
-          <h1 className="mt-3 text-3xl md:text-4xl font-semibold leading-tight text-[#1A1A17] tracking-tight">
+          <h1 className="mt-3 text-3xl md:text-4xl font-semibold leading-tight text-ima-text tracking-tight">
             Student Assignments
           </h1>
-          <p className="mt-2 text-sm text-[#7A7466] leading-relaxed">
+          <p className="mt-2 text-sm text-ima-text-secondary leading-relaxed">
             Assign and reassign students across coaches.
           </p>
         </header>

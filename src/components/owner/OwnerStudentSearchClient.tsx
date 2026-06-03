@@ -85,12 +85,12 @@ export function OwnerStudentSearchClient({
               <Link key={s.id} href={`/owner/students/${s.id}`} className="min-h-[44px] block">
                 <Card interactive>
                   <CardContent className="p-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#4A6CF7] flex items-center justify-center text-sm font-semibold text-white shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-ima-primary flex items-center justify-center text-sm font-semibold text-white shrink-0">
                       {initials}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-[#1A1A17] truncate">{s.name}</p>
-                      <p className="text-xs text-[#7A7466] truncate">{s.email}</p>
+                      <p className="text-sm font-semibold text-ima-text truncate">{s.name}</p>
+                      <p className="text-xs text-ima-text-secondary truncate">{s.email}</p>
                     </div>
                     <Badge
                       variant={

@@ -54,37 +54,37 @@ export default async function CoachInvitesPage() {
       label: "Total Invites",
       value: String(totalInvites),
       icon: UserPlus,
-      iconBg: "bg-[#E8EEFF]",
-      iconColor: "text-[#4A6CF7]",
+      iconBg: "bg-ima-surface-accent",
+      iconColor: "text-ima-primary",
     },
     {
       label: "Used",
       value: String(usedInvites),
       icon: CheckCircle,
-      iconBg: "bg-[#E2F5E9]",
-      iconColor: "text-[#16A34A]",
+      iconBg: "bg-ima-success/10",
+      iconColor: "text-ima-success",
     },
     {
       label: "Active Links",
       value: String(activeLinks),
       icon: Link2,
-      iconBg: "bg-[#FDF3E0]",
-      iconColor: "text-[#D97706]",
+      iconBg: "bg-ima-warning/10",
+      iconColor: "text-ima-warning",
     },
   ];
 
   return (
-    <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-[#FAFAF7]">
+    <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg">
       <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
         {/* Header */}
         <header className="motion-safe:animate-fadeIn">
-          <p className="text-xs font-semibold tracking-[0.2em] text-[#8A8474] uppercase">
+          <p className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
             Invites
           </p>
-          <h1 className="mt-3 text-3xl md:text-4xl font-semibold leading-tight text-[#1A1A17] tracking-tight">
+          <h1 className="mt-3 text-3xl md:text-4xl font-semibold leading-tight text-ima-text tracking-tight">
             Invite Students
           </h1>
-          <p className="mt-2 text-sm text-[#7A7466] leading-relaxed">
+          <p className="mt-2 text-sm text-ima-text-secondary leading-relaxed">
             Whitelist emails and generate invite links for new students.
           </p>
         </header>
@@ -98,7 +98,7 @@ export default async function CoachInvitesPage() {
           {stats.map((s) => (
             <div
               key={s.label}
-              className="flex items-center gap-4 bg-white border border-[#EDE9E0] rounded-[12px] px-[18px] py-[16px] min-h-[72px]"
+              className="flex items-center gap-4 bg-white border border-ima-border rounded-[12px] px-[18px] py-[16px] min-h-[72px]"
             >
               <div
                 className={`w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0 ${s.iconBg}`}
@@ -106,10 +106,10 @@ export default async function CoachInvitesPage() {
                 <s.icon className={`h-[18px] w-[18px] ${s.iconColor}`} aria-hidden="true" />
               </div>
               <div className="min-w-0">
-                <p className="text-2xl font-semibold leading-none tabular-nums text-[#1A1A17]">
+                <p className="text-2xl font-semibold leading-none tabular-nums text-ima-text">
                   {s.value}
                 </p>
-                <p className="mt-[6px] text-xs text-[#8A8474]">{s.label}</p>
+                <p className="mt-[6px] text-xs text-ima-text-secondary">{s.label}</p>
               </div>
             </div>
           ))}

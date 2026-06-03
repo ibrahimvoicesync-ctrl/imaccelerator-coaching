@@ -22,13 +22,13 @@ export default function CoachAlertsError({
       <Card className="max-w-md w-full mx-4">
         <CardContent className="pt-6 flex flex-col items-center text-center">
           <AlertTriangle
-            className="h-12 w-12 text-[#DC2626] mb-4"
+            className="h-12 w-12 text-ima-error mb-4"
             aria-hidden="true"
           />
-          <h1 className="text-xl font-semibold tracking-tight text-[#1A1A17] mb-2">
+          <h1 className="text-xl font-semibold tracking-tight text-ima-text mb-2">
             Something went wrong
           </h1>
-          <p className="text-sm text-[#7A7466] mb-6">
+          <p className="text-sm text-ima-text-secondary mb-6">
             We couldn&apos;t load this page. Please try again.
           </p>
           <div className="flex gap-3">

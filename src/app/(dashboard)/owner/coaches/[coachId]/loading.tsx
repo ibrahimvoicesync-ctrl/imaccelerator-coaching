@@ -20,7 +20,7 @@ export default function Loading() {
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="bg-white border border-[#EDE9E0] rounded-[12px] p-4 space-y-1"
+            className="bg-white border border-ima-border rounded-[12px] p-4 space-y-1"
           >
             <Skeleton className="h-7 w-12" />
             <Skeleton className="h-3 w-20" />

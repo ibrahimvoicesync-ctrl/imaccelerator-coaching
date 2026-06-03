@@ -172,10 +172,10 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
                 aria-selected={active}
                 onClick={() => setActiveTab(tab)}
                 className={cn(
-                  "min-h-[44px] px-4 text-[13px] font-semibold rounded-[10px] border motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 whitespace-nowrap",
+                  "min-h-[44px] px-4 text-[13px] font-semibold rounded-[10px] border motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 whitespace-nowrap",
                   active
-                    ? "bg-[#4A6CF7] text-white border-[#4A6CF7]"
-                    : "bg-white border-[#EDE9E0] text-[#1A1A17] hover:border-[#D8D2C4]"
+                    ? "bg-ima-primary text-white border-ima-primary"
+                    : "bg-white border-ima-border text-ima-text hover:border-ima-border"
                 )}
               >
                 {meta.label}
@@ -228,7 +228,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
               className={cn(
                 "inline-flex items-center gap-2 text-sm font-semibold tracking-tight px-5 min-h-[44px] motion-safe:transition-all duration-200 ease-out focus-visible:outline-none",
                 coachEditorial
-                  ? "bg-[#4A6CF7] text-white rounded-[10px] hover:bg-[#3852D8] focus-visible:ring-2 focus-visible:ring-[#4A6CF7] focus-visible:ring-offset-2"
+                  ? "bg-ima-primary text-white rounded-[10px] hover:bg-ima-primary-hover focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2"
                   : "bg-ima-primary text-white rounded-xl hover:bg-ima-primary-hover hover:shadow-card-hover focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2"
               )}
             >
@@ -247,7 +247,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
             className={cn(
               "p-8 md:p-10",
               coachEditorial
-                ? "rounded-[14px] border border-[#EDE9E0] bg-white"
+                ? "rounded-[14px] border border-ima-border bg-white"
                 : "rounded-2xl border border-ima-border bg-ima-bg/60"
             )}
           >
@@ -276,7 +276,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
                   className={cn(
                     "mt-2 inline-flex items-center justify-center gap-2 text-base font-semibold tracking-tight px-6 min-h-[56px] motion-safe:transition-all duration-200 ease-out focus-visible:outline-none",
                     coachEditorial
-                      ? "bg-[#4A6CF7] text-white rounded-[12px] hover:bg-[#3852D8] focus-visible:ring-2 focus-visible:ring-[#4A6CF7] focus-visible:ring-offset-2"
+                      ? "bg-ima-primary text-white rounded-[12px] hover:bg-ima-primary-hover focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2"
                       : "bg-ima-primary text-white rounded-2xl hover:bg-ima-primary-hover hover:shadow-card-hover focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2"
                   )}
                 >
@@ -319,7 +319,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
           className={cn(
             "p-3 md:p-4",
             coachEditorial
-              ? "rounded-[14px] border border-[#EDE9E0] bg-white"
+              ? "rounded-[14px] border border-ima-border bg-white"
               : "rounded-2xl border border-ima-border bg-ima-bg/60"
           )}
         >
@@ -350,7 +350,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
               className={cn(
                 "inline-flex items-center gap-2 text-sm font-semibold tracking-tight px-5 min-h-[44px] motion-safe:transition-all duration-200 ease-out focus-visible:outline-none",
                 coachEditorial
-                  ? "bg-[#4A6CF7] text-white rounded-[10px] hover:bg-[#3852D8] focus-visible:ring-2 focus-visible:ring-[#4A6CF7] focus-visible:ring-offset-2"
+                  ? "bg-ima-primary text-white rounded-[10px] hover:bg-ima-primary-hover focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2"
                   : "bg-ima-primary text-white rounded-xl hover:bg-ima-primary-hover hover:shadow-card-hover focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2"
               )}
             >
@@ -369,7 +369,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
             className={cn(
               "p-8 md:p-10",
               coachEditorial
-                ? "rounded-[14px] border border-[#EDE9E0] bg-white"
+                ? "rounded-[14px] border border-ima-border bg-white"
                 : "rounded-2xl border border-ima-border bg-ima-bg/60"
             )}
           >

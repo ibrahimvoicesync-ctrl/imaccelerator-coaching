@@ -21,8 +21,8 @@ export default function Loading() {
         </div>
 
         {/* Desktop table skeleton */}
-        <div className="hidden md:block overflow-hidden rounded-2xl border border-[#EDE9E0] bg-white">
-          <div className="grid grid-cols-[140px_1fr_1fr_160px_140px_96px] gap-4 px-6 py-3 bg-[#F5F2E9] border-b border-[#EDE9E0]">
+        <div className="hidden md:block overflow-hidden rounded-2xl border border-ima-border bg-white">
+          <div className="grid grid-cols-[140px_1fr_1fr_160px_140px_96px] gap-4 px-6 py-3 bg-ima-surface-light border-b border-ima-border">
             <Skeleton className="h-3 w-12" />
             <Skeleton className="h-3 w-20" />
             <Skeleton className="h-3 w-14" />
@@ -33,7 +33,7 @@ export default function Loading() {
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className="grid grid-cols-[140px_1fr_1fr_160px_140px_96px] gap-4 items-center px-6 h-16 border-b border-[#EDE9E0]/60 last:border-b-0"
+              className="grid grid-cols-[140px_1fr_1fr_160px_140px_96px] gap-4 items-center px-6 h-16 border-b border-ima-border/60 last:border-b-0"
             >
               <div className="flex items-center gap-2.5">
                 <Skeleton className="h-2 w-2 rounded-full" />
@@ -53,7 +53,7 @@ export default function Loading() {
           {Array.from({ length: 3 }).map((_, i) => (
             <li
               key={i}
-              className="rounded-2xl border border-[#EDE9E0] bg-white px-4 py-4 space-y-4"
+              className="rounded-2xl border border-ima-border bg-white px-4 py-4 space-y-4"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-2.5 min-w-0">

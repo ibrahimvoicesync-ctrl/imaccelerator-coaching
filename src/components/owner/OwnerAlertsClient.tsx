@@ -42,8 +42,8 @@ const TYPE_CONFIG: Record<
   { iconBg: string; iconColor: string; Icon: LucideIcon; label: string }
 > = {
   deal_closed: {
-    iconBg: "bg-[#E2F5E9]",
-    iconColor: "text-[#16A34A]",
+    iconBg: "bg-ima-success/10",
+    iconColor: "text-ima-success",
     Icon: DollarSign,
     label: "Deal",
   },
@@ -162,10 +162,10 @@ export function OwnerAlertsClient({ initialAlerts }: OwnerAlertsClientProps) {
               aria-selected={isActive}
               onClick={() => handleFilterChange(key)}
               className={cn(
-                "min-h-[44px] px-4 rounded-[10px] text-[13px] font-medium border motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2",
+                "min-h-[44px] px-4 rounded-[10px] text-[13px] font-medium border motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2",
                 isActive
-                  ? "bg-[#4A6CF7] text-white border-[#4A6CF7]"
-                  : "bg-white border-[#EDE9E0] text-[#1A1A17] hover:border-[#D8D2C4]"
+                  ? "bg-ima-primary text-white border-ima-primary"
+                  : "bg-white border-ima-border text-ima-text hover:border-ima-border"
               )}
             >
               {label}
@@ -181,7 +181,7 @@ export function OwnerAlertsClient({ initialAlerts }: OwnerAlertsClientProps) {
 
       {/* Alerts list */}
       {filteredAlerts.length === 0 ? (
-        <div className="mt-6 bg-white border border-[#EDE9E0] rounded-[14px] p-6">
+        <div className="mt-6 bg-white border border-ima-border rounded-[14px] p-6">
           <EmptyState
             icon={<Bell className="h-6 w-6" />}
             title={EMPTY_MESSAGES[filter]}
@@ -206,8 +206,8 @@ export function OwnerAlertsClient({ initialAlerts }: OwnerAlertsClientProps) {
                 className={cn(
                   "rounded-[14px] border bg-white p-5",
                   isLive
-                    ? "border-[#EDE9E0] border-l-[3px] border-l-[#16A34A]"
-                    : "border-[#EDE9E0] bg-[#FAFAF7]"
+                    ? "border-ima-border border-l-[3px] border-l-ima-success"
+                    : "border-ima-border bg-ima-bg"
                 )}
               >
                 <div
@@ -230,35 +230,34 @@ export function OwnerAlertsClient({ initialAlerts }: OwnerAlertsClientProps) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-4 mb-1.5">
                       <div className="flex items-center gap-2 min-w-0">
-                        <h3 className="text-[14px] font-semibold tracking-[-0.005em] text-[#1A1A17] truncate leading-tight">
+                        <h3 className="text-[14px] font-semibold tracking-[-0.005em] text-ima-text truncate leading-tight">
                           {alert.title}
                         </h3>
-                        <span className="inline-flex items-center px-2 py-[3px] rounded-full bg-[#E2F5E9] border border-[#BBE5CA] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#16A34A] shrink-0">
+                        <span className="inline-flex items-center px-2 py-[3px] rounded-full bg-ima-success/10 border border-ima-success/10 text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-success shrink-0">
                           {config.label}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         <span
-                          className="text-[10px] font-semibold text-[#8A8474] tracking-[0.14em] uppercase whitespace-nowrap tabular-nums slashed-zero"
-                          style={{ fontFamily: "var(--font-mono-bold)" }}
+                          className="text-[10px] font-semibold text-ima-text-secondary tracking-[0.14em] uppercase whitespace-nowrap tabular-nums slashed-zero"
                         >
                           {getTimeAgo(alert.triggeredAt)}
                         </span>
                         {isLive && (
                           <div
-                            className="w-2 h-2 rounded-full bg-[#16A34A] shrink-0"
+                            className="w-2 h-2 rounded-full bg-ima-success shrink-0"
                             aria-hidden="true"
                           />
                         )}
                       </div>
                     </div>
 
-                    <p className="text-[13px] text-[#7A7466] mb-2">
+                    <p className="text-[13px] text-ima-text-secondary mb-2">
                       {alert.message}
                     </p>
 
                     {alert.dismissed && alert.dismissedAt && (
-                      <p className="text-xs text-[#8A8474] mb-3">
+                      <p className="text-xs text-ima-text-secondary mb-3">
                         Dismissed{" "}
                         <time dateTime={alert.dismissedAt}>
                           {getTimeAgo(alert.dismissedAt)}
@@ -270,7 +269,7 @@ export function OwnerAlertsClient({ initialAlerts }: OwnerAlertsClientProps) {
                       {detailHref && (
                         <Link
                           href={detailHref}
-                          className="text-[12px] font-medium text-[#4A6CF7] hover:text-[#3852D8] min-h-[44px] inline-flex items-center focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 rounded-md px-1"
+                          className="text-[12px] font-medium text-ima-primary hover:text-ima-primary-hover min-h-[44px] inline-flex items-center focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 rounded-md px-1"
                         >
                           View Details
                         </Link>

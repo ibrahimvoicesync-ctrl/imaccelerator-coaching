@@ -155,9 +155,9 @@ export function OwnerAssignmentsClient({
 
   function getProgressColor(count: number): string {
     const ratio = count / max;
-    if (ratio > 0.95) return "bg-[#DC2626]";
-    if (ratio >= 0.8) return "bg-[#D97706]";
-    return "bg-[#4A6CF7]";
+    if (ratio > 0.95) return "bg-ima-error";
+    if (ratio >= 0.8) return "bg-ima-warning";
+    return "bg-ima-primary";
   }
 
   function initials(name: string): string {
@@ -175,8 +175,7 @@ export function OwnerAssignmentsClient({
       {coaches.length > 0 && (
         <div>
           <p
-            className="text-[11px] font-semibold tracking-[0.22em] text-[#8A8474] uppercase"
-            style={{ fontFamily: "var(--font-mono-bold)" }}
+            className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
           >
             Coach Capacity
           </p>
@@ -187,18 +186,17 @@ export function OwnerAssignmentsClient({
               return (
                 <div
                   key={coach.id}
-                  className="bg-white border border-[#EDE9E0] rounded-[12px] p-4"
+                  className="bg-white border border-ima-border rounded-[12px] p-4"
                 >
-                  <p className="text-[13px] font-semibold tracking-[-0.005em] text-[#1A1A17] truncate leading-tight">
+                  <p className="text-[13px] font-semibold tracking-[-0.005em] text-ima-text truncate leading-tight">
                     {coach.name}
                   </p>
                   <p
-                    className="mt-[6px] text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A8474] tabular-nums slashed-zero"
-                    style={{ fontFamily: "var(--font-mono-bold)" }}
+                    className="mt-[6px] text-[10px] font-semibold tracking-[0.14em] uppercase text-ima-text-secondary tabular-nums slashed-zero"
                   >
                     {count} / {max} students
                   </p>
-                  <div className="mt-3 h-[6px] rounded-full bg-[#F1EEE6] overflow-hidden">
+                  <div className="mt-3 h-[6px] rounded-full bg-ima-surface-light overflow-hidden">
                     <div
                       role="progressbar"
                       aria-valuenow={count}
@@ -241,10 +239,10 @@ export function OwnerAssignmentsClient({
               aria-selected={isActive}
               onClick={() => setActiveFilter(key)}
               className={cn(
-                "min-h-[44px] px-4 rounded-[10px] text-[13px] font-medium motion-safe:transition-colors flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2",
+                "min-h-[44px] px-4 rounded-[10px] text-[13px] font-medium motion-safe:transition-colors flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2",
                 isActive
-                  ? "bg-[#4A6CF7] text-white"
-                  : "bg-white text-[#1A1A17] border border-[#EDE9E0] hover:border-[#D8D2C4]",
+                  ? "bg-ima-primary text-white"
+                  : "bg-white text-ima-text border border-ima-border hover:border-ima-border",
               )}
             >
               {label}
@@ -253,7 +251,7 @@ export function OwnerAssignmentsClient({
                   "text-[11px] tabular-nums slashed-zero rounded-full px-[7px] py-[1px]",
                   isActive
                     ? "bg-white/20 text-white"
-                    : "bg-[#F1EEE6] text-[#7A7466]",
+                    : "bg-ima-surface-light text-ima-text-secondary",
                 )}
               >
                 {count}
@@ -273,7 +271,7 @@ export function OwnerAssignmentsClient({
 
       {/* Student Assignment Rows */}
       {filteredStudents.length === 0 ? (
-        <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6">
+        <div className="bg-white border border-ima-border rounded-[14px] p-6">
           <EmptyState
             icon={<Users className="h-6 w-6" />}
             title="No students found"
@@ -311,18 +309,18 @@ export function OwnerAssignmentsClient({
             return (
               <li
                 key={student.id}
-                className="bg-white border border-[#EDE9E0] rounded-[14px] p-5 flex flex-col sm:flex-row sm:items-center gap-3"
+                className="bg-white border border-ima-border rounded-[14px] p-5 flex flex-col sm:flex-row sm:items-center gap-3"
               >
                 {/* Left: Avatar + info */}
                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className="w-10 h-10 rounded-full bg-[#F1EEE6] border border-[#EDE9E0] flex items-center justify-center text-[12px] font-semibold text-[#5A5648] shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-ima-surface-light border border-ima-border flex items-center justify-center text-[12px] font-semibold text-ima-text-secondary shrink-0">
                     {initials(student.name)}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[14px] font-semibold tracking-[-0.005em] text-[#1A1A17] truncate leading-tight">
+                    <p className="text-[14px] font-semibold tracking-[-0.005em] text-ima-text truncate leading-tight">
                       {student.name}
                     </p>
-                    <p className="text-[12px] text-[#7A7466] truncate mt-[2px]">
+                    <p className="text-[12px] text-ima-text-secondary truncate mt-[2px]">
                       {student.email}
                     </p>
                   </div>
@@ -340,10 +338,10 @@ export function OwnerAssignmentsClient({
                     disabled={isSaving}
                     aria-label={`Assign ${student.name} to coach`}
                     className={cn(
-                      "rounded-[10px] bg-white px-3 py-2 text-[13px] text-[#1A1A17] min-h-[44px] min-w-0 w-full sm:min-w-[200px] sm:w-auto focus:outline-none focus:ring-2 focus:ring-[#4A6CF7] focus:ring-offset-1 disabled:opacity-50 motion-safe:transition-colors border",
+                      "rounded-[10px] bg-white px-3 py-2 text-[13px] text-ima-text min-h-[44px] min-w-0 w-full sm:min-w-[200px] sm:w-auto focus:outline-none focus:ring-2 focus:ring-ima-primary focus:ring-offset-1 disabled:opacity-50 motion-safe:transition-colors border",
                       hasLocalChange
-                        ? "border-[#4A6CF7] ring-1 ring-[#4A6CF7]/30"
-                        : "border-[#EDE9E0] hover:border-[#D8D2C4]",
+                        ? "border-ima-primary ring-1 ring-ima-primary/30"
+                        : "border-ima-border hover:border-ima-border",
                     )}
                   >
                     <option value="">Unassigned</option>
@@ -358,8 +356,7 @@ export function OwnerAssignmentsClient({
                   </select>
                   {isSaving && (
                     <span
-                      className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A8474]"
-                      style={{ fontFamily: "var(--font-mono-bold)" }}
+                      className="text-[10px] font-semibold tracking-[0.14em] uppercase text-ima-text-secondary"
                     >
                       Saving…
                     </span>

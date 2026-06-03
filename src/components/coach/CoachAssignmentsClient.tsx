@@ -149,17 +149,17 @@ export function CoachAssignmentsClient({ students, coaches }: CoachAssignmentsCl
               onClick={() => setActiveFilter(key)}
               aria-pressed={active}
               className={[
-                "min-h-[44px] px-4 rounded-[10px] text-sm font-semibold motion-safe:transition-colors flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2",
+                "min-h-[44px] px-4 rounded-[10px] text-sm font-semibold motion-safe:transition-colors flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2",
                 active
-                  ? "bg-[#4A6CF7] text-white"
-                  : "bg-white border border-[#EDE9E0] text-[#1A1A17] hover:border-[#D8D2C4]",
+                  ? "bg-ima-primary text-white"
+                  : "bg-white border border-ima-border text-ima-text hover:border-ima-border",
               ].join(" ")}
             >
               {label}
               <span
                 className={[
                   "text-xs tabular-nums rounded-full px-[7px] py-[1px] font-semibold",
-                  active ? "bg-white/20 text-white" : "bg-[#F1EEE6] text-[#5A5648]",
+                  active ? "bg-white/20 text-white" : "bg-ima-surface-light text-ima-text-secondary",
                 ].join(" ")}
               >
                 {count}
@@ -179,7 +179,7 @@ export function CoachAssignmentsClient({ students, coaches }: CoachAssignmentsCl
 
       {/* Student Assignment Rows */}
       {filteredStudents.length === 0 ? (
-        <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6">
+        <div className="bg-white border border-ima-border rounded-[14px] p-6">
           <EmptyState
             variant="compact"
             icon={<Users className="h-5 w-5" aria-hidden="true" />}
@@ -204,20 +204,20 @@ export function CoachAssignmentsClient({ students, coaches }: CoachAssignmentsCl
               <div
                 key={student.id}
                 className={[
-                  "border border-[#EDE9E0] rounded-[14px] p-5 flex flex-col sm:flex-row sm:items-center gap-3 motion-safe:transition-colors",
-                  hasLocalChange ? "bg-[#FCFCFF]" : "bg-white",
+                  "border border-ima-border rounded-[14px] p-5 flex flex-col sm:flex-row sm:items-center gap-3 motion-safe:transition-colors",
+                  hasLocalChange ? "bg-ima-surface" : "bg-white",
                 ].join(" ")}
               >
                 {/* Identity */}
                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className="w-10 h-10 rounded-full bg-[#F1EEE6] border border-[#EDE9E0] flex items-center justify-center text-sm font-semibold text-[#5A5648] shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-ima-surface-light border border-ima-border flex items-center justify-center text-sm font-semibold text-ima-text-secondary shrink-0">
                     {initials(student.name)}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-[#1A1A17] truncate leading-tight">
+                    <p className="text-sm font-semibold text-ima-text truncate leading-tight">
                       {student.name}
                     </p>
-                    <p className="mt-[3px] text-xs text-[#7A7466] truncate">
+                    <p className="mt-[3px] text-xs text-ima-text-secondary truncate">
                       {student.email}
                     </p>
                   </div>
@@ -234,10 +234,10 @@ export function CoachAssignmentsClient({ students, coaches }: CoachAssignmentsCl
                     disabled={isSaving}
                     aria-label={`Assign ${student.name} to coach`}
                     className={[
-                      "rounded-[10px] border bg-white px-3 text-sm text-[#1A1A17] min-h-[44px] min-w-0 w-full sm:min-w-[200px] sm:w-auto focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 disabled:opacity-50 motion-safe:transition-colors",
+                      "rounded-[10px] border bg-white px-3 text-sm text-ima-text min-h-[44px] min-w-0 w-full sm:min-w-[200px] sm:w-auto focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 disabled:opacity-50 motion-safe:transition-colors",
                       hasLocalChange
-                        ? "border-[#4A6CF7] ring-1 ring-[#4A6CF7]/30"
-                        : "border-[#EDE9E0] hover:border-[#D8D2C4]",
+                        ? "border-ima-primary ring-1 ring-ima-primary/30"
+                        : "border-ima-border hover:border-ima-border",
                     ].join(" ")}
                   >
                     <option value="">Unassigned</option>
@@ -252,7 +252,7 @@ export function CoachAssignmentsClient({ students, coaches }: CoachAssignmentsCl
                   </select>
                   {isSaving && (
                     <span
-                      className="text-[10px] font-semibold tracking-widest text-[#8A8474] uppercase"
+                      className="text-[10px] font-semibold tracking-widest text-ima-text-secondary uppercase"
                     >
                       Saving…
                     </span>

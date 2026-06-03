@@ -246,7 +246,7 @@ export function StudentListTable({
                           key={col.key}
                           scope="col"
                           aria-sort={ariaSort}
-                          className={`px-4 py-3 text-xs font-semibold text-ima-text-secondary uppercase tracking-wide ${col.align === "right" ? "text-right" : "text-left"}`}
+                          className={`px-4 py-3 text-xs font-semibold text-ima-text-muted uppercase tracking-wide ${col.align === "right" ? "text-right" : "text-left"}`}
                         >
                           <button
                             type="button"
@@ -265,7 +265,7 @@ export function StudentListTable({
                     })}
                     <th
                       scope="col"
-                      className="px-4 py-3 text-xs font-semibold text-ima-text-secondary uppercase tracking-wide text-left"
+                      className="px-4 py-3 text-xs font-semibold text-ima-text-muted uppercase tracking-wide text-left"
                     >
                       Status
                     </th>

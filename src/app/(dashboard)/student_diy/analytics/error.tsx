@@ -19,10 +19,10 @@ export default function AnalyticsError({
     <div className="px-4 md:px-6 py-8 md:py-12 max-w-7xl mx-auto">
       <Card>
         <CardContent className="py-12 text-center">
-          <h2 className="text-[20px] md:text-[22px] font-semibold tracking-[-0.01em] leading-tight text-[#1A1A17]">
+          <h2 className="text-[20px] md:text-[22px] font-semibold tracking-[-0.01em] leading-tight text-ima-text">
             We couldn&apos;t load your analytics
           </h2>
-          <p className="text-sm text-[#7A7466] mt-2 leading-relaxed">
+          <p className="text-sm text-ima-text-secondary mt-2 leading-relaxed">
             Refresh the page or try again in a moment.
           </p>
           <div className="mt-6">

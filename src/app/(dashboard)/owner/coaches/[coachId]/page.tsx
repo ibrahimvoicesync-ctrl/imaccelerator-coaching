@@ -273,12 +273,12 @@ export default async function CoachDetailPage({
 
       {/* Coach header */}
       <div className="flex items-center gap-4 mt-4">
-        <div className="w-14 h-14 rounded-full bg-[#4A6CF7]flex items-center justify-center text-xl font-bold text-white shrink-0">
+        <div className="w-14 h-14 rounded-full bg-ima-primary flex items-center justify-center text-xl font-bold text-white shrink-0">
           {coachInitial}
         </div>
         <div>
-          <h1 className="text-xl font-bold text-[#1A1A17]">{coach.name}</h1>
-          <p className="text-sm text-[#7A7466]">{coach.email}</p>
+          <h1 className="text-xl font-bold text-ima-text">{coach.name}</h1>
+          <p className="text-sm text-ima-text-secondary">{coach.email}</p>
         </div>
       </div>
 
@@ -287,17 +287,17 @@ export default async function CoachDetailPage({
         {/* Student Count */}
         <Card>
           <CardContent className="p-4 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-lg bg-[#4A6CF7]/10 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-ima-primary/10 flex items-center justify-center shrink-0">
               <Users
-                className="h-5 w-5 text-[#4A6CF7]"
+                className="h-5 w-5 text-ima-primary"
                 aria-hidden="true"
               />
             </div>
             <div>
-              <p className="text-2xl font-bold text-[#1A1A17]">
+              <p className="text-2xl font-bold tabular-nums slashed-zero text-ima-text">
                 {studentList.length}
               </p>
-              <p className="text-xs text-[#7A7466]">Students</p>
+              <p className="text-xs text-ima-text-secondary">Students</p>
             </div>
           </CardContent>
         </Card>
@@ -305,15 +305,15 @@ export default async function CoachDetailPage({
         {/* Avg Rating */}
         <Card>
           <CardContent className="p-4 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-lg bg-[#4A6CF7]/10 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-ima-primary/10 flex items-center justify-center shrink-0">
               <Star
-                className="h-5 w-5 text-[#4A6CF7]"
+                className="h-5 w-5 text-ima-primary"
                 aria-hidden="true"
               />
             </div>
             <div>
-              <p className="text-2xl font-bold text-[#1A1A17]">{avgRatingStr}</p>
-              <p className="text-xs text-[#7A7466]">Avg Rating</p>
+              <p className="text-2xl font-bold tabular-nums slashed-zero text-ima-text">{avgRatingStr}</p>
+              <p className="text-xs text-ima-text-secondary">Avg Rating</p>
             </div>
           </CardContent>
         </Card>
@@ -321,15 +321,15 @@ export default async function CoachDetailPage({
         {/* Review Rate */}
         <Card>
           <CardContent className="p-4 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-lg bg-[#4A6CF7]/10 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-ima-primary/10 flex items-center justify-center shrink-0">
               <FileText
-                className="h-5 w-5 text-[#4A6CF7]"
+                className="h-5 w-5 text-ima-primary"
                 aria-hidden="true"
               />
             </div>
             <div>
-              <p className="text-2xl font-bold text-[#1A1A17]">{reviewRate}%</p>
-              <p className="text-xs text-[#7A7466]">Review Rate</p>
+              <p className="text-2xl font-bold tabular-nums slashed-zero text-ima-text">{reviewRate}%</p>
+              <p className="text-xs text-ima-text-secondary">Review Rate</p>
             </div>
           </CardContent>
         </Card>
@@ -337,9 +337,9 @@ export default async function CoachDetailPage({
         {/* At-Risk */}
         <Card>
           <CardContent className="p-4 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-lg bg-[#D97706]/10 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-ima-warning/10 flex items-center justify-center shrink-0">
               <AlertTriangle
-                className="h-5 w-5 text-[#D97706]"
+                className="h-5 w-5 text-ima-warning"
                 aria-hidden="true"
               />
             </div>
@@ -347,13 +347,13 @@ export default async function CoachDetailPage({
               <p
                 className={
                   atRiskCount > 0
-                    ? "text-2xl font-bold text-[#DC2626]"
-                    : "text-2xl font-bold text-[#1A1A17]"
+                    ? "text-2xl font-bold tabular-nums slashed-zero text-ima-error"
+                    : "text-2xl font-bold tabular-nums slashed-zero text-ima-text"
                 }
               >
                 {atRiskCount}
               </p>
-              <p className="text-xs text-[#7A7466]">At-Risk</p>
+              <p className="text-xs text-ima-text-secondary">At-Risk</p>
             </div>
           </CardContent>
         </Card>
@@ -361,7 +361,7 @@ export default async function CoachDetailPage({
 
       {/* Assigned Students */}
       <div className="mt-6">
-        <h2 className="text-base font-semibold text-[#1A1A17] mb-4">
+        <h2 className="text-base font-semibold text-ima-text mb-4">
           Assigned Students
         </h2>
         {enrichedStudents.length === 0 ? (

@@ -111,7 +111,10 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Exclude static files, images, favicon, and API routes from the proxy guard
-    "/((?!_next/static|_next/image|favicon.ico|api/|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)$).*)",
+    // Exclude static files, images, favicon, the service worker / web manifest,
+    // and API routes from the proxy guard. The push service worker (/sw.js) and
+    // /manifest.json MUST be publicly served — otherwise the auth guard
+    // redirects them to /login and registration/installability break.
+    "/((?!_next/static|_next/image|favicon.ico|api/|sw\\.js|manifest\\.json|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)$).*)",
   ],
 };

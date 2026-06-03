@@ -27,7 +27,7 @@ export function PaginationControls({
       {page > 1 ? (
         <Link
           href={buildHref(page - 1)}
-          className="min-h-[44px] min-w-[44px] px-4 py-2 rounded-lg border border-ima-border text-sm font-medium text-ima-text hover:bg-ima-bg-secondary transition-colors inline-flex items-center justify-center"
+          className="min-h-[44px] min-w-[44px] px-4 py-2 rounded-lg border border-ima-border text-sm font-medium text-ima-text hover:bg-ima-surface-light motion-safe:transition-colors inline-flex items-center justify-center"
         >
           Previous
         </Link>
@@ -45,7 +45,7 @@ export function PaginationControls({
       {page < totalPages ? (
         <Link
           href={buildHref(page + 1)}
-          className="min-h-[44px] min-w-[44px] px-4 py-2 rounded-lg border border-ima-border text-sm font-medium text-ima-text hover:bg-ima-bg-secondary transition-colors inline-flex items-center justify-center"
+          className="min-h-[44px] min-w-[44px] px-4 py-2 rounded-lg border border-ima-border text-sm font-medium text-ima-text hover:bg-ima-surface-light motion-safe:transition-colors inline-flex items-center justify-center"
         >
           Next
         </Link>

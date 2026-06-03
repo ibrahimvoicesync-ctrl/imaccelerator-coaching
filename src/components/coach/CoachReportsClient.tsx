@@ -141,10 +141,10 @@ export function CoachReportsClient({
                 onClick={() => handleFilterTab(tab.value)}
                 aria-pressed={isActive}
                 className={[
-                  "min-h-[44px] px-4 text-sm font-semibold rounded-[10px] motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2",
+                  "min-h-[44px] px-4 text-sm font-semibold rounded-[10px] motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2",
                   isActive
-                    ? "bg-[#4A6CF7] text-white"
-                    : "bg-white border border-[#EDE9E0] text-[#1A1A17] hover:border-[#D8D2C4]",
+                    ? "bg-ima-primary text-white"
+                    : "bg-white border border-ima-border text-ima-text hover:border-ima-border",
                 ].join(" ")}
               >
                 {tab.label}
@@ -157,7 +157,7 @@ export function CoachReportsClient({
           aria-label="Filter by student"
           value={currentStudentId}
           onChange={(e) => handleStudentFilter(e.target.value)}
-          className="min-h-[44px] px-3 text-sm rounded-[10px] border border-[#EDE9E0] bg-white text-[#1A1A17] focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 hover:border-[#D8D2C4] motion-safe:transition-colors"
+          className="min-h-[44px] px-3 text-sm rounded-[10px] border border-ima-border bg-white text-ima-text focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 hover:border-ima-border motion-safe:transition-colors"
         >
           <option value="">All Students</option>
           {students.map((s) => (
@@ -170,7 +170,7 @@ export function CoachReportsClient({
 
       {/* Report list */}
       {localReports.length === 0 ? (
-        <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6">
+        <div className="bg-white border border-ima-border rounded-[14px] p-6">
           <EmptyState
             variant="compact"
             icon={<FileText className="h-5 w-5" aria-hidden="true" />}

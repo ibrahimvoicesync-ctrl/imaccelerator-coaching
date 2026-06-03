@@ -19,7 +19,7 @@ export default function Loading() {
       <Skeleton className="h-11 w-48 rounded-lg mt-4" />
 
       {/* Tab bar */}
-      <div className="flex gap-4 border-b border-[#EDE9E0] mt-6 pb-0">
+      <div className="flex gap-4 border-b border-ima-border mt-6 pb-0">
         {Array.from({ length: 3 }).map((_, i) => (
           <Skeleton key={i} className="h-11 w-20" />
         ))}

@@ -31,14 +31,14 @@ export default function OwnerAnalyticsError({
         <CardContent className="p-6">
           <div className="flex items-start gap-3">
             <AlertTriangle
-              className="h-5 w-5 text-[#4A6CF7] shrink-0 mt-0.5"
+              className="h-5 w-5 text-ima-primary shrink-0 mt-0.5"
               aria-hidden="true"
             />
             <div className="flex-1">
-              <h1 className="text-lg font-semibold text-[#1A1A17]">
+              <h1 className="text-lg font-semibold text-ima-text">
                 Couldn&apos;t load owner analytics
               </h1>
-              <p className="mt-1 text-sm text-[#7A7466]">
+              <p className="mt-1 text-sm text-ima-text-secondary">
                 {error.message || "An unexpected error occurred."}
               </p>
               <div className="mt-4">

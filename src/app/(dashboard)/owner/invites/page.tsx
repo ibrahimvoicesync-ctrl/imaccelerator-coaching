@@ -1,14 +1,8 @@
-import { JetBrains_Mono } from "next/font/google";
 import { requireRole } from "@/lib/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { OwnerInvitesClient } from "@/components/owner/OwnerInvitesClient";
 import { UserPlus, Link2, CheckCircle } from "lucide-react";
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-mono-bold",
-});
 
 export default async function OwnerInvitesPage() {
   const user = await requireRole("owner");
@@ -63,42 +57,41 @@ export default async function OwnerInvitesPage() {
       label: "Total Invites",
       value: String(totalInvites),
       icon: UserPlus,
-      iconBg: "bg-[#E8EEFF]",
-      iconColor: "text-[#4A6CF7]",
+      iconBg: "bg-ima-surface-accent",
+      iconColor: "text-ima-primary",
     },
     {
       label: "Used",
       value: String(usedInvites),
       icon: CheckCircle,
-      iconBg: "bg-[#E2F5E9]",
-      iconColor: "text-[#16A34A]",
+      iconBg: "bg-ima-success/10",
+      iconColor: "text-ima-success",
     },
     {
       label: "Active Links",
       value: String(activeLinks),
       icon: Link2,
-      iconBg: "bg-[#FDF3E0]",
-      iconColor: "text-[#D97706]",
+      iconBg: "bg-ima-warning/10",
+      iconColor: "text-ima-warning",
     },
   ];
 
   return (
     <div
-      className={`${jetbrainsMono.variable} -mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-[#FAFAF7]`}
+      className={`-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg`}
     >
       <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
         {/* Masthead */}
         <header className="motion-safe:animate-fadeIn">
           <p
-            className="text-[11px] font-semibold tracking-[0.22em] text-[#8A8474] uppercase"
-            style={{ fontFamily: "var(--font-mono-bold)" }}
+            className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
           >
             Invites
           </p>
-          <h1 className="mt-3 text-[32px] md:text-[36px] font-semibold leading-[1.05] text-[#1A1A17] tracking-[-0.02em]">
+          <h1 className="mt-3 text-[32px] md:text-[36px] font-semibold leading-[1.05] text-ima-text tracking-[-0.02em]">
             Invite members
           </h1>
-          <p className="mt-2 max-w-[58ch] text-[15px] text-[#7A7466] leading-[1.55]">
+          <p className="mt-2 max-w-[58ch] text-[15px] text-ima-text-secondary leading-[1.55]">
             Whitelist emails and generate invite links for new coaches and
             students.
           </p>
@@ -113,7 +106,7 @@ export default async function OwnerInvitesPage() {
           {statCards.map((s) => (
             <div
               key={s.label}
-              className="flex items-center gap-4 bg-white border border-[#EDE9E0] rounded-[12px] px-[18px] py-[16px] min-h-[72px]"
+              className="flex items-center gap-4 bg-white border border-ima-border rounded-[12px] px-[18px] py-[16px] min-h-[72px]"
             >
               <div
                 className={`w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0 ${s.iconBg}`}
@@ -124,12 +117,11 @@ export default async function OwnerInvitesPage() {
                 />
               </div>
               <div className="min-w-0">
-                <p className="text-[24px] font-semibold leading-none tabular-nums slashed-zero tracking-[-0.01em] text-[#1A1A17]">
+                <p className="text-[24px] font-semibold leading-none tabular-nums slashed-zero tracking-[-0.01em] text-ima-text">
                   {s.value}
                 </p>
                 <p
-                  className="mt-[6px] text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8A8474]"
-                  style={{ fontFamily: "var(--font-mono-bold)" }}
+                  className="mt-[6px] text-[10px] font-semibold uppercase tracking-[0.14em] text-ima-text-secondary"
                 >
                   {s.label}
                 </p>

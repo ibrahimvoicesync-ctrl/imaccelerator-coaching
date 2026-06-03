@@ -13,7 +13,7 @@ interface PlannerUIProps {
 }
 
 type PlannerSession = {
-  session_minutes: 30 | 45 | 60;
+  session_minutes: number;
   break_type: "short" | "long" | "none";
   break_minutes: number;
 };
@@ -65,24 +65,21 @@ export function PlannerUI({ onPlanConfirmed }: PlannerUIProps) {
     (s, p) => s + p.session_minutes,
     0
   );
-  const maxMinutes = WORK_TRACKER.dailyGoalHours * 60; // 240
-  const minDuration = Math.min(
-    ...(WORK_TRACKER.sessionDurationOptions as readonly number[])
-  );
-  const canAddSession = totalPlannedMinutes + minDuration <= maxMinutes;
+  const maxMinutes = WORK_TRACKER.dailyCapHours * 60; // 480 (8h hard cap)
+  const remainingMinutes = maxMinutes - totalPlannedMinutes;
+  const canAddSession = remainingMinutes >= WORK_TRACKER.minSessionMinutes;
   const canConfirm = plannerSessions.length > 0;
 
-  // Only durations that fit under the cap
+  // Custom-duration input state
+  const [customMinutes, setCustomMinutes] = useState("");
+
+  // Only presets that fit under the remaining cap
   const availableDurations = (
     WORK_TRACKER.sessionDurationOptions as readonly number[]
-  ).filter((min) => totalPlannedMinutes + min <= maxMinutes) as (
-    | 30
-    | 45
-    | 60
-  )[];
+  ).filter((min) => totalPlannedMinutes + min <= maxMinutes);
 
   const handleAddSession = useCallback(
-    (duration: 30 | 45 | 60) => {
+    (duration: number) => {
       setPlannerSessions((prev) => {
         const next: PlannerSession[] = [
           ...prev,
@@ -93,6 +90,25 @@ export function PlannerUI({ onPlanConfirmed }: PlannerUIProps) {
     },
     []
   );
+
+  const handleAddCustom = useCallback(() => {
+    const raw = parseInt(customMinutes, 10);
+    if (Number.isNaN(raw)) return;
+    const clamped = Math.max(
+      WORK_TRACKER.minSessionMinutes,
+      Math.min(WORK_TRACKER.maxSessionMinutes, raw)
+    );
+    // Don't allow exceeding the daily cap
+    if (totalPlannedMinutes + clamped > maxMinutes) {
+      toastRef.current.toast({
+        type: "error",
+        title: `That would exceed the ${WORK_TRACKER.dailyCapHours}h daily cap`,
+      });
+      return;
+    }
+    handleAddSession(clamped);
+    setCustomMinutes("");
+  }, [customMinutes, totalPlannedMinutes, maxMinutes, handleAddSession]);
 
   const handleRemoveSession = useCallback((index: number) => {
     setPlannerSessions((prev) => {
@@ -169,7 +185,7 @@ export function PlannerUI({ onPlanConfirmed }: PlannerUIProps) {
       <div>
         <h2 className="text-xl font-bold text-ima-text mb-1">Plan Your Day</h2>
         <p className="text-sm text-ima-text-secondary">
-          Add sessions up to {WORK_TRACKER.dailyGoalHours}h of work time
+          Add sessions up to {WORK_TRACKER.dailyCapHours}h of work time
         </p>
       </div>
 
@@ -178,7 +194,7 @@ export function PlannerUI({ onPlanConfirmed }: PlannerUIProps) {
         <div className="flex justify-between items-baseline mb-1">
           <span className="text-sm font-medium text-ima-text">
             {formatHoursMinutes(totalPlannedMinutes)} /{" "}
-            {WORK_TRACKER.dailyGoalHours}h planned
+            {WORK_TRACKER.dailyCapHours}h planned
           </span>
           <span className="text-xs text-ima-text-secondary">
             {plannerSessions.length} session
@@ -191,7 +207,7 @@ export function PlannerUI({ onPlanConfirmed }: PlannerUIProps) {
           aria-valuenow={totalPlannedMinutes}
           aria-valuemin={0}
           aria-valuemax={maxMinutes}
-          aria-label={`Planned time: ${formatHoursMinutes(totalPlannedMinutes)} of ${WORK_TRACKER.dailyGoalHours}h`}
+          aria-label={`Planned time: ${formatHoursMinutes(totalPlannedMinutes)} of ${WORK_TRACKER.dailyCapHours}h`}
         >
           <div
             className="bg-ima-primary h-full rounded-full motion-safe:transition-all duration-500"
@@ -295,6 +311,37 @@ export function PlannerUI({ onPlanConfirmed }: PlannerUIProps) {
                 {min} min
               </button>
             ))}
+          </div>
+          {/* Custom duration */}
+          <div className="mt-3 flex items-center gap-2 flex-wrap">
+            <label htmlFor="planner-custom-minutes" className="sr-only">
+              Custom session duration in minutes
+            </label>
+            <input
+              id="planner-custom-minutes"
+              type="number"
+              inputMode="numeric"
+              min={WORK_TRACKER.minSessionMinutes}
+              max={WORK_TRACKER.maxSessionMinutes}
+              value={customMinutes}
+              onChange={(e) => setCustomMinutes(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleAddCustom();
+                }
+              }}
+              placeholder="Custom min"
+              className="min-h-[44px] w-[120px] px-3 rounded-lg font-medium tabular-nums bg-ima-bg border border-ima-border text-ima-text focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-1"
+            />
+            <button
+              onClick={handleAddCustom}
+              disabled={!customMinutes}
+              className="min-h-[44px] px-4 rounded-lg font-medium bg-ima-bg border border-ima-border text-ima-text hover:bg-ima-primary hover:text-white hover:border-ima-primary disabled:opacity-50 motion-safe:transition-colors"
+              aria-label="Add custom-length session"
+            >
+              Add
+            </button>
           </div>
         </div>
       )}

@@ -20,11 +20,11 @@ type KpiCardData = {
 };
 
 const TINT_CLASSES: Record<KpiTint, { bg: string; text: string }> = {
-  primary: { bg: "bg-[#E8EEFF]", text: "text-[#4A6CF7]" },
-  success: { bg: "bg-[#E2F5E9]", text: "text-[#16A34A]" },
-  info: { bg: "bg-[#E8EEFF]", text: "text-[#4A6CF7]" },
-  warning: { bg: "bg-[#FDF3E0]", text: "text-[#D97706]" },
-  accent: { bg: "bg-[#F1EEE6]", text: "text-[#7A7466]" },
+  primary: { bg: "bg-ima-surface-accent", text: "text-ima-primary" },
+  success: { bg: "bg-ima-success/10", text: "text-ima-success" },
+  info: { bg: "bg-ima-surface-accent", text: "text-ima-primary" },
+  warning: { bg: "bg-ima-warning/10", text: "text-ima-warning" },
+  accent: { bg: "bg-ima-surface-light", text: "text-ima-text-secondary" },
 };
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
@@ -104,7 +104,7 @@ export function KPIGrid({ stats }: { stats: CoachAnalyticsStats }) {
           <div
             key={card.label}
             aria-label={card.ariaLabel}
-            className="flex items-start gap-4 bg-white border border-[#EDE9E0] rounded-[12px] px-[18px] py-[16px] min-h-[72px]"
+            className="flex items-start gap-4 bg-white border border-ima-border rounded-[12px] px-[18px] py-[16px] min-h-[72px]"
           >
             <div
               className={`w-9 h-9 rounded-[8px] ${tint.bg} flex items-center justify-center shrink-0`}
@@ -112,15 +112,15 @@ export function KPIGrid({ stats }: { stats: CoachAnalyticsStats }) {
               <Icon className={`h-[18px] w-[18px] ${tint.text}`} aria-hidden="true" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-2xl font-semibold leading-none tabular-nums text-[#1A1A17]">
+              <p className="text-2xl font-semibold leading-none tabular-nums text-ima-text">
                 {card.value}
               </p>
               {card.subLabel ? (
-                <p className="mt-[6px] text-sm font-semibold text-[#1A1A17] truncate">
+                <p className="mt-[6px] text-sm font-semibold text-ima-text truncate">
                   {card.subLabel}
                 </p>
               ) : null}
-              <p className="mt-[6px] text-xs text-[#8A8474]">{card.label}</p>
+              <p className="mt-[6px] text-xs text-ima-text-secondary">{card.label}</p>
             </div>
           </div>
         );

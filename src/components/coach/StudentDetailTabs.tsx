@@ -16,7 +16,7 @@ const tabs: { key: TabKey; label: string }[] = [
 export function StudentDetailTabs({ activeTab, onTabChange }: StudentDetailTabsProps) {
   return (
     <div
-      className="flex gap-0 overflow-x-auto border-b border-[#EDE9E0]"
+      className="flex gap-0 overflow-x-auto border-b border-ima-border"
       role="tablist"
     >
       {tabs.map((tab) => {
@@ -31,15 +31,15 @@ export function StudentDetailTabs({ activeTab, onTabChange }: StudentDetailTabsP
             aria-controls={`tabpanel-${tab.key}`}
             onClick={() => onTabChange(tab.key)}
             className={[
-              "shrink-0 relative min-h-[44px] px-5 py-3 inline-flex items-center text-sm font-semibold motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2",
-              active ? "text-[#1A1A17]" : "text-[#8A8474] hover:text-[#1A1A17]",
+              "shrink-0 relative min-h-[44px] px-5 py-3 inline-flex items-center text-sm font-semibold motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2",
+              active ? "text-ima-text" : "text-ima-text-secondary hover:text-ima-text",
             ].join(" ")}
           >
             {tab.label}
             {active && (
               <span
                 aria-hidden="true"
-                className="absolute left-0 right-0 -bottom-px h-[3px] bg-[#4A6CF7]"
+                className="absolute left-0 right-0 -bottom-px h-[3px] bg-ima-primary"
               />
             )}
           </button>

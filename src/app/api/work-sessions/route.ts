@@ -15,10 +15,11 @@ import { coachAnalyticsTag } from "@/lib/rpc/coach-analytics-types";
 const postSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   cycle_number: z.number().int().min(1),
-  session_minutes: z.number().int().refine(
-    (v) => (WORK_TRACKER.sessionDurationOptions as readonly number[]).includes(v),
-    { message: "session_minutes must be 30, 45, or 60" }
-  ),
+  session_minutes: z
+    .number()
+    .int()
+    .min(WORK_TRACKER.minSessionMinutes)
+    .max(WORK_TRACKER.maxSessionMinutes),
 });
 
 export async function POST(request: Request) {

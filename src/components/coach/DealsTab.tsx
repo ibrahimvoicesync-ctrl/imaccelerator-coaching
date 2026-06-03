@@ -150,22 +150,22 @@ export function DealsTab({
       {/* Revenue hero card */}
       <section
         aria-label="Deals summary"
-        className="bg-white border border-[#EDE9E0] rounded-[14px] p-5 md:p-6"
+        className="bg-white border border-ima-border rounded-[14px] p-5 md:p-6"
       >
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5">
           <div className="min-w-0">
             <p
-              className="text-[10px] font-semibold tracking-[0.2em] text-[#8A8474] uppercase"
+              className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
             >
               Total Revenue
             </p>
-            <p className="mt-3 text-5xl md:text-6xl font-semibold leading-none tabular-nums tracking-tight text-[#4A6CF7]">
+            <p className="mt-3 text-5xl md:text-6xl font-semibold leading-none tabular-nums tracking-tight text-ima-primary">
               {currencyCompact.format(totalRevenue)}
             </p>
             <p
-              className="mt-3 text-xs font-semibold tracking-widest uppercase text-[#8A8474]"
+              className="mt-3 text-xs font-semibold tracking-widest uppercase text-ima-text-secondary"
             >
-              <span className="text-sm tabular-nums text-[#1A1A17] normal-case tracking-normal mr-[6px]">
+              <span className="text-sm tabular-nums text-ima-text normal-case tracking-normal mr-[6px]">
                 {dealCount}
               </span>
               Deal{dealCount !== 1 ? "s" : ""} Logged
@@ -177,7 +177,7 @@ export function DealsTab({
             onClick={openAddModal}
             disabled={submitting}
             aria-label={`Add deal for ${studentName}`}
-            className="inline-flex items-center justify-center gap-2 min-h-[44px] px-4 rounded-[10px] bg-[#4A6CF7] text-white text-sm font-semibold hover:bg-[#3852D8] motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 disabled:opacity-60 shrink-0"
+            className="inline-flex items-center justify-center gap-2 min-h-[44px] px-4 rounded-[10px] bg-ima-primary text-white text-sm font-semibold hover:bg-ima-primary-hover motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 disabled:opacity-60 shrink-0"
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
             Add Deal
@@ -202,13 +202,13 @@ export function DealsTab({
             ].map((m) => (
               <div
                 key={m.label}
-                className="rounded-[10px] border border-[#EDE9E0] bg-[#FAFAF7] px-4 py-3"
+                className="rounded-[10px] border border-ima-border bg-ima-bg px-4 py-3"
               >
-                <p className="text-xl font-semibold leading-none tabular-nums text-[#1A1A17]">
+                <p className="text-xl font-semibold leading-none tabular-nums text-ima-text">
                   {m.value}
                 </p>
                 <p
-                  className="mt-[6px] text-[10px] font-semibold tracking-[0.2em] uppercase text-[#8A8474]"
+                  className="mt-[6px] text-[10px] font-semibold tracking-[0.2em] uppercase text-ima-text-secondary"
                 >
                   {m.label}
                 </p>
@@ -220,7 +220,7 @@ export function DealsTab({
 
       {/* Deals ledger */}
       {dealCount === 0 ? (
-        <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6">
+        <div className="bg-white border border-ima-border rounded-[14px] p-6">
           <EmptyState
             variant="compact"
             icon={<DollarSign className="h-6 w-6" aria-hidden="true" />}
@@ -232,21 +232,21 @@ export function DealsTab({
         <section aria-label="Deals ledger">
           <div className="flex items-baseline justify-between gap-3">
             <p
-              className="text-[10px] font-semibold tracking-[0.2em] text-[#8A8474] uppercase"
+              className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
             >
               Ledger
             </p>
             <span
-              className="text-xs font-semibold tabular-nums text-[#8A8474]"
+              className="text-xs font-semibold tabular-nums text-ima-text-secondary"
             >
               {dealCount} entr{dealCount !== 1 ? "ies" : "y"}
             </span>
           </div>
 
-          <div className="mt-3 bg-white border border-[#EDE9E0] rounded-[14px] overflow-hidden">
+          <div className="mt-3 bg-white border border-ima-border rounded-[14px] overflow-hidden">
             {/* Column headers — hidden on mobile */}
             <div
-              className="hidden sm:grid grid-cols-[110px_1fr_1fr_90px_130px_110px] items-center gap-4 px-5 py-3 border-b border-[#EDE9E0] text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8A8474]"
+              className="hidden sm:grid grid-cols-[110px_1fr_1fr_90px_130px_110px] items-center gap-4 px-5 py-3 border-b border-ima-border text-[10px] font-semibold uppercase tracking-[0.2em] text-ima-text-secondary"
             >
               <span>Deal</span>
               <span>Revenue</span>
@@ -257,46 +257,46 @@ export function DealsTab({
             </div>
 
             {/* Rows */}
-            <ul className="divide-y divide-[#F3EFE4]" role="list">
+            <ul className="divide-y divide-ima-surface-light" role="list">
               {optimisticDeals.map((deal) => (
                 <li
                   key={deal.id}
-                  className="grid grid-cols-2 sm:grid-cols-[110px_1fr_1fr_90px_130px_110px] items-center gap-x-4 gap-y-2 px-5 py-4 min-h-[52px] motion-safe:transition-colors hover:bg-[#FAFAF7]"
+                  className="grid grid-cols-2 sm:grid-cols-[110px_1fr_1fr_90px_130px_110px] items-center gap-x-4 gap-y-2 px-5 py-4 min-h-[52px] motion-safe:transition-colors hover:bg-ima-bg"
                 >
                   <span className="col-span-2 sm:col-span-1 flex items-baseline gap-2">
                     <span
-                      className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#8A8474]"
+                      className="text-[10px] font-semibold tracking-[0.2em] uppercase text-ima-text-secondary"
                     >
                       Deal
                     </span>
                     <span
-                      className="text-sm font-semibold tabular-nums text-[#1A1A17]"
+                      className="text-sm font-semibold tabular-nums text-ima-text"
                     >
                       #{String(deal.deal_number).padStart(2, "0")}
                     </span>
                   </span>
 
-                  <span className="text-sm font-semibold tabular-nums text-[#1A1A17]">
+                  <span className="text-sm font-semibold tabular-nums text-ima-text">
                     <span
-                      className="sm:hidden text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8A8474] mr-2"
+                      className="sm:hidden text-[10px] font-semibold uppercase tracking-[0.2em] text-ima-text-secondary mr-2"
                     >
                       Revenue
                     </span>
                     {formatCurrency(deal.revenue)}
                   </span>
 
-                  <span className="text-sm tabular-nums text-[#5A5648]">
+                  <span className="text-sm tabular-nums text-ima-text-secondary">
                     <span
-                      className="sm:hidden text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8A8474] mr-2"
+                      className="sm:hidden text-[10px] font-semibold uppercase tracking-[0.2em] text-ima-text-secondary mr-2"
                     >
                       Profit
                     </span>
                     {formatCurrency(deal.profit)}
                   </span>
 
-                  <span className="text-sm tabular-nums text-[#5A5648]">
+                  <span className="text-sm tabular-nums text-ima-text-secondary">
                     <span
-                      className="sm:hidden text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8A8474] mr-2"
+                      className="sm:hidden text-[10px] font-semibold uppercase tracking-[0.2em] text-ima-text-secondary mr-2"
                     >
                       Margin
                     </span>
@@ -313,7 +313,7 @@ export function DealsTab({
                   </span>
 
                   <span
-                    className="text-xs tabular-nums uppercase tracking-wider text-[#8A8474] sm:text-right"
+                    className="text-xs tabular-nums uppercase tracking-wider text-ima-text-secondary sm:text-right"
                   >
                     {new Date(deal.created_at).toLocaleDateString("en-US", {
                       month: "short",
@@ -327,20 +327,20 @@ export function DealsTab({
 
             {/* Totals footer */}
             <div
-              className="hidden sm:grid grid-cols-[110px_1fr_1fr_90px_130px_110px] items-center gap-4 px-5 py-3 border-t border-[#EDE9E0] bg-[#FAFAF7]"
+              className="hidden sm:grid grid-cols-[110px_1fr_1fr_90px_130px_110px] items-center gap-4 px-5 py-3 border-t border-ima-border bg-ima-bg"
             >
               <span
-                className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#8A8474]"
+                className="text-[10px] font-semibold tracking-[0.2em] uppercase text-ima-text-secondary"
               >
                 Total
               </span>
-              <span className="text-sm font-semibold tabular-nums text-[#1A1A17]">
+              <span className="text-sm font-semibold tabular-nums text-ima-text">
                 {formatCurrency(totalRevenue)}
               </span>
-              <span className="text-sm font-semibold tabular-nums text-[#5A5648]">
+              <span className="text-sm font-semibold tabular-nums text-ima-text-secondary">
                 {formatCurrency(totalProfit)}
               </span>
-              <span className="text-sm font-semibold tabular-nums text-[#5A5648]">
+              <span className="text-sm font-semibold tabular-nums text-ima-text-secondary">
                 {formatMargin(totalRevenue, totalProfit)}
               </span>
               <span />

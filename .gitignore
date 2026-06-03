@@ -51,3 +51,7 @@ dogfood-output/
 .claude/
 supabase/.branches/
 supabase/.temp/
+
+# Claude Code tooling artifacts
+.agents/
+skills-lock.json

@@ -33,13 +33,13 @@ export default function CoachAnalyticsError({
       <Card className="max-w-md w-full">
         <CardContent className="pt-6 flex flex-col items-center text-center">
           <AlertTriangle
-            className="h-12 w-12 text-[#DC2626] mb-4"
+            className="h-12 w-12 text-ima-error mb-4"
             aria-hidden="true"
           />
-          <h1 className="text-xl font-semibold tracking-tight text-[#1A1A17] mb-2">
+          <h1 className="text-xl font-semibold tracking-tight text-ima-text mb-2">
             Couldn&apos;t load analytics
           </h1>
-          <p className="text-sm text-[#7A7466] mb-6">
+          <p className="text-sm text-ima-text-secondary mb-6">
             Try refreshing the page. If the issue persists, contact support.
           </p>
           <div className="flex gap-3">

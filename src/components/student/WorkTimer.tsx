@@ -100,7 +100,7 @@ export function WorkTimer({
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke="#F1EEE6"
+            stroke="#F1F5F9"
             strokeWidth={strokeWidth}
           />
           {/* Progress ring */}
@@ -109,7 +109,7 @@ export function WorkTimer({
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke="#4A6CF7"
+            stroke="#2563EB"
             strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeDasharray={circumference}
@@ -121,17 +121,15 @@ export function WorkTimer({
         {/* Centered countdown text — editorial scale, tabular-nums */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span
-            className="text-[10px] md:text-[11px] uppercase tracking-[0.22em] font-semibold text-[#8A8474] mb-2"
-            style={{ fontFamily: "var(--font-mono-bold)" }}
+            className="text-[10px] md:text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-text-secondary mb-2"
           >
             Session {cycleNumber}
           </span>
-          <span className="text-[56px] md:text-[72px] font-bold tabular-nums tracking-[-0.02em] text-[#4A6CF7] leading-none">
+          <span className="text-[56px] md:text-[72px] font-bold tabular-nums tracking-[-0.02em] text-ima-primary leading-none">
             {timeStr}
           </span>
           <span
-            className="text-[10px] uppercase tracking-[0.22em] font-semibold text-[#8A8474] mt-3"
-            style={{ fontFamily: "var(--font-mono-bold)" }}
+            className="text-[10px] uppercase tracking-[0.22em] font-semibold text-ima-text-secondary mt-3"
           >
             Remaining
           </span>

@@ -15,7 +15,7 @@
  * /owner/coaches/[id].
  *
  * Window pills follow the coach editorial chrome: a min-h-[44px] pill
- * toolbar per card (bg-[#4A6CF7] active / bg-white #EDE9E0 border idle)
+ * toolbar per card (bg-ima-primary active / bg-white ima-border idle)
  * instead of the shared SegmentedControl primitive — presentation-only
  * swap so the page matches the owner chrome refactor.
  */
@@ -129,7 +129,7 @@ export function OwnerAnalyticsClient({ payload }: Props) {
   if (!anyData) {
     return (
       <div
-        className="mt-10 bg-white border border-[#EDE9E0] rounded-[14px] p-6 motion-safe:animate-fadeIn"
+        className="mt-10 bg-white border border-ima-border rounded-[14px] p-6 motion-safe:animate-fadeIn"
         style={{ animationDelay: "100ms" }}
       >
         <EmptyState
@@ -151,8 +151,7 @@ export function OwnerAnalyticsClient({ payload }: Props) {
       >
         <h2
           id="owner-lb-students-h2"
-          className="text-[11px] font-semibold tracking-[0.22em] text-[#8A8474] uppercase"
-          style={{ fontFamily: "var(--font-mono-bold)" }}
+          className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
         >
           Students
         </h2>
@@ -204,8 +203,7 @@ export function OwnerAnalyticsClient({ payload }: Props) {
       >
         <h2
           id="owner-lb-coaches-h2"
-          className="text-[11px] font-semibold tracking-[0.22em] text-[#8A8474] uppercase"
-          style={{ fontFamily: "var(--font-mono-bold)" }}
+          className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
         >
           Coaches
         </h2>
@@ -319,10 +317,10 @@ function WindowPills({ value, onChange, ariaLabel }: WindowPillsProps) {
             aria-selected={isActive}
             onClick={() => onChange(v)}
             className={cn(
-              "min-h-[44px] px-[14px] rounded-[10px] text-[12px] font-medium motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2",
+              "min-h-[44px] px-[14px] rounded-[10px] text-[12px] font-medium motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2",
               isActive
-                ? "bg-[#4A6CF7] text-white"
-                : "bg-white border border-[#EDE9E0] text-[#1A1A17] hover:border-[#D8D2C4]",
+                ? "bg-ima-primary text-white"
+                : "bg-white border border-ima-border text-ima-text hover:border-ima-border",
             )}
           >
             {label}

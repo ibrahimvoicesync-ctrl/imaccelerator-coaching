@@ -40,13 +40,13 @@ export default async function CoachReportsPage({
 
   const shellHeader = (
     <header className="motion-safe:animate-fadeIn">
-      <p className="text-xs font-semibold tracking-[0.2em] text-[#8A8474] uppercase">
+      <p className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
         Inbox
       </p>
-      <h1 className="mt-3 text-3xl md:text-4xl font-semibold leading-tight text-[#1A1A17] tracking-tight">
+      <h1 className="mt-3 text-3xl md:text-4xl font-semibold leading-tight text-ima-text tracking-tight">
         Reports
       </h1>
-      <p className="mt-2 text-sm text-[#7A7466] leading-relaxed">
+      <p className="mt-2 text-sm text-ima-text-secondary leading-relaxed">
         Review student reports from the last 7 days
       </p>
     </header>
@@ -54,11 +54,11 @@ export default async function CoachReportsPage({
 
   if (studentIds.length === 0) {
     return (
-      <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-[#FAFAF7]">
+      <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg">
         <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
           {shellHeader}
           <div
-            className="mt-10 bg-white border border-[#EDE9E0] rounded-[14px] p-6 motion-safe:animate-fadeIn"
+            className="mt-10 bg-white border border-ima-border rounded-[14px] p-6 motion-safe:animate-fadeIn"
             style={{ animationDelay: "100ms" }}
           >
             <EmptyState
@@ -149,38 +149,38 @@ export default async function CoachReportsPage({
       label: "Total Reports",
       value: String(totalReports),
       icon: FileText,
-      iconBg: "bg-[#E8EEFF]",
-      iconColor: "text-[#4A6CF7]",
-      valueColor: "text-[#1A1A17]",
+      iconBg: "bg-ima-surface-accent",
+      iconColor: "text-ima-primary",
+      valueColor: "text-ima-text",
     },
     {
       label: "Pending",
       value: String(pendingCount),
       icon: Clock,
-      iconBg: "bg-[#FDF3E0]",
-      iconColor: "text-[#D97706]",
-      valueColor: pendingCount > 0 ? "text-[#D97706]" : "text-[#1A1A17]",
+      iconBg: "bg-ima-warning/10",
+      iconColor: "text-ima-warning",
+      valueColor: pendingCount > 0 ? "text-ima-warning" : "text-ima-text",
     },
     {
       label: "Reviewed",
       value: String(reviewedCount),
       icon: CheckCircle,
-      iconBg: "bg-[#E2F5E9]",
-      iconColor: "text-[#16A34A]",
-      valueColor: "text-[#1A1A17]",
+      iconBg: "bg-ima-success/10",
+      iconColor: "text-ima-success",
+      valueColor: "text-ima-text",
     },
     {
       label: "Avg Hours",
       value: avgHours.toFixed(1),
       icon: Timer,
-      iconBg: "bg-[#F1EEE6]",
-      iconColor: "text-[#7A7466]",
-      valueColor: "text-[#1A1A17]",
+      iconBg: "bg-ima-surface-light",
+      iconColor: "text-ima-text-secondary",
+      valueColor: "text-ima-text",
     },
   ];
 
   return (
-    <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-[#FAFAF7]">
+    <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg">
       <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
         {shellHeader}
 
@@ -193,7 +193,7 @@ export default async function CoachReportsPage({
           {stats.map((s) => (
             <div
               key={s.label}
-              className="flex items-center gap-4 bg-white border border-[#EDE9E0] rounded-[12px] px-[18px] py-[16px] min-h-[72px]"
+              className="flex items-center gap-4 bg-white border border-ima-border rounded-[12px] px-[18px] py-[16px] min-h-[72px]"
             >
               <div
                 className={`w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0 ${s.iconBg}`}
@@ -204,7 +204,7 @@ export default async function CoachReportsPage({
                 <p className={`text-2xl font-semibold leading-none tabular-nums ${s.valueColor}`}>
                   {s.value}
                 </p>
-                <p className="mt-[6px] text-xs text-[#8A8474]">{s.label}</p>
+                <p className="mt-[6px] text-xs text-ima-text-secondary">{s.label}</p>
               </div>
             </div>
           ))}

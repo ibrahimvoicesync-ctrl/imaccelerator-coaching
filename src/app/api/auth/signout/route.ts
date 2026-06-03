@@ -14,6 +14,12 @@ export async function POST(request: Request) {
     console.error("[signout] Failed to sign out:", error);
   }
 
-  const { origin } = new URL(request.url);
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  const forwardedHost = request.headers.get("x-forwarded-host");
+  const origin = appUrl
+    ? new URL(appUrl).origin
+    : forwardedHost
+      ? `${request.headers.get("x-forwarded-proto") ?? "https"}://${forwardedHost}`
+      : new URL(request.url).origin;
   return NextResponse.redirect(`${origin}/login`, { status: 302 });
 }

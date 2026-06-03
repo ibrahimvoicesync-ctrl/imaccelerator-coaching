@@ -17,16 +17,16 @@ export function ActiveInactiveChip({ activeCount, inactiveCount }: Props) {
       role="status"
       aria-label={`${activeCount} students active, ${inactiveCount} students inactive in the last 7 days`}
       title="Active = work session or report in last 7 days. Inactive = no activity in last 7 days."
-      className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-white border border-[#EDE9E0]"
+      className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-white border border-ima-border"
     >
-      <span className="inline-flex items-center gap-1 text-[#16A34A]">
+      <span className="inline-flex items-center gap-1 text-ima-success">
         <span
           aria-hidden="true"
-          className="w-2 h-2 rounded-full bg-[#16A34A]"
+          className="w-2 h-2 rounded-full bg-ima-success"
         />
         <span className="tabular-nums">{activeCount}</span> active
       </span>
-      <span className="inline-flex items-center gap-1 text-[#7A7466] pl-2 border-l border-[#EDE9E0]">
+      <span className="inline-flex items-center gap-1 text-ima-text-secondary pl-2 border-l border-ima-border">
         <span className="tabular-nums">{inactiveCount}</span> inactive
       </span>
     </span>

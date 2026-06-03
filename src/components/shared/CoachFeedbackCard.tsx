@@ -23,8 +23,8 @@ function formatCommentDate(dateStr: string): string {
 
 export function CoachFeedbackCard({ comment, coachName, updatedAt }: CoachFeedbackCardProps) {
   return (
-    <Card role="region" aria-label="Coach feedback">
-      <CardContent className="p-4 bg-ima-surface-accent">
+    <Card variant="accent" role="region" aria-label="Coach feedback">
+      <CardContent className="p-4">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-ima-primary flex items-center justify-center shrink-0">
             <span className="text-xs font-semibold text-white">{getInitials(coachName)}</span>

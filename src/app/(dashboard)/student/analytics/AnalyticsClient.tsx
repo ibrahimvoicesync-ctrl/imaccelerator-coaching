@@ -33,14 +33,13 @@ import {
   type StudentAnalyticsRange,
 } from "@/lib/rpc/student-analytics-types";
 
-// Recharts requires literal hex values for stroke/fill props. Mirrors the warm editorial palette.
+// Recharts requires literal hex values for stroke/fill props. Mirrors the ima-* tokens.
 const chartColors = {
-  primary: "#4A6CF7",
-  border: "#EDE9E0",
-  textMuted: "#8A8474",
+  primary: "#2563EB", // ima-primary
+  border: "#E2E8F0", // ima-border
+  textMuted: "#64748B", // ima-text-secondary
 } as const;
 
-const MONO: React.CSSProperties = { fontFamily: "var(--font-mono-bold)" };
 
 const RANGE_LABELS: Record<StudentAnalyticsRange, string> = {
   daily: "Daily",
@@ -124,15 +123,14 @@ export function AnalyticsClient({
       {/* Masthead — editorial kicker + title + lead (matches dashboard rhythm). */}
       <header id="student-analytics-h1" className="motion-safe:animate-fadeIn">
         <p
-          className="text-[11px] font-semibold tracking-[0.22em] text-[#8A8474] uppercase"
-          style={MONO}
+          className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
         >
           Analytics · Lifetime
         </p>
-        <h1 className="mt-3 text-[32px] md:text-[36px] font-semibold leading-[1.05] text-[#1A1A17] tracking-[-0.02em]">
+        <h1 className="mt-3 text-[32px] md:text-[36px] font-semibold leading-[1.05] text-ima-text tracking-[-0.02em]">
           Lifetime performance
         </h1>
-        <p className="mt-2 max-w-[58ch] text-[15px] text-[#7A7466] leading-[1.55]">
+        <p className="mt-2 max-w-[58ch] text-[15px] text-ima-text-secondary leading-[1.55]">
           {showOutreach
             ? "Hours, outreach, and deals — at a glance."
             : "Hours and deals — at a glance."}
@@ -145,19 +143,17 @@ export function AnalyticsClient({
         className="motion-safe:animate-fadeIn"
         style={{ animationDelay: "100ms" }}
       >
-        <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-6 md:p-8">
+        <div className="bg-white border border-ima-border rounded-[14px] p-6 md:p-8">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <p
               id="analytics-hero-label"
-              className="text-[11px] font-semibold tracking-[0.22em] text-[#8A8474] uppercase"
-              style={MONO}
+              className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
             >
               Lifetime Hours
             </p>
             {data.streak > 0 ? (
               <span
-                className="inline-flex items-center gap-1.5 px-2 py-[3px] rounded-full bg-[#E8EEFF] border border-[#C9D5FF] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#4A6CF7] tabular-nums"
-                style={MONO}
+                className="inline-flex items-center gap-1.5 px-2 py-[3px] rounded-full bg-ima-surface-accent border border-ima-primary/20 text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-primary tabular-nums"
               >
                 <Flame className="h-3 w-3" aria-hidden="true" />
                 {data.streak}-day streak
@@ -166,10 +162,10 @@ export function AnalyticsClient({
           </div>
 
           <div className="mt-6 flex items-end gap-3 flex-wrap">
-            <span className="text-6xl md:text-7xl font-semibold tabular-nums tracking-tight leading-[0.95] text-[#4A6CF7]">
+            <span className="text-6xl md:text-7xl font-semibold tabular-nums tracking-tight leading-[0.95] text-ima-primary">
               {formatHoursCompact(data.totals.total_hours ?? 0)}
             </span>
-            <span className="pb-2 text-[15px] font-medium text-[#8A8474] tabular-nums">
+            <span className="pb-2 text-[15px] font-medium text-ima-text-secondary tabular-nums">
               hrs worked · all time
             </span>
           </div>
@@ -223,12 +219,11 @@ export function AnalyticsClient({
         />
       </section>
 
-      {/* Trend — mono-bold kicker + pill range selector, then charts. */}
+      {/* Trend — editorial kicker + pill range selector, then charts. */}
       <section aria-label="Trend charts" className="motion-safe:animate-slideUp">
         <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
           <p
-            className="text-[11px] font-semibold tracking-[0.22em] text-[#8A8474] uppercase"
-            style={MONO}
+            className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
           >
             Trend
           </p>
@@ -258,7 +253,7 @@ export function AnalyticsClient({
                     role="img"
                     aria-label={`Outreach for the selected range. Brands sent: ${outreachSummary.brands}. Influencers sent: ${outreachSummary.influencers}.`}
                     tabIndex={0}
-                    className="focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 rounded"
+                    className="focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 rounded"
                   >
                     <ResponsiveContainer width="100%" height={240}>
                       <AreaChart
@@ -346,26 +341,25 @@ export function AnalyticsClient({
                     </ResponsiveContainer>
                   </div>
                   <div
-                    className="flex items-center gap-4 mt-4 text-[11px] uppercase tracking-[0.18em] font-semibold text-[#8A8474]"
-                    style={MONO}
+                    className="flex items-center gap-4 mt-4 text-[11px] uppercase tracking-[0.18em] font-semibold text-ima-text-secondary"
                   >
                     <span className="inline-flex items-center gap-1.5">
                       <span
-                        className="h-2 w-2 rounded-full bg-[#4A6CF7]"
+                        className="h-2 w-2 rounded-full bg-ima-primary"
                         aria-hidden="true"
                       />
                       Brands ·{" "}
-                      <span className="tabular-nums text-[#1A1A17]">
+                      <span className="tabular-nums text-ima-text">
                         {outreachSummary.brands}
                       </span>
                     </span>
                     <span className="inline-flex items-center gap-1.5">
                       <span
-                        className="h-2 w-2 rounded-full bg-[#4A6CF7]/40"
+                        className="h-2 w-2 rounded-full bg-ima-primary/40"
                         aria-hidden="true"
                       />
                       Influencers ·{" "}
-                      <span className="tabular-nums text-[#1A1A17]">
+                      <span className="tabular-nums text-ima-text">
                         {outreachSummary.influencers}
                       </span>
                     </span>
@@ -408,7 +402,7 @@ export function AnalyticsClient({
                   role="img"
                   aria-label={`Hours worked per ${hoursBucketLabel} for the selected range. Total: ${hoursSummary.toFixed(1)} hours.`}
                   tabIndex={0}
-                  className="focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 rounded"
+                  className="focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 rounded"
                 >
                   <ResponsiveContainer width="100%" height={240}>
                     <BarChart
@@ -438,7 +432,7 @@ export function AnalyticsClient({
                         width={30}
                       />
                       <Tooltip
-                        cursor={{ fill: "rgba(74, 108, 247, 0.05)" }}
+                        cursor={{ fill: "rgba(37, 99, 235, 0.05)" }}
                         contentStyle={{
                           backgroundColor: "#FFFFFF",
                           border: `1px solid ${chartColors.border}`,
@@ -474,11 +468,10 @@ export function AnalyticsClient({
                   </ResponsiveContainer>
                 </div>
                 <p
-                  className="mt-4 text-[11px] uppercase tracking-[0.18em] font-semibold text-[#8A8474]"
-                  style={MONO}
+                  className="mt-4 text-[11px] uppercase tracking-[0.18em] font-semibold text-ima-text-secondary"
                 >
                   Per {hoursBucketLabel} ·{" "}
-                  <span className="tabular-nums text-[#1A1A17]">
+                  <span className="tabular-nums text-ima-text">
                     {hoursSummary.toFixed(1)} hrs total
                   </span>
                 </p>
@@ -513,10 +506,10 @@ export function AnalyticsClient({
 type StatTint = "primary" | "success" | "warning" | "accent";
 
 const STAT_TINTS: Record<StatTint, { bg: string; fg: string }> = {
-  primary: { bg: "bg-[#E8EEFF]", fg: "text-[#4A6CF7]" },
-  success: { bg: "bg-[#E2F5E9]", fg: "text-[#16A34A]" },
-  warning: { bg: "bg-[#FDF3E0]", fg: "text-[#D97706]" },
-  accent: { bg: "bg-[#F5F2E9]", fg: "text-[#7A7466]" },
+  primary: { bg: "bg-ima-surface-accent", fg: "text-ima-primary" },
+  success: { bg: "bg-ima-success/10", fg: "text-ima-success" },
+  warning: { bg: "bg-ima-warning/10", fg: "text-ima-warning" },
+  accent: { bg: "bg-ima-surface-light", fg: "text-ima-text-secondary" },
 };
 
 function StatCard({
@@ -532,7 +525,7 @@ function StatCard({
 }) {
   const t = STAT_TINTS[tint];
   return (
-    <div className="flex items-start gap-4 bg-white border border-[#EDE9E0] rounded-[12px] px-[18px] py-[16px] min-h-[72px]">
+    <div className="flex items-start gap-4 bg-white border border-ima-border rounded-[12px] px-[18px] py-[16px] min-h-[72px]">
       <div
         className={cn(
           "w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0",
@@ -542,12 +535,11 @@ function StatCard({
         <Icon className={cn("h-[18px] w-[18px]", t.fg)} aria-hidden="true" />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-[24px] md:text-[28px] font-semibold leading-none tabular-nums tracking-tight text-[#1A1A17]">
+        <p className="text-[24px] md:text-[28px] font-semibold leading-none tabular-nums tracking-tight text-ima-text">
           {value}
         </p>
         <p
-          className="mt-[8px] text-[11px] font-semibold tracking-[0.18em] text-[#8A8474] uppercase"
-          style={MONO}
+          className="mt-[8px] text-[11px] font-semibold tracking-[0.18em] text-ima-text-secondary uppercase"
         >
           {label}
         </p>
@@ -566,15 +558,14 @@ function TrendCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white border border-[#EDE9E0] rounded-[14px] p-5 md:p-6">
+    <div className="bg-white border border-ima-border rounded-[14px] p-5 md:p-6">
       <div className="flex items-baseline justify-between gap-3 mb-5">
         <p
-          className="text-[11px] font-semibold tracking-[0.22em] text-[#8A8474] uppercase"
-          style={MONO}
+          className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
         >
           {kicker}
         </p>
-        <p className="text-[12px] text-[#7A7466] tabular-nums">
+        <p className="text-[12px] text-ima-text-secondary tabular-nums">
           {meta}
         </p>
       </div>
@@ -595,24 +586,22 @@ function DataTable({
   return (
     <details className="mt-4 group">
       <summary
-        className="min-h-[44px] inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] font-semibold text-[#4A6CF7] cursor-pointer hover:text-[#3852D8] focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 rounded"
-        style={MONO}
+        className="min-h-[44px] inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] font-semibold text-ima-primary cursor-pointer hover:text-ima-primary-hover focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 rounded"
       >
         View data table
       </summary>
-      <table className="w-full text-[12px] mt-3 border border-[#EDE9E0] rounded-[10px] overflow-hidden tabular-nums">
+      <table className="w-full text-[12px] mt-3 border border-ima-border rounded-[10px] overflow-hidden tabular-nums">
         <caption className="sr-only">{caption}</caption>
-        <thead className="bg-[#F5F2E9]">
+        <thead className="bg-ima-surface-light">
           <tr>
             {headers.map((h, i) => (
               <th
                 key={h}
                 scope="col"
                 className={cn(
-                  "p-2 text-[10px] font-semibold tracking-[0.18em] uppercase text-[#8A8474]",
+                  "p-2 text-[10px] font-semibold tracking-[0.18em] uppercase text-ima-text-secondary",
                   i === 0 ? "text-left" : "text-right",
                 )}
-                style={MONO}
               >
                 {h}
               </th>
@@ -621,12 +610,12 @@ function DataTable({
         </thead>
         <tbody>
           {rows.map((r, idx) => (
-            <tr key={idx} className="border-t border-[#EDE9E0]">
+            <tr key={idx} className="border-t border-ima-border">
               {r.map((cell, i) => (
                 <td
                   key={i}
                   className={cn(
-                    "p-2 text-[#1A1A17]",
+                    "p-2 text-ima-text",
                     i === 0 ? "text-left" : "text-right",
                   )}
                 >
@@ -665,10 +654,10 @@ function RangePills({
             aria-label={RANGE_ARIA_LABELS[r]}
             onClick={() => onChange(r)}
             className={cn(
-              "min-h-[44px] min-w-[48px] px-[14px] rounded-[10px] text-[12px] font-semibold tracking-wide motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2",
+              "min-h-[44px] min-w-[48px] px-[14px] rounded-[10px] text-[12px] font-semibold tracking-wide motion-safe:transition-colors focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2",
               active
-                ? "bg-[#4A6CF7] text-white"
-                : "bg-white border border-[#EDE9E0] text-[#1A1A17] hover:border-[#8A8474]",
+                ? "bg-ima-primary text-white"
+                : "bg-white border border-ima-border text-ima-text hover:border-ima-border",
             )}
           >
             {RANGE_LABELS[r]}

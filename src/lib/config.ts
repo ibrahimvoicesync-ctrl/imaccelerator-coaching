@@ -14,7 +14,7 @@ export const APP_CONFIG = {
   slug: "ima-accelerator",
   version: "1.0.0",
   description: "Student Performance & Coaching Management Platform",
-  url: "https://ima-accelerator-v1.vercel.app",
+  url: "https://members.imaccelerator.com",
   supportEmail: "support@imaccelerator.com",
   timezone: "UTC",
   locale: "en",
@@ -129,10 +129,20 @@ export const WORK_TRACKER = {
   sessionMinutes: 45,
   breakMinutes: 15,
   cyclesPerDay: 4,
+  // Visible daily *goal* (the progress ring target). Distinct from the cap below.
   dailyGoalHours: 4,
+  // Hard daily *cap* on planned + logged work before the plan is fulfilled and
+  // the cap lifts for extra ad-hoc sessions. Raised from the old 4h goal so
+  // students who work in longer blocks aren't blocked.
+  dailyCapHours: 8,
   abandonGraceSeconds: 300,
-  sessionDurationOptions: [30, 45, 60] as const,
+  // Quick-pick presets shown as buttons. A custom duration (any value between
+  // minSessionMinutes and maxSessionMinutes) is also allowed.
+  sessionDurationOptions: [30, 45, 60, 90, 120] as const,
   defaultSessionMinutes: 45,
+  // Bounds for a custom session duration, in minutes.
+  minSessionMinutes: 5,
+  maxSessionMinutes: 240,
   breakOptions: {
     short: { label: "Short Break", presets: [5, 10] as const },
     long: { label: "Long Break", presets: [15, 20, 25, 30] as const },

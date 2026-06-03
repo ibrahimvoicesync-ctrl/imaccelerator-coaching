@@ -13,10 +13,10 @@ interface DealAttributionChipProps {
 }
 
 const VARIANT_CLASSES: Record<AttributionVariant, string> = {
-  self: "bg-[#E8EEFF] text-[#4A6CF7]",
-  coach: "bg-[#F5F2E9] text-[#7A7466]",
-  owner: "bg-[#F5F2E9] text-[#7A7466]",
-  unknown: "bg-[#F5F2E9] text-[#8A8474]",
+  self: "bg-ima-surface-accent text-ima-primary",
+  coach: "bg-ima-surface-light text-ima-text-secondary",
+  owner: "bg-ima-surface-light text-ima-text-secondary",
+  unknown: "bg-ima-surface-light text-ima-text-secondary",
 };
 
 export function DealAttributionChip({

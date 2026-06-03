@@ -117,17 +117,17 @@ export function CoachAnalyticsClient({ payload, initialParams }: Props) {
       <header className="flex flex-wrap items-start justify-between gap-4 motion-safe:animate-fadeIn">
         <div>
           <p
-            className="text-xs font-semibold tracking-[0.2em] text-[#8A8474] uppercase"
+            className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
           >
             Analytics
           </p>
           <h1
             id="coach-analytics-h1"
-            className="mt-3 text-3xl md:text-4xl font-semibold leading-tight text-[#1A1A17] tracking-tight"
+            className="mt-3 text-3xl md:text-4xl font-semibold leading-tight text-ima-text tracking-tight"
           >
             Coach Analytics
           </h1>
-          <p className="mt-2 text-sm text-[#7A7466] leading-relaxed">
+          <p className="mt-2 text-sm text-ima-text-secondary leading-relaxed">
             Aggregate stats across your assigned students.
           </p>
           <div className="mt-4">

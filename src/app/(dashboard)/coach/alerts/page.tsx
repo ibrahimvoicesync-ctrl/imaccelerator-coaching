@@ -219,50 +219,50 @@ export default async function CoachAlertsPage() {
       label: "Milestone Alerts",
       value: String(milestoneAlertsCount),
       icon: Trophy,
-      iconBg: "bg-[#E8EEFF]",
-      iconColor: "text-[#4A6CF7]",
+      iconBg: "bg-ima-surface-accent",
+      iconColor: "text-ima-primary",
     },
     {
       label: "Active",
       value: String(activeCount),
       icon: Bell,
-      iconBg: activeCount > 0 ? "bg-[#E8EEFF]" : "bg-[#F1EEE6]",
-      iconColor: activeCount > 0 ? "text-[#4A6CF7]" : "text-[#8A8474]",
+      iconBg: activeCount > 0 ? "bg-ima-surface-accent" : "bg-ima-surface-light",
+      iconColor: activeCount > 0 ? "text-ima-primary" : "text-ima-text-secondary",
     },
     {
       label: "Deals closed (30d)",
       value: String(dealsClosedCount),
       icon: DollarSign,
-      iconBg: "bg-[#E2F5E9]",
-      iconColor: "text-[#16A34A]",
+      iconBg: "bg-ima-success/10",
+      iconColor: "text-ima-success",
     },
   ];
 
   return (
-    <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-[#FAFAF7]">
+    <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg">
       <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20 space-y-8">
         <header className="motion-safe:animate-fadeIn">
           <div className="flex items-center gap-3 flex-wrap">
-            <p className="text-xs font-semibold tracking-[0.2em] text-[#8A8474] uppercase">
+            <p className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
               Alerts
             </p>
             {activeCount > 0 && (
               <span
-                className="inline-flex items-center gap-[6px] rounded-full bg-[#E8EEFF] text-[#4A6CF7] px-[10px] py-[2px] text-[10px] font-semibold uppercase tracking-[0.18em] tabular-nums"
+                className="inline-flex items-center gap-[6px] rounded-full bg-ima-surface-accent text-ima-primary px-[10px] py-[2px] text-[10px] font-semibold uppercase tracking-[0.18em] tabular-nums"
                 aria-label={`${activeCount} active alerts`}
               >
                 <span
-                  className="h-1.5 w-1.5 rounded-full bg-[#4A6CF7]"
+                  className="h-1.5 w-1.5 rounded-full bg-ima-primary"
                   aria-hidden="true"
                 />
                 {activeCount} active
               </span>
             )}
           </div>
-          <h1 className="mt-3 text-3xl md:text-4xl font-semibold leading-tight text-[#1A1A17] tracking-tight">
+          <h1 className="mt-3 text-3xl md:text-4xl font-semibold leading-tight text-ima-text tracking-tight">
             Milestone Alerts
           </h1>
-          <p className="mt-2 text-sm text-[#7A7466] leading-relaxed">
+          <p className="mt-2 text-sm text-ima-text-secondary leading-relaxed">
             Your students&apos; milestone achievements — review and dismiss when actioned.
           </p>
         </header>
@@ -275,7 +275,7 @@ export default async function CoachAlertsPage() {
           {statCards.map((s) => (
             <div
               key={s.label}
-              className="flex items-center gap-4 bg-white border border-[#EDE9E0] rounded-[12px] px-[18px] py-[16px] min-h-[72px]"
+              className="flex items-center gap-4 bg-white border border-ima-border rounded-[12px] px-[18px] py-[16px] min-h-[72px]"
             >
               <div
                 className={`w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0 ${s.iconBg}`}
@@ -283,10 +283,10 @@ export default async function CoachAlertsPage() {
                 <s.icon className={`h-[18px] w-[18px] ${s.iconColor}`} aria-hidden="true" />
               </div>
               <div className="min-w-0">
-                <p className="text-2xl font-semibold leading-none tabular-nums text-[#1A1A17]">
+                <p className="text-2xl font-semibold leading-none tabular-nums text-ima-text">
                   {s.value}
                 </p>
-                <p className="mt-[6px] text-xs text-[#8A8474]">{s.label}</p>
+                <p className="mt-[6px] text-xs text-ima-text-secondary">{s.label}</p>
               </div>
             </div>
           ))}

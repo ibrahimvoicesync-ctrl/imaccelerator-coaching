@@ -212,40 +212,40 @@ export default async function CoachStudentsPage() {
       label: "Total Assigned",
       value: String(studentList.length),
       icon: Users,
-      iconBg: "bg-[#E8EEFF]",
-      iconColor: "text-[#4A6CF7]",
-      valueColor: "text-[#1A1A17]",
+      iconBg: "bg-ima-surface-accent",
+      iconColor: "text-ima-primary",
+      valueColor: "text-ima-text",
     },
     {
       label: "At Risk",
       value: String(atRiskCount),
       icon: AlertTriangle,
-      iconBg: "bg-[#FDF3E0]",
-      iconColor: "text-[#D97706]",
-      valueColor: atRiskCount > 0 ? "text-[#DC2626]" : "text-[#1A1A17]",
+      iconBg: "bg-ima-warning/10",
+      iconColor: "text-ima-warning",
+      valueColor: atRiskCount > 0 ? "text-ima-error" : "text-ima-text",
     },
     {
       label: "New",
       value: String(newCount),
       icon: Sparkles,
-      iconBg: "bg-[#F1EEE6]",
-      iconColor: "text-[#7A7466]",
-      valueColor: "text-[#1A1A17]",
+      iconBg: "bg-ima-surface-light",
+      iconColor: "text-ima-text-secondary",
+      valueColor: "text-ima-text",
     },
   ];
 
   return (
-    <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-[#FAFAF7]">
+    <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg">
       <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
         {/* Header */}
         <header className="motion-safe:animate-fadeIn">
-          <p className="text-xs font-semibold tracking-[0.2em] text-[#8A8474] uppercase">
+          <p className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
             Roster
           </p>
-          <h1 className="mt-3 text-3xl md:text-4xl font-semibold leading-tight text-[#1A1A17] tracking-tight">
+          <h1 className="mt-3 text-3xl md:text-4xl font-semibold leading-tight text-ima-text tracking-tight">
             My Students
           </h1>
-          <p className="mt-2 text-sm text-[#7A7466] leading-relaxed">
+          <p className="mt-2 text-sm text-ima-text-secondary leading-relaxed">
             {studentList.length} student{studentList.length !== 1 ? "s" : ""} assigned to you
           </p>
         </header>
@@ -260,7 +260,7 @@ export default async function CoachStudentsPage() {
             {stats.map((s) => (
               <div
                 key={s.label}
-                className="flex items-center gap-4 bg-white border border-[#EDE9E0] rounded-[12px] px-[18px] py-[16px] min-h-[72px]"
+                className="flex items-center gap-4 bg-white border border-ima-border rounded-[12px] px-[18px] py-[16px] min-h-[72px]"
               >
                 <div
                   className={`w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0 ${s.iconBg}`}
@@ -273,7 +273,7 @@ export default async function CoachStudentsPage() {
                   >
                     {s.value}
                   </p>
-                  <p className="mt-[6px] text-xs text-[#8A8474]">{s.label}</p>
+                  <p className="mt-[6px] text-xs text-ima-text-secondary">{s.label}</p>
                 </div>
               </div>
             ))}
@@ -286,12 +286,12 @@ export default async function CoachStudentsPage() {
           className="mt-10 motion-safe:animate-fadeIn"
           style={{ animationDelay: "100ms" }}
         >
-          <h2 className="text-xs font-semibold tracking-[0.2em] text-[#8A8474] uppercase">
+          <h2 className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
             All Students
           </h2>
 
           {enrichedStudents.length === 0 ? (
-            <div className="mt-4 bg-white border border-[#EDE9E0] rounded-[14px] p-6">
+            <div className="mt-4 bg-white border border-ima-border rounded-[14px] p-6">
               <EmptyState
                 variant="compact"
                 icon={<Users className="h-5 w-5" aria-hidden="true" />}
@@ -317,10 +317,10 @@ export default async function CoachStudentsPage() {
                     href={`/coach/students/${student.id}`}
                     aria-label={`${student.name} — ${atRisk ? "at risk, " : ""}roadmap step ${student.currentRoadmapStep} of ${ROADMAP_STEPS.length}`}
                     className={[
-                      "block rounded-[14px] border p-6 min-h-[160px] motion-safe:transition-[transform,border-color,background-color] hover:-translate-y-[1px] focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2",
+                      "block rounded-[14px] border p-6 min-h-[160px] motion-safe:transition-[transform,border-color,background-color] hover:-translate-y-[1px] focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2",
                       atRisk
-                        ? "bg-[#FDFAF3] border-[#F0E0B8] hover:border-[#E5CE90]"
-                        : "bg-white border-[#EDE9E0] hover:border-[#D8D2C4]",
+                        ? "bg-ima-surface-light border-ima-warning/10 hover:border-ima-warning/10"
+                        : "bg-white border-ima-border hover:border-ima-border",
                     ].join(" ")}
                   >
                     {/* Header row */}
@@ -330,23 +330,23 @@ export default async function CoachStudentsPage() {
                           className={[
                             "w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold shrink-0 border",
                             atRisk
-                              ? "bg-white border-[#EAD9A8] text-[#5A4A1F]"
-                              : "bg-[#F1EEE6] border-[#EDE9E0] text-[#5A5648]",
+                              ? "bg-white border-ima-warning/10 text-ima-warning"
+                              : "bg-ima-surface-light border-ima-border text-ima-text-secondary",
                           ].join(" ")}
                         >
                           {initials(student.name)}
                         </div>
-                        <p className="text-sm font-semibold text-[#1A1A17] truncate">
+                        <p className="text-sm font-semibold text-ima-text truncate">
                           {student.name}
                         </p>
                       </div>
                       <div className="flex flex-col items-end gap-1 shrink-0">
                         {student.isNew ? (
-                          <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-[#E8EEFF] border border-[#C9D5FF] text-[10px] font-semibold uppercase tracking-wider text-[#4A6CF7]">
+                          <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-ima-surface-accent border border-ima-primary/20 text-[10px] font-semibold uppercase tracking-wider text-ima-primary">
                             New
                           </span>
                         ) : atRisk ? (
-                          <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-[#FDEAEA] border border-[#F5C6C6] text-[10px] font-semibold uppercase tracking-wider text-[#DC2626]">
+                          <span className="inline-flex items-center px-2 py-[2px] rounded-full bg-ima-error/10 border border-ima-error/10 text-[10px] font-semibold uppercase tracking-wider text-ima-error">
                             At Risk
                           </span>
                         ) : null}
@@ -355,33 +355,33 @@ export default async function CoachStudentsPage() {
 
                     {/* Divider */}
                     <div
-                      className={`h-px mt-5 ${atRisk ? "bg-[#F0E0B8]" : "bg-[#EDE9E0]"}`}
+                      className={`h-px mt-5 ${atRisk ? "bg-ima-warning/10" : "bg-ima-surface-light"}`}
                       aria-hidden="true"
                     />
 
                     {/* Mini-stats */}
                     <div className="mt-5 grid grid-cols-3 gap-4">
                       <div>
-                        <p className="text-[10px] font-semibold tracking-[0.2em] text-[#8A8474] uppercase">
+                        <p className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
                           Last Active
                         </p>
-                        <p className="mt-[6px] text-sm font-semibold text-[#1A1A17] tabular-nums">
+                        <p className="mt-[6px] text-sm font-semibold text-ima-text tabular-nums">
                           {student.lastActiveLabel}
                         </p>
                       </div>
                       <div>
-                        <p className="text-[10px] font-semibold tracking-[0.2em] text-[#8A8474] uppercase">
+                        <p className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
                           Today&apos;s Report
                         </p>
                         {student.todayReportSubmitted ? (
-                          <p className="mt-[6px] flex items-center gap-[5px] text-sm font-semibold text-[#16A34A]">
+                          <p className="mt-[6px] flex items-center gap-[5px] text-sm font-semibold text-ima-success">
                             <CheckCircle2 className="h-[13px] w-[13px]" aria-hidden="true" />
                             Submitted
                           </p>
                         ) : (
-                          <p className="mt-[6px] flex items-center gap-[6px] text-sm font-semibold text-[#D97706]">
+                          <p className="mt-[6px] flex items-center gap-[6px] text-sm font-semibold text-ima-warning">
                             <span
-                              className="inline-block h-[7px] w-[7px] rounded-full bg-[#D97706]"
+                              className="inline-block h-[7px] w-[7px] rounded-full bg-ima-warning"
                               aria-hidden="true"
                             />
                             Pending
@@ -389,19 +389,19 @@ export default async function CoachStudentsPage() {
                         )}
                       </div>
                       <div>
-                        <p className="text-[10px] font-semibold tracking-[0.2em] text-[#8A8474] uppercase">
+                        <p className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
                           Roadmap
                         </p>
-                        <p className="mt-[6px] text-sm font-semibold text-[#1A1A17] tabular-nums">
+                        <p className="mt-[6px] text-sm font-semibold text-ima-text tabular-nums">
                           Step {student.currentRoadmapStep}
-                          <span className="text-[#8A8474]">/{ROADMAP_STEPS.length}</span>
+                          <span className="text-ima-text-secondary">/{ROADMAP_STEPS.length}</span>
                         </p>
                       </div>
                     </div>
 
                     {/* Risk reasons row */}
                     {atRisk && student.atRiskReasons.length > 0 && (
-                      <p className="mt-5 text-[10px] font-medium text-[#9A6B1F] tracking-widest uppercase">
+                      <p className="mt-5 text-[10px] font-medium text-ima-warning tracking-widest uppercase">
                         {student.atRiskReasons.join(" · ")}
                       </p>
                     )}

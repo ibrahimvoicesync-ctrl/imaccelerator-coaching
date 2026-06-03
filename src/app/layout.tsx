@@ -7,6 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "IMA Accelerator",
   description: "Student performance & coaching management platform for Abu Lahya's halal influencer marketing mentorship program.",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({

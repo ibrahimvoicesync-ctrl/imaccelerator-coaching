@@ -40,31 +40,31 @@ export async function OwnerAnalyticsTeaser() {
 
   return (
     <div
-      className="bg-white border border-[#EDE9E0] rounded-[14px] p-6"
+      className="bg-white border border-ima-border rounded-[14px] p-6"
       aria-labelledby="owner-analytics-teaser-h2"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h2
             id="owner-analytics-teaser-h2"
-            className="text-[15px] font-semibold text-[#1A1A17] leading-tight"
+            className="text-[15px] font-semibold text-ima-text leading-tight"
           >
             Top Performers
           </h2>
-          <p className="mt-1 text-[12px] text-[#8A8474]">
+          <p className="mt-1 text-[12px] text-ima-text-secondary">
             Top student in each category (lifetime)
           </p>
         </div>
         <Link
           href="/owner/analytics"
-          className="inline-flex items-center gap-1 text-[12px] font-medium text-[#4A6CF7] hover:text-[#3852D8] min-h-[44px] shrink-0 focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2 rounded-md px-1"
+          className="inline-flex items-center gap-1 text-[12px] font-medium text-ima-primary hover:text-ima-primary-hover min-h-[44px] shrink-0 focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 rounded-md px-1"
           aria-label="View full owner analytics"
         >
           View full analytics
           <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
         </Link>
       </div>
-      <div className="h-px bg-[#EDE9E0] mt-4" aria-hidden="true" />
+      <div className="h-px bg-ima-surface-light mt-4" aria-hidden="true" />
 
       {!hasAnyTop ? (
         <div className="mt-4">
@@ -80,24 +80,24 @@ export async function OwnerAnalyticsTeaser() {
             icon={<Clock className="h-[14px] w-[14px]" aria-hidden="true" />}
             label="Hours"
             row={topHours}
-            iconBg="bg-[#E8EEFF]"
-            iconColor="text-[#4A6CF7]"
+            iconBg="bg-ima-surface-accent"
+            iconColor="text-ima-primary"
             isLast={false}
           />
           <TeaserRow
             icon={<DollarSign className="h-[14px] w-[14px]" aria-hidden="true" />}
             label="Profit"
             row={topProfit}
-            iconBg="bg-[#E2F5E9]"
-            iconColor="text-[#16A34A]"
+            iconBg="bg-ima-success/10"
+            iconColor="text-ima-success"
             isLast={false}
           />
           <TeaserRow
             icon={<TrendingUp className="h-[14px] w-[14px]" aria-hidden="true" />}
             label="Deals"
             row={topDeals}
-            iconBg="bg-[#FDF3E0]"
-            iconColor="text-[#D97706]"
+            iconBg="bg-ima-warning/10"
+            iconColor="text-ima-warning"
             isLast={true}
           />
         </ul>
@@ -127,7 +127,7 @@ function TeaserRow({
   iconColor: string;
   isLast: boolean;
 }) {
-  const borderCls = isLast ? "" : "border-b border-[#F3EFE4]";
+  const borderCls = isLast ? "" : "border-b border-ima-surface-light";
 
   if (!row) {
     return (
@@ -139,12 +139,11 @@ function TeaserRow({
             {icon}
           </span>
           <span
-            className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A8474] w-14 shrink-0"
-            style={{ fontFamily: "var(--font-mono-bold)" }}
+            className="text-[10px] font-semibold tracking-[0.14em] uppercase text-ima-text-secondary w-14 shrink-0"
           >
             {label}
           </span>
-          <span className="text-[13px] italic text-[#8A8474] flex-1">
+          <span className="text-[13px] italic text-ima-text-secondary flex-1">
             No data yet
           </span>
         </div>
@@ -157,7 +156,7 @@ function TeaserRow({
       <Link
         href={`/owner/students/${row.student_id}`}
         aria-label={`${label}: #1 ${row.student_name} — ${row.metric_display}`}
-        className="flex items-center gap-3 py-3 min-h-[52px] -mx-2 px-2 rounded-md motion-safe:transition-colors hover:bg-[#FAFAF7] focus-visible:outline-2 focus-visible:outline-[#4A6CF7] focus-visible:outline-offset-2"
+        className="flex items-center gap-3 py-3 min-h-[52px] -mx-2 px-2 rounded-md motion-safe:transition-colors hover:bg-ima-bg focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2"
       >
         <span
           className={`w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0 ${iconBg} ${iconColor}`}
@@ -165,23 +164,20 @@ function TeaserRow({
           {icon}
         </span>
         <span
-          className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A8474] w-14 shrink-0"
-          style={{ fontFamily: "var(--font-mono-bold)" }}
+          className="text-[10px] font-semibold tracking-[0.14em] uppercase text-ima-text-secondary w-14 shrink-0"
         >
           {label}
         </span>
         <span
-          className="inline-flex items-center px-[7px] py-[3px] rounded-[6px] bg-[#4A6CF7] text-white text-[10px] font-semibold tabular-nums shrink-0"
-          style={{ fontFamily: "var(--font-mono-bold)" }}
+          className="inline-flex items-center px-[7px] py-[3px] rounded-[6px] bg-ima-primary text-white text-[10px] font-semibold tabular-nums shrink-0"
         >
           #1
         </span>
-        <span className="flex-1 text-[14px] font-semibold tracking-[-0.005em] text-[#1A1A17] truncate leading-tight">
+        <span className="flex-1 text-[14px] font-semibold tracking-[-0.005em] text-ima-text truncate leading-tight">
           {row.student_name}
         </span>
         <span
-          className="text-[13px] font-semibold text-[#1A1A17] tabular-nums slashed-zero shrink-0"
-          style={{ fontFamily: "var(--font-mono-bold)" }}
+          className="text-[13px] font-semibold text-ima-text tabular-nums slashed-zero shrink-0"
         >
           {row.metric_display}
         </span>
