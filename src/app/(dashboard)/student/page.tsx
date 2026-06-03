@@ -16,8 +16,10 @@ import { requireRole } from "@/lib/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getStreakInfo } from "@/lib/streak";
 import { getWeeklyWorkLeaderboard } from "@/lib/leaderboard";
+import { getWeeklyHoursByDay } from "@/lib/weekly-hours";
 import { StreakCard } from "@/components/student/StreakCard";
 import { WeeklyWorkLeaderboard } from "@/components/student/WeeklyWorkLeaderboard";
+import { WeeklyHoursChart } from "@/components/student/WeeklyHoursChart";
 import { KPI_TARGETS, ROADMAP_STEPS, WORK_TRACKER } from "@/lib/config";
 import { cn, formatHoursMinutes, getToday } from "@/lib/utils";
 import {
@@ -92,6 +94,7 @@ export default async function StudentDashboard() {
     { data: deals, error: dealsError },
     streakInfo,
     leaderboard,
+    weeklyHours,
   ] = await Promise.all([
     admin
       .from("work_sessions")
@@ -118,6 +121,7 @@ export default async function StudentDashboard() {
     admin.from("deals").select("revenue, profit").eq("student_id", user.id),
     getStreakInfo(user.id),
     getWeeklyWorkLeaderboard(5),
+    getWeeklyHoursByDay(user.id),
   ]);
 
   if (sessionsError) console.error("[student dashboard] Failed to load sessions:", sessionsError);
@@ -334,6 +338,14 @@ export default async function StudentDashboard() {
             rag={hoursRag}
           />
         </section>
+
+        {/* Hours this week — visual */}
+        <div
+          className="mt-[14px] motion-safe:animate-fadeIn"
+          style={{ animationDelay: "175ms" }}
+        >
+          <WeeklyHoursChart data={weeklyHours} />
+        </div>
 
         {/* Roadmap + Daily Report */}
         <section
