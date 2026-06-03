@@ -244,7 +244,7 @@ export function ProgressBanner({
 
   return (
     <div
-      className="sticky top-3 z-20 mx-3 mb-5 rounded-2xl border border-ima-border bg-ima-surface px-4 py-2 shadow-[0_4px_16px_-4px_rgba(15,23,42,0.12)] md:mx-4"
+      className="sticky top-3 z-20 mx-3 mb-5 rounded-[14px] border border-ima-border bg-ima-surface px-4 py-2 shadow-[0_4px_16px_-4px_rgba(15,23,42,0.12)] md:mx-4"
       role="region"
       aria-label="KPI summary"
     >

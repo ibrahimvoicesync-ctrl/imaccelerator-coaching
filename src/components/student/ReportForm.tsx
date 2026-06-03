@@ -120,7 +120,7 @@ export function ReportForm({ date, existingReport, autoMinutes }: ReportFormProp
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="rounded-[28px] border-2 border-ima-text/10 bg-ima-surface overflow-hidden"
+      className="rounded-[14px] border border-ima-border bg-ima-surface overflow-hidden"
     >
       {/* Outreach — compact numeric row */}
       <fieldset className="px-6 md:px-8 pt-7 md:pt-9 pb-8 md:pb-10">
@@ -147,7 +147,7 @@ export function ReportForm({ date, existingReport, autoMinutes }: ReportFormProp
       </fieldset>
 
       {/* Rate your day — the emotional beat */}
-      <section className="px-6 md:px-8 pt-7 md:pt-9 pb-8 md:pb-10">
+      <section className="px-6 md:px-8 pt-7 md:pt-9 pb-8 md:pb-10 border-t border-ima-border">
         <span id="star-rating-label" className="mb-3 block text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted">
           {DAILY_REPORT.fields.starRating.label}
         </span>
@@ -155,7 +155,7 @@ export function ReportForm({ date, existingReport, autoMinutes }: ReportFormProp
       </section>
 
       {/* Reflections */}
-      <section className="px-6 md:px-8 pt-7 md:pt-9 pb-8 md:pb-10 space-y-7">
+      <section className="px-6 md:px-8 pt-7 md:pt-9 pb-8 md:pb-10 space-y-7 border-t border-ima-border">
         <div>
           <label htmlFor="wins" className="block text-sm font-medium text-ima-text mb-2">
             {DAILY_REPORT.fields.wins.label}
