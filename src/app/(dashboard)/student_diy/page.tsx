@@ -11,7 +11,9 @@ import type { LucideIcon } from "lucide-react";
 import { requireRole } from "@/lib/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getStreakInfo } from "@/lib/streak";
+import { getWeeklyWorkLeaderboard } from "@/lib/leaderboard";
 import { StreakCard } from "@/components/student/StreakCard";
+import { WeeklyWorkLeaderboard } from "@/components/student/WeeklyWorkLeaderboard";
 import { ROADMAP_STEPS, WORK_TRACKER } from "@/lib/config";
 import { cn, formatHoursMinutes, getToday } from "@/lib/utils";
 import type { Database } from "@/lib/types";
@@ -45,6 +47,7 @@ export default async function StudentDiyDashboard() {
     { data: roadmapRows, error: roadmapError },
     { data: deals, error: dealsError },
     streakInfo,
+    leaderboard,
   ] = await Promise.all([
     admin
       .from("work_sessions")
@@ -59,6 +62,7 @@ export default async function StudentDiyDashboard() {
       .order("step_number", { ascending: true }),
     admin.from("deals").select("revenue, profit").eq("student_id", user.id),
     getStreakInfo(user.id),
+    getWeeklyWorkLeaderboard(5),
   ]);
 
   if (sessionsError) console.error("[student_diy dashboard] Failed to load sessions:", sessionsError);
@@ -310,6 +314,14 @@ export default async function StudentDiyDashboard() {
             </Link>
           </div>
         </section>
+
+        {/* Weekly leaderboard — community motivation */}
+        <div
+          className="mt-[14px] motion-safe:animate-fadeIn"
+          style={{ animationDelay: "300ms" }}
+        >
+          <WeeklyWorkLeaderboard rows={leaderboard} currentStudentId={user.id} />
+        </div>
 
       </div>
     </div>

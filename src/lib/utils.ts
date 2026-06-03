@@ -19,6 +19,22 @@ export function getTodayUTC(): string {
   return new Date().toISOString().split("T")[0];
 }
 
+/**
+ * Monday of the current week as a YYYY-MM-DD string, in local time to match
+ * how work_sessions.date is stamped (getToday). ISO week: Monday is day 1;
+ * on Sunday (0) the week's Monday is 6 days back.
+ */
+export function getWeekStart(): string {
+  const d = new Date();
+  const day = d.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const dayOfMonth = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${dayOfMonth}`;
+}
+
 /** Validates a date string matches YYYY-MM-DD format and is a real date */
 export function isValidDateString(date: string): boolean {
   return /^\d{4}-\d{2}-\d{2}$/.test(date) && !isNaN(new Date(date + "T00:00:00Z").getTime());
