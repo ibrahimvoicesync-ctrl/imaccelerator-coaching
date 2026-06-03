@@ -165,7 +165,7 @@ export default async function OwnerCoachesPage({
         {/* Masthead */}
         <header className="motion-safe:animate-fadeIn">
           <p
-            className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+            className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
           >
             Coaches
           </p>
@@ -201,7 +201,7 @@ export default async function OwnerCoachesPage({
                   {s.value}
                 </p>
                 <p
-                  className="mt-[6px] text-[10px] font-semibold uppercase tracking-[0.14em] text-ima-text-secondary"
+                  className="mt-[6px] text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-text-secondary"
                 >
                   {s.label}
                 </p>

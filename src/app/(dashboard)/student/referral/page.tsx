@@ -12,7 +12,7 @@ export default async function StudentReferralPage() {
       <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
         <header className="motion-safe:animate-fadeIn">
           <p
-            className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+            className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
           >
             Referral
           </p>

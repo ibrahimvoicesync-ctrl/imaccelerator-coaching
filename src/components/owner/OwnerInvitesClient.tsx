@@ -228,7 +228,7 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
       <div>
         <label
           htmlFor="invite-role"
-          className="block text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase mb-3"
+          className="block text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase mb-3"
         >
           Invite Role
         </label>
@@ -394,7 +394,7 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
       {lastUrl && activeTab === "magic" && (
         <div className="bg-white border border-ima-border border-l-[3px] border-l-ima-primary rounded-[14px] p-5">
           <p
-            className="text-[11px] font-semibold tracking-[0.18em] uppercase text-ima-text-secondary"
+            className="text-[11px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary"
           >
             Generated invite link
           </p>
@@ -422,7 +422,7 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
       {/* Invite history */}
       <section>
         <h2
-          className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+          className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
         >
           Invite History
         </h2>
@@ -483,7 +483,7 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
       {/* Magic links history */}
       <section>
         <h2
-          className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+          className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
         >
           Invite Links
         </h2>

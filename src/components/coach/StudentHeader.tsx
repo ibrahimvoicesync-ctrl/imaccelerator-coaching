@@ -42,7 +42,7 @@ export function StudentHeader({ student, isAtRisk, atRiskReasons }: StudentHeade
       {/* Eyebrow */}
       <div>
         <p
-          className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
+          className="text-xs font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
         >
           Student Profile
         </p>

@@ -195,7 +195,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
                 aria-selected={active}
                 onClick={() => setActiveTab(tab)}
                 className={cn(
-                  "relative inline-flex items-center gap-2 min-h-[52px] px-5 text-xs uppercase tracking-[0.22em] font-semibold border-b-2 motion-safe:transition-colors whitespace-nowrap",
+                  "relative inline-flex items-center gap-2 min-h-[52px] px-5 text-xs uppercase tracking-[0.08em] font-semibold border-b-2 motion-safe:transition-colors whitespace-nowrap",
                   active
                     ? "border-ima-primary text-ima-primary"
                     : "border-transparent text-ima-text-muted hover:text-ima-text"
@@ -212,11 +212,11 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
       <div className={activeTab === "links" ? "block" : "hidden"}>
         <div className="flex items-center justify-between gap-4 mb-5 flex-wrap">
           <div className="flex items-baseline gap-3">
-            <p className="text-xs uppercase tracking-[0.22em] font-semibold text-ima-text">
+            <p className="text-xs uppercase tracking-[0.08em] font-semibold text-ima-text">
               Resource links
             </p>
             {!loadingResources && resources.length > 0 && (
-              <p className="text-[10px] uppercase tracking-[0.18em] font-medium text-ima-text-muted tabular-nums">
+              <p className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-muted tabular-nums">
                 {`${resources.length} saved`}
               </p>
             )}
@@ -258,7 +258,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
               >
                 <LinkIcon className="h-6 w-6" strokeWidth={2.25} />
               </span>
-              <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-ima-text-muted">
+              <p className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted">
                 Empty library
               </p>
               <h3 className="text-xl md:text-2xl font-semibold tracking-tight text-ima-text leading-tight">
@@ -304,10 +304,10 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
       <div className={activeTab === "community" ? "block" : "hidden"}>
         <div className="mb-5">
           <div className="flex items-baseline gap-3">
-            <p className="text-xs uppercase tracking-[0.22em] font-semibold text-ima-text">
+            <p className="text-xs uppercase tracking-[0.08em] font-semibold text-ima-text">
               Community
             </p>
-            <p className="text-[10px] uppercase tracking-[0.18em] font-medium text-ima-text-muted">
+            <p className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-muted">
               Discord · live
             </p>
           </div>
@@ -331,11 +331,11 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
       <div className={activeTab === "glossary" ? "block" : "hidden"}>
         <div className="flex items-center justify-between gap-4 mb-5 flex-wrap">
           <div className="flex items-baseline gap-3">
-            <p className="text-xs uppercase tracking-[0.22em] font-semibold text-ima-text">
+            <p className="text-xs uppercase tracking-[0.08em] font-semibold text-ima-text">
               Glossary
             </p>
             {!loadingGlossary && glossaryTerms.length > 0 && (
-              <p className="text-[10px] uppercase tracking-[0.18em] font-medium text-ima-text-muted tabular-nums">
+              <p className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-muted tabular-nums">
                 {`${glossaryTerms.length} term${glossaryTerms.length !== 1 ? "s" : ""}`}
               </p>
             )}
@@ -380,7 +380,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
               >
                 <BookOpen className="h-6 w-6" strokeWidth={2.25} />
               </span>
-              <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-ima-text-muted">
+              <p className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted">
                 Coming soon
               </p>
               <h3 className="text-xl md:text-2xl font-semibold tracking-tight text-ima-text leading-tight">

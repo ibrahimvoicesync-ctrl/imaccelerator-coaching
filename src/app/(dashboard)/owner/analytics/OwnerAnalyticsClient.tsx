@@ -151,7 +151,7 @@ export function OwnerAnalyticsClient({ payload }: Props) {
       >
         <h2
           id="owner-lb-students-h2"
-          className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+          className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
         >
           Students
         </h2>
@@ -203,7 +203,7 @@ export function OwnerAnalyticsClient({ payload }: Props) {
       >
         <h2
           id="owner-lb-coaches-h2"
-          className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+          className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
         >
           Coaches
         </h2>

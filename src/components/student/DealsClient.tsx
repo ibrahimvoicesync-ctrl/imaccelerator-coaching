@@ -290,7 +290,7 @@ export function DealsClient({
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <p
                   id="deals-hero-label"
-                  className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+                  className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
                 >
                   Total Revenue
                 </p>
@@ -348,7 +348,7 @@ export function DealsClient({
             <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
               <p
                 id="deals-ledger-label"
-                className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+                className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
               >
                 Ledger
               </p>
@@ -378,7 +378,7 @@ export function DealsClient({
                       <span
                         key={h}
                         role="columnheader"
-                        className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ima-text-secondary"
+                        className="text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-text-secondary"
                       >
                         {h}
                       </span>
@@ -682,7 +682,7 @@ function CompactStat({
           {value}
         </p>
         <p
-          className="mt-[8px] text-[11px] font-semibold tracking-[0.18em] text-ima-text-secondary uppercase"
+          className="mt-[8px] text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
         >
           {label}
         </p>
@@ -703,7 +703,7 @@ function MobileMoneyCell({
   return (
     <div className="rounded-[10px] border border-ima-border bg-white px-3 py-2.5 space-y-1">
       <p
-        className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ima-text-secondary"
+        className="text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-text-secondary"
       >
         {label}
       </p>

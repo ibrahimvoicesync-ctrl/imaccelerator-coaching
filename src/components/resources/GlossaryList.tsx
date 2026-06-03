@@ -68,7 +68,7 @@ export function GlossaryList({ terms, canManage, onEdit, onDelete }: GlossaryLis
             >
               <BookOpen className="h-6 w-6" strokeWidth={2.25} />
             </span>
-            <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-ima-text-muted">
+            <p className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted">
               {search ? "No match" : "Empty glossary"}
             </p>
             <h3 className="text-xl md:text-2xl font-semibold tracking-tight text-ima-text leading-tight">
@@ -89,7 +89,7 @@ export function GlossaryList({ terms, canManage, onEdit, onDelete }: GlossaryLis
                 <h3 className="text-3xl md:text-4xl font-semibold tracking-tight text-ima-primary leading-none tabular-nums">
                   {letter}
                 </h3>
-                <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-ima-text-muted tabular-nums">
+                <p className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted tabular-nums">
                   {`${grouped[letter].length} term${grouped[letter].length !== 1 ? "s" : ""}`}
                 </p>
               </div>

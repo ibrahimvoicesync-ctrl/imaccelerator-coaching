@@ -40,7 +40,7 @@ export default async function CoachReportsPage({
 
   const shellHeader = (
     <header className="motion-safe:animate-fadeIn">
-      <p className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
+      <p className="text-xs font-semibold tracking-[0.08em] text-ima-text-secondary uppercase">
         Inbox
       </p>
       <h1 className="mt-3 text-3xl md:text-4xl font-semibold leading-tight text-ima-text tracking-tight">

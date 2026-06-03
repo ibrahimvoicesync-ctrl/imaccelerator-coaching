@@ -318,7 +318,7 @@ export function Sidebar({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-ima-text truncate">{userName}</p>
-                <p className="text-xs uppercase tracking-[0.2em] text-ima-text-secondary font-medium">
+                <p className="text-xs uppercase tracking-[0.08em] text-ima-text-muted font-semibold">
                   {ROLE_LABELS[role]}
                 </p>
               </div>

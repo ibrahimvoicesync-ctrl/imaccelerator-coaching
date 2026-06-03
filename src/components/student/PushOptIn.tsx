@@ -132,7 +132,7 @@ export function PushOptIn() {
       </div>
       <div className="flex-1 min-w-0">
         <p
-          className="text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-primary leading-none"
+          className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-primary leading-none"
         >
           Daily reminder
         </p>

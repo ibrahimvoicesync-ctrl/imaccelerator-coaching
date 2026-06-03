@@ -333,7 +333,7 @@ export function CoachAlertsClient({
                 <div className="flex items-center justify-between gap-3 px-1">
                   <h2
                     id={`group-${group.student_id}`}
-                    className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
+                    className="text-xs font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
                   >
                     {group.student_name}
                   </h2>

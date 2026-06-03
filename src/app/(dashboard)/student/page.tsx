@@ -201,7 +201,7 @@ export default async function StudentDashboard() {
         {/* Masthead */}
         <header className="motion-safe:animate-fadeIn">
           <p
-            className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+            className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
           >
             Dashboard
           </p>
@@ -223,7 +223,7 @@ export default async function StudentDashboard() {
             <div className="flex items-center justify-between gap-3">
               <p
                 id="todays-work-label"
-                className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+                className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
               >
                 Today&apos;s Work
               </p>
@@ -234,7 +234,7 @@ export default async function StudentDashboard() {
                 </span>
               ) : (
                 <span
-                  className="text-[10px] font-semibold tracking-[0.18em] text-ima-text-secondary uppercase tabular-nums"
+                  className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase tabular-nums"
                 >
                   {completedCount} Session{completedCount !== 1 ? "s" : ""}
                 </span>
@@ -440,7 +440,7 @@ export default async function StudentDashboard() {
 
             <div className="mt-5 flex items-center gap-3">
               <span
-                className="text-[10px] font-semibold tracking-[0.18em] text-ima-text-secondary uppercase"
+                className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
               >
                 Due
               </span>
@@ -529,7 +529,7 @@ function KpiCard({
             <Icon className={cn("h-[18px] w-[18px]", iconColor)} aria-hidden="true" />
           </div>
           <p
-            className="text-[11px] font-semibold tracking-[0.18em] text-ima-text-secondary uppercase"
+            className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
           >
             {label}
           </p>

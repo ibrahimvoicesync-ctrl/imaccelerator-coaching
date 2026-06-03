@@ -139,7 +139,7 @@ function TeaserRow({
             {icon}
           </span>
           <span
-            className="text-[10px] font-semibold tracking-[0.14em] uppercase text-ima-text-secondary w-14 shrink-0"
+            className="text-[10px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary w-14 shrink-0"
           >
             {label}
           </span>
@@ -164,7 +164,7 @@ function TeaserRow({
           {icon}
         </span>
         <span
-          className="text-[10px] font-semibold tracking-[0.14em] uppercase text-ima-text-secondary w-14 shrink-0"
+          className="text-[10px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary w-14 shrink-0"
         >
           {label}
         </span>

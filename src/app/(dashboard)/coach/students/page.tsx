@@ -239,7 +239,7 @@ export default async function CoachStudentsPage() {
       <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
         {/* Header */}
         <header className="motion-safe:animate-fadeIn">
-          <p className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
+          <p className="text-xs font-semibold tracking-[0.08em] text-ima-text-secondary uppercase">
             Roster
           </p>
           <h1 className="mt-3 text-3xl md:text-4xl font-semibold leading-tight text-ima-text tracking-tight">
@@ -286,7 +286,7 @@ export default async function CoachStudentsPage() {
           className="mt-10 motion-safe:animate-fadeIn"
           style={{ animationDelay: "100ms" }}
         >
-          <h2 className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
+          <h2 className="text-xs font-semibold tracking-[0.08em] text-ima-text-secondary uppercase">
             All Students
           </h2>
 
@@ -362,7 +362,7 @@ export default async function CoachStudentsPage() {
                     {/* Mini-stats */}
                     <div className="mt-5 grid grid-cols-3 gap-4">
                       <div>
-                        <p className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
+                        <p className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase">
                           Last Active
                         </p>
                         <p className="mt-[6px] text-sm font-semibold text-ima-text tabular-nums">
@@ -370,7 +370,7 @@ export default async function CoachStudentsPage() {
                         </p>
                       </div>
                       <div>
-                        <p className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
+                        <p className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase">
                           Today&apos;s Report
                         </p>
                         {student.todayReportSubmitted ? (
@@ -389,7 +389,7 @@ export default async function CoachStudentsPage() {
                         )}
                       </div>
                       <div>
-                        <p className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
+                        <p className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase">
                           Roadmap
                         </p>
                         <p className="mt-[6px] text-sm font-semibold text-ima-text tabular-nums">

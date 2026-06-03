@@ -72,11 +72,11 @@ export function ResourceLinkCard({ resource, canManage, onDelete }: ResourceLink
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             {pinned && (
-              <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-ima-primary leading-none">
+              <p className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-primary leading-none">
                 Pinned
               </p>
             )}
-            <p className="text-[10px] uppercase tracking-[0.18em] font-medium text-ima-text-muted tabular-nums leading-none truncate">
+            <p className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-muted tabular-nums leading-none truncate">
               {host}
             </p>
           </div>
@@ -98,7 +98,7 @@ export function ResourceLinkCard({ resource, canManage, onDelete }: ResourceLink
             </p>
           )}
 
-          <div className="mt-3 flex items-center gap-3 text-[10px] uppercase tracking-[0.18em] font-medium text-ima-text-muted">
+          <div className="mt-3 flex items-center gap-3 text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-muted">
             <span className="truncate">
               {resource.created_by_user?.name ?? "Unknown"}
             </span>

@@ -73,13 +73,13 @@ export function AnnouncementCard({
               {authorName}
             </span>
             <span
-              className={`inline-flex items-center text-[10px] uppercase tracking-[0.22em] font-semibold px-2 py-1 rounded-md ${rolePillClass}`}
+              className={`inline-flex items-center text-[10px] uppercase tracking-[0.08em] font-semibold px-2 py-1 rounded-md ${rolePillClass}`}
             >
               {roleLabel}
             </span>
           </div>
           <div className="flex items-center gap-1 shrink-0">
-            <span className="text-[10px] uppercase tracking-[0.22em] font-medium text-ima-text-muted tabular-nums flex items-center gap-1.5">
+            <span className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-muted tabular-nums flex items-center gap-1.5">
               <time dateTime={announcement.created_at}>
                 {formatRelativeTime(new Date(announcement.created_at))}
               </time>

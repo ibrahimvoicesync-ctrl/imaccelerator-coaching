@@ -46,7 +46,7 @@ export function CoachCard({ coach }: CoachCardProps) {
       <div className="mt-4 grid grid-cols-2 gap-4">
         <div>
           <p
-            className="text-[10px] font-semibold tracking-[0.14em] text-ima-text-secondary uppercase"
+            className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
           >
             Students
           </p>
@@ -56,7 +56,7 @@ export function CoachCard({ coach }: CoachCardProps) {
         </div>
         <div>
           <p
-            className="text-[10px] font-semibold tracking-[0.14em] text-ima-text-secondary uppercase"
+            className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
           >
             Avg Rating (7d)
           </p>

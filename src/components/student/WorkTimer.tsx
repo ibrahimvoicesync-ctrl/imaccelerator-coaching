@@ -121,7 +121,7 @@ export function WorkTimer({
         {/* Centered countdown text — editorial scale, tabular-nums */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span
-            className="text-[10px] md:text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-text-secondary mb-2"
+            className="text-[10px] md:text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary mb-2"
           >
             Session {cycleNumber}
           </span>
@@ -129,7 +129,7 @@ export function WorkTimer({
             {timeStr}
           </span>
           <span
-            className="text-[10px] uppercase tracking-[0.22em] font-semibold text-ima-text-secondary mt-3"
+            className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary mt-3"
           >
             Remaining
           </span>

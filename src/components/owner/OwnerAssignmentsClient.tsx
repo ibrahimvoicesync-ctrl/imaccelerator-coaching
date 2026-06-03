@@ -175,7 +175,7 @@ export function OwnerAssignmentsClient({
       {coaches.length > 0 && (
         <div>
           <p
-            className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+            className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
           >
             Coach Capacity
           </p>
@@ -192,7 +192,7 @@ export function OwnerAssignmentsClient({
                     {coach.name}
                   </p>
                   <p
-                    className="mt-[6px] text-[10px] font-semibold tracking-[0.14em] uppercase text-ima-text-secondary tabular-nums slashed-zero"
+                    className="mt-[6px] text-[10px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary tabular-nums slashed-zero"
                   >
                     {count} / {max} students
                   </p>
@@ -356,7 +356,7 @@ export function OwnerAssignmentsClient({
                   </select>
                   {isSaving && (
                     <span
-                      className="text-[10px] font-semibold tracking-[0.14em] uppercase text-ima-text-secondary"
+                      className="text-[10px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary"
                     >
                       Saving…
                     </span>

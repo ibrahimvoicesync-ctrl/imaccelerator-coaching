@@ -243,12 +243,12 @@ export default async function CoachAlertsPage() {
       <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20 space-y-8">
         <header className="motion-safe:animate-fadeIn">
           <div className="flex items-center gap-3 flex-wrap">
-            <p className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase">
+            <p className="text-xs font-semibold tracking-[0.08em] text-ima-text-secondary uppercase">
               Alerts
             </p>
             {activeCount > 0 && (
               <span
-                className="inline-flex items-center gap-[6px] rounded-full bg-ima-surface-accent text-ima-primary px-[10px] py-[2px] text-[10px] font-semibold uppercase tracking-[0.18em] tabular-nums"
+                className="inline-flex items-center gap-[6px] rounded-full bg-ima-surface-accent text-ima-primary px-[10px] py-[2px] text-[10px] font-semibold uppercase tracking-[0.08em] tabular-nums"
                 aria-label={`${activeCount} active alerts`}
               >
                 <span

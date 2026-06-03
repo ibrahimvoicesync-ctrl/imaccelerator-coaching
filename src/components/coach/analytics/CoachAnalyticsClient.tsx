@@ -117,7 +117,7 @@ export function CoachAnalyticsClient({ payload, initialParams }: Props) {
       <header className="flex flex-wrap items-start justify-between gap-4 motion-safe:animate-fadeIn">
         <div>
           <p
-            className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
+            className="text-xs font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
           >
             Analytics
           </p>

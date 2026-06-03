@@ -123,7 +123,7 @@ export function AnalyticsClient({
       {/* Masthead — editorial kicker + title + lead (matches dashboard rhythm). */}
       <header id="student-analytics-h1" className="motion-safe:animate-fadeIn">
         <p
-          className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+          className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
         >
           Analytics · Lifetime
         </p>
@@ -147,7 +147,7 @@ export function AnalyticsClient({
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <p
               id="analytics-hero-label"
-              className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+              className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
             >
               Lifetime Hours
             </p>
@@ -223,7 +223,7 @@ export function AnalyticsClient({
       <section aria-label="Trend charts" className="motion-safe:animate-slideUp">
         <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
           <p
-            className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+            className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
           >
             Trend
           </p>
@@ -341,7 +341,7 @@ export function AnalyticsClient({
                     </ResponsiveContainer>
                   </div>
                   <div
-                    className="flex items-center gap-4 mt-4 text-[11px] uppercase tracking-[0.18em] font-semibold text-ima-text-secondary"
+                    className="flex items-center gap-4 mt-4 text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary"
                   >
                     <span className="inline-flex items-center gap-1.5">
                       <span
@@ -468,7 +468,7 @@ export function AnalyticsClient({
                   </ResponsiveContainer>
                 </div>
                 <p
-                  className="mt-4 text-[11px] uppercase tracking-[0.18em] font-semibold text-ima-text-secondary"
+                  className="mt-4 text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary"
                 >
                   Per {hoursBucketLabel} ·{" "}
                   <span className="tabular-nums text-ima-text">
@@ -539,7 +539,7 @@ function StatCard({
           {value}
         </p>
         <p
-          className="mt-[8px] text-[11px] font-semibold tracking-[0.18em] text-ima-text-secondary uppercase"
+          className="mt-[8px] text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
         >
           {label}
         </p>
@@ -561,7 +561,7 @@ function TrendCard({
     <div className="bg-white border border-ima-border rounded-[14px] p-5 md:p-6">
       <div className="flex items-baseline justify-between gap-3 mb-5">
         <p
-          className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+          className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
         >
           {kicker}
         </p>
@@ -586,7 +586,7 @@ function DataTable({
   return (
     <details className="mt-4 group">
       <summary
-        className="min-h-[44px] inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] font-semibold text-ima-primary cursor-pointer hover:text-ima-primary-hover focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 rounded"
+        className="min-h-[44px] inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-primary cursor-pointer hover:text-ima-primary-hover focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 rounded"
       >
         View data table
       </summary>
@@ -599,7 +599,7 @@ function DataTable({
                 key={h}
                 scope="col"
                 className={cn(
-                  "p-2 text-[10px] font-semibold tracking-[0.18em] uppercase text-ima-text-secondary",
+                  "p-2 text-[10px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary",
                   i === 0 ? "text-left" : "text-right",
                 )}
               >

@@ -82,7 +82,7 @@ export function CycleCard({
 
         <div className="min-w-0 flex-1">
           <p
-            className="text-[10px] font-semibold tracking-[0.18em] text-ima-text-secondary uppercase leading-none"
+            className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase leading-none"
           >
             {`Session ${String(cycleNumber).padStart(2, "0")}`}
           </p>
@@ -97,7 +97,7 @@ export function CycleCard({
         {isPaused && onResume && (
           <button
             onClick={onResume}
-            className="shrink-0 min-h-[44px] px-3 text-[10px] uppercase tracking-[0.18em] font-semibold text-ima-primary hover:bg-ima-surface-accent rounded-[8px] focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 motion-safe:transition-colors"
+            className="shrink-0 min-h-[44px] px-3 text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-primary hover:bg-ima-surface-accent rounded-[8px] focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 motion-safe:transition-colors"
             aria-label={`Resume session ${cycleNumber}`}
           >
             Resume

@@ -73,7 +73,7 @@ export default async function ReportHistoryPage() {
         {/* Masthead */}
         <header className="mt-4 motion-safe:animate-fadeIn">
           <p
-            className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+            className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
           >
             Report History
           </p>
@@ -155,7 +155,7 @@ export default async function ReportHistoryPage() {
                     {report.wins && (
                       <div className="mt-4">
                         <p
-                          className="text-[10px] font-semibold tracking-[0.18em] text-ima-text-secondary uppercase"
+                          className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
                         >
                           Wins
                         </p>
@@ -168,7 +168,7 @@ export default async function ReportHistoryPage() {
                     {report.improvements && (
                       <div className="mt-3">
                         <p
-                          className="text-[10px] font-semibold tracking-[0.18em] text-ima-text-secondary uppercase"
+                          className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
                         >
                           Improvements
                         </p>

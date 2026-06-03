@@ -27,7 +27,7 @@ interface ReportFormProps {
 }
 
 const RATING_LABELS: Record<number, string> = {
-  0: "Tap a star",
+  0: "Rate your day",
   1: "Tough day",
   2: "Below par",
   3: "Steady",
@@ -35,10 +35,11 @@ const RATING_LABELS: Record<number, string> = {
   5: "Exceptional",
 };
 
-/* Numeric inputs — sized a clear step below the hero date so the hero
-   stays dominant (hero = 5xl/7xl, these = 3xl/4xl). */
-const UNDERLINE_NUMERIC =
-  "w-full text-3xl md:text-4xl font-semibold tabular-nums tracking-tight text-ima-text bg-transparent border-0 border-b border-ima-border leading-none pt-2 pb-0.5 focus:border-ima-primary focus:outline-none focus:ring-0 appearance-none motion-safe:transition-colors [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none";
+/* Numeric inputs — a real bordered field (box, surface, focus ring) so a filled
+   value reads as editable, not as static display text. Centered value stays
+   prominent without the underline-as-text ambiguity. */
+const NUMERIC_FIELD =
+  "w-full h-14 px-3 text-center text-2xl font-semibold tabular-nums tracking-tight text-ima-text bg-ima-surface border border-ima-border rounded-xl leading-none focus:outline-none focus:ring-2 focus:ring-ima-primary focus:border-transparent hover:border-ima-primary/40 appearance-none motion-safe:transition-colors [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none";
 
 /* Reflection textareas — bordered box, restored from the pre-bolder design. */
 const BOX_TEXTAREA =
@@ -136,7 +137,7 @@ export function ReportForm({ date, existingReport, autoMinutes }: ReportFormProp
         <div className="grid grid-cols-3 gap-6 md:gap-10">
           {numericFields.map(field => (
             <label key={field.id} htmlFor={field.id} className="flex flex-col">
-              <span className="block text-[10px] uppercase tracking-[0.22em] font-semibold text-ima-text-muted mb-3 leading-[1.3] min-h-[2.6em]">
+              <span className="block text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted mb-2 leading-[1.3] min-h-[2.6em]">
                 {field.label}
               </span>
               <input
@@ -146,7 +147,7 @@ export function ReportForm({ date, existingReport, autoMinutes }: ReportFormProp
                 max={field.validation.max}
                 inputMode="numeric"
                 aria-label={field.label}
-                className={UNDERLINE_NUMERIC}
+                className={NUMERIC_FIELD}
                 {...register(field.id, { valueAsNumber: true })}
               />
             </label>
@@ -156,22 +157,15 @@ export function ReportForm({ date, existingReport, autoMinutes }: ReportFormProp
 
       {/* Rate your day — the emotional beat */}
       <section className="px-6 md:px-8 pt-7 md:pt-9 pb-8 md:pb-10">
-        <p id="star-rating-label" className="sr-only">
-          {DAILY_REPORT.fields.starRating.label}
-        </p>
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-6">
-          <StarRating value={starRating} onChange={setStarRating} />
-          <div className="md:text-right">
-            <p className="text-xl md:text-2xl font-semibold tracking-tight text-ima-text leading-none">
-              {RATING_LABELS[starRating] ?? "Tap a star"}
-            </p>
-            {starRating > 0 && (
-              <p className="mt-2 text-[10px] uppercase tracking-[0.22em] font-semibold text-ima-text-muted tabular-nums">
-                {starRating} of 5
-              </p>
-            )}
-          </div>
+        <div className="mb-3 flex items-baseline justify-between gap-4">
+          <span id="star-rating-label" className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted">
+            {DAILY_REPORT.fields.starRating.label}
+          </span>
+          <span className="text-base md:text-lg font-semibold tracking-tight text-ima-text leading-none">
+            {RATING_LABELS[starRating] ?? "Rate your day"}
+          </span>
         </div>
+        <StarRating value={starRating} onChange={setStarRating} />
       </section>
 
       {/* Reflections */}

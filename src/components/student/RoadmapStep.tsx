@@ -82,7 +82,7 @@ export function RoadmapStep({ step, progress, isLast, joinedAt, onComplete }: Ro
           {step.description}
         </p>
 
-        <div className="mt-2">
+        <div className="mt-3 flex flex-col items-start gap-3">
           {/* Completed chip — green Badge with date and optional late suffix (D-02, D-03, D-05) */}
           {deadlineStatus.kind === "completed" && (
             <Badge variant="success">
@@ -147,7 +147,7 @@ export function RoadmapStep({ step, progress, isLast, joinedAt, onComplete }: Ro
               href={step.unlock_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 mt-2 text-sm font-medium text-ima-primary hover:text-ima-primary-hover min-h-[44px] motion-safe:transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-ima-primary hover:text-ima-primary-hover min-h-[44px] motion-safe:transition-colors"
             >
               <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
               Watch Video

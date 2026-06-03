@@ -238,7 +238,7 @@ export function CalendarTab({
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <p
-              className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
+              className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
             >
               Activity Calendar
             </p>
@@ -310,7 +310,7 @@ export function CalendarTab({
               month_grid: "w-full border-collapse mt-2",
               weekdays: "",
               weekday:
-                "text-[10px] font-semibold tracking-[0.2em] uppercase text-ima-text-secondary text-center py-2",
+                "text-[10px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary text-center py-2",
               week: "",
               day: "text-center p-[2px]",
               today: "",
@@ -330,7 +330,7 @@ export function CalendarTab({
           <div className="flex items-baseline justify-between gap-3">
             <div>
               <p
-                className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
+                className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
               >
                 Day Detail
               </p>
@@ -351,7 +351,7 @@ export function CalendarTab({
             {/* Work Sessions card */}
             <div className="bg-white border border-ima-border rounded-[14px] p-5">
               <p
-                className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
+                className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
               >
                 Work Sessions
               </p>
@@ -420,7 +420,7 @@ export function CalendarTab({
               <div className="bg-white border border-ima-border rounded-[14px] p-5">
                 <div className="flex items-center justify-between gap-2">
                   <p
-                    className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
+                    className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
                   >
                     Daily Report
                   </p>
@@ -469,7 +469,7 @@ export function CalendarTab({
                             {m.value}
                           </p>
                           <p
-                            className="mt-[6px] text-[10px] font-semibold tracking-[0.2em] uppercase text-ima-text-secondary"
+                            className="mt-[6px] text-[10px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary"
                           >
                             {m.label}
                           </p>
@@ -480,7 +480,7 @@ export function CalendarTab({
                     {selectedReport.wins && (
                       <div className="mt-4">
                         <p
-                          className="text-[10px] font-semibold tracking-[0.2em] uppercase text-ima-text-secondary"
+                          className="text-[10px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary"
                         >
                           Wins
                         </p>
@@ -493,7 +493,7 @@ export function CalendarTab({
                     {selectedReport.improvements && (
                       <div className="mt-4">
                         <p
-                          className="text-[10px] font-semibold tracking-[0.2em] uppercase text-ima-text-secondary"
+                          className="text-[10px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary"
                         >
                           Improvements
                         </p>

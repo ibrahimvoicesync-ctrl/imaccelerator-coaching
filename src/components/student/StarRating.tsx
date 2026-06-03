@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface StarRatingProps {
@@ -11,6 +10,12 @@ interface StarRatingProps {
   disabled?: boolean;
 }
 
+/**
+ * Day rating selector — a 1..max segmented control. Brand is anti-gamified and
+ * blue-as-signal, so the rating fills with ima-primary (a calm strength meter)
+ * rather than amber stars. Keeps the radiogroup a11y contract: arrow keys move,
+ * only the active segment is in the tab order.
+ */
 export function StarRating({ value, onChange, max = 5, disabled = false }: StarRatingProps) {
   const [hovered, setHovered] = useState(0);
 
@@ -33,40 +38,37 @@ export function StarRating({ value, onChange, max = 5, disabled = false }: StarR
       id="star-rating-group"
       role="radiogroup"
       aria-labelledby="star-rating-label"
-      className="flex gap-1"
+      className="flex gap-2"
       onKeyDown={handleKeyDown}
+      onMouseLeave={() => setHovered(0)}
     >
       {Array.from({ length: max }, (_, i) => {
-        const starNumber = i + 1;
-        const isFilled = starNumber <= (hovered || value);
-        const isHoverPreview = hovered > 0 && starNumber <= hovered && starNumber > value;
+        const ratingValue = i + 1;
+        const active = hovered || value;
+        const filled = ratingValue <= active;
+        const isPreview = hovered > 0 && ratingValue <= hovered && ratingValue > value;
 
         return (
           <button
-            key={starNumber}
+            key={ratingValue}
             type="button"
             role="radio"
-            aria-checked={starNumber === value}
-            aria-label={`${starNumber} star${starNumber !== 1 ? "s" : ""}`}
-            tabIndex={starNumber === value || (value === 0 && starNumber === 1) ? 0 : -1}
+            aria-checked={ratingValue === value}
+            aria-label={`${ratingValue} of ${max}`}
+            tabIndex={ratingValue === value || (value === 0 && ratingValue === 1) ? 0 : -1}
             disabled={disabled}
             className={cn(
-              "p-1.5 min-h-[44px] min-w-[44px] flex items-center justify-center motion-safe:transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary rounded",
+              "flex-1 min-h-[44px] rounded-xl border text-sm font-semibold tabular-nums",
+              "motion-safe:transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2",
+              filled && !isPreview && "bg-ima-primary border-ima-primary text-white",
+              isPreview && "bg-ima-primary/15 border-ima-primary/40 text-ima-primary",
+              !filled && "bg-ima-surface border-ima-border text-ima-text-muted hover:border-ima-primary/40 hover:text-ima-text",
               disabled && "opacity-50 cursor-not-allowed"
             )}
-            onClick={() => !disabled && onChange(starNumber)}
-            onMouseEnter={() => !disabled && setHovered(starNumber)}
-            onMouseLeave={() => !disabled && setHovered(0)}
+            onClick={() => !disabled && onChange(ratingValue)}
+            onMouseEnter={() => !disabled && setHovered(ratingValue)}
           >
-            <Star
-              aria-hidden="true"
-              className={cn(
-                "h-9 w-9 md:h-10 md:w-10 motion-safe:transition-colors",
-                isFilled && !isHoverPreview && "fill-ima-warning text-ima-warning",
-                isHoverPreview && "fill-ima-warning/60 text-ima-warning/60",
-                !isFilled && "text-ima-text-muted/60"
-              )}
-            />
+            {ratingValue}
           </button>
         );
       })}

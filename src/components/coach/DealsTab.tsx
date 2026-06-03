@@ -155,7 +155,7 @@ export function DealsTab({
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5">
           <div className="min-w-0">
             <p
-              className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
+              className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
             >
               Total Revenue
             </p>
@@ -208,7 +208,7 @@ export function DealsTab({
                   {m.value}
                 </p>
                 <p
-                  className="mt-[6px] text-[10px] font-semibold tracking-[0.2em] uppercase text-ima-text-secondary"
+                  className="mt-[6px] text-[10px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary"
                 >
                   {m.label}
                 </p>
@@ -232,7 +232,7 @@ export function DealsTab({
         <section aria-label="Deals ledger">
           <div className="flex items-baseline justify-between gap-3">
             <p
-              className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
+              className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
             >
               Ledger
             </p>
@@ -246,7 +246,7 @@ export function DealsTab({
           <div className="mt-3 bg-white border border-ima-border rounded-[14px] overflow-hidden">
             {/* Column headers — hidden on mobile */}
             <div
-              className="hidden sm:grid grid-cols-[110px_1fr_1fr_90px_130px_110px] items-center gap-4 px-5 py-3 border-b border-ima-border text-[10px] font-semibold uppercase tracking-[0.2em] text-ima-text-secondary"
+              className="hidden sm:grid grid-cols-[110px_1fr_1fr_90px_130px_110px] items-center gap-4 px-5 py-3 border-b border-ima-border text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-text-secondary"
             >
               <span>Deal</span>
               <span>Revenue</span>
@@ -265,7 +265,7 @@ export function DealsTab({
                 >
                   <span className="col-span-2 sm:col-span-1 flex items-baseline gap-2">
                     <span
-                      className="text-[10px] font-semibold tracking-[0.2em] uppercase text-ima-text-secondary"
+                      className="text-[10px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary"
                     >
                       Deal
                     </span>
@@ -278,7 +278,7 @@ export function DealsTab({
 
                   <span className="text-sm font-semibold tabular-nums text-ima-text">
                     <span
-                      className="sm:hidden text-[10px] font-semibold uppercase tracking-[0.2em] text-ima-text-secondary mr-2"
+                      className="sm:hidden text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-text-secondary mr-2"
                     >
                       Revenue
                     </span>
@@ -287,7 +287,7 @@ export function DealsTab({
 
                   <span className="text-sm tabular-nums text-ima-text-secondary">
                     <span
-                      className="sm:hidden text-[10px] font-semibold uppercase tracking-[0.2em] text-ima-text-secondary mr-2"
+                      className="sm:hidden text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-text-secondary mr-2"
                     >
                       Profit
                     </span>
@@ -296,7 +296,7 @@ export function DealsTab({
 
                   <span className="text-sm tabular-nums text-ima-text-secondary">
                     <span
-                      className="sm:hidden text-[10px] font-semibold uppercase tracking-[0.2em] text-ima-text-secondary mr-2"
+                      className="sm:hidden text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-text-secondary mr-2"
                     >
                       Margin
                     </span>
@@ -330,7 +330,7 @@ export function DealsTab({
               className="hidden sm:grid grid-cols-[110px_1fr_1fr_90px_130px_110px] items-center gap-4 px-5 py-3 border-t border-ima-border bg-ima-bg"
             >
               <span
-                className="text-[10px] font-semibold tracking-[0.2em] uppercase text-ima-text-secondary"
+                className="text-[10px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary"
               >
                 Total
               </span>

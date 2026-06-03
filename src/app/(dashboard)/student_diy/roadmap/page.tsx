@@ -135,11 +135,11 @@ export default async function StudentDiyRoadmapPage() {
         {/* Masthead */}
         <header className="motion-safe:animate-fadeIn">
           <p
-            className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+            className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
           >
             Roadmap
           </p>
-          <h1 className="mt-3 text-[32px] md:text-[36px] font-semibold leading-[1.05] text-ima-text tracking-[-0.02em]">
+          <h1 className="mt-3 text-[32px] md:text-[36px] font-semibold leading-[1.05] text-ima-text uppercase tracking-[0.01em]">
             Your Roadmap
           </h1>
           <p className="mt-2 max-w-[58ch] text-[15px] text-ima-text-secondary leading-[1.55]">
@@ -157,7 +157,7 @@ export default async function StudentDiyRoadmapPage() {
             <div className="flex items-center justify-between gap-3">
               <p
                 id="overall-progress-label"
-                className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+                className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
               >
                 Overall Progress
               </p>
@@ -168,7 +168,7 @@ export default async function StudentDiyRoadmapPage() {
                 </span>
               ) : (
                 <span
-                  className="text-[10px] font-semibold tracking-[0.18em] text-ima-text-secondary uppercase tabular-nums"
+                  className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase tabular-nums"
                 >
                   {remaining} Remaining
                 </span>
@@ -240,7 +240,7 @@ export default async function StudentDiyRoadmapPage() {
               >
                 <div className="flex items-center justify-between gap-3">
                   <p
-                    className="text-[11px] font-semibold tracking-[0.18em] text-ima-text-secondary uppercase"
+                    className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
                   >
                     {name}
                   </p>
@@ -304,7 +304,7 @@ export default async function StudentDiyRoadmapPage() {
               <>
                 <div className="flex items-center justify-between gap-3">
                   <p
-                    className="text-[11px] font-semibold tracking-[0.22em] text-ima-success uppercase"
+                    className="text-[11px] font-semibold tracking-[0.08em] text-ima-success uppercase"
                   >
                     Status
                   </p>
@@ -321,7 +321,7 @@ export default async function StudentDiyRoadmapPage() {
               <>
                 <div className="flex items-center justify-between gap-3">
                   <p
-                    className="text-[11px] font-semibold tracking-[0.22em] text-ima-primary uppercase"
+                    className="text-[11px] font-semibold tracking-[0.08em] text-ima-primary uppercase"
                   >
                     Current Step
                   </p>
@@ -332,7 +332,7 @@ export default async function StudentDiyRoadmapPage() {
                   </span>
                 </div>
                 <p
-                  className="mt-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-ima-text-secondary"
+                  className="mt-4 text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-text-secondary"
                 >
                   {activeStepConfig.stageName}
                 </p>
@@ -346,7 +346,7 @@ export default async function StudentDiyRoadmapPage() {
             ) : (
               <>
                 <p
-                  className="text-[11px] font-semibold tracking-[0.22em] text-ima-primary uppercase"
+                  className="text-[11px] font-semibold tracking-[0.08em] text-ima-primary uppercase"
                 >
                   Status
                 </p>

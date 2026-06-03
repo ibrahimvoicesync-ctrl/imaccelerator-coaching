@@ -239,7 +239,7 @@ export function OwnerAlertsClient({ initialAlerts }: OwnerAlertsClientProps) {
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         <span
-                          className="text-[10px] font-semibold text-ima-text-secondary tracking-[0.14em] uppercase whitespace-nowrap tabular-nums slashed-zero"
+                          className="text-[10px] font-semibold text-ima-text-secondary tracking-[0.08em] uppercase whitespace-nowrap tabular-nums slashed-zero"
                         >
                           {getTimeAgo(alert.triggeredAt)}
                         </span>

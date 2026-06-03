@@ -161,10 +161,10 @@ function GoalKpi({
         )}
       </div>
       <div className="flex flex-col">
-        <span className="font-mono text-[9.5px] uppercase leading-[1] tracking-[0.16em] text-ima-text-secondary">
+        <span className="text-[10px] font-semibold uppercase leading-[1] tracking-[0.08em] text-ima-text-muted">
           {label}
         </span>
-        <span className="mt-1 text-[13px] font-semibold leading-[1.1] tabular-nums">
+        <span className="mt-1 text-sm font-semibold leading-[1.1] tabular-nums tracking-tight">
           <span className={valueTextClass(ragStatus, complete)}>{currentDisplay}</span>
           <span className="text-ima-text-secondary"> / {targetDisplay}</span>
         </span>
@@ -187,10 +187,10 @@ function CounterKpi({
       className="flex items-baseline gap-2 whitespace-nowrap rounded-lg px-3 py-1.5 motion-safe:transition-colors hover:bg-ima-surface-light/60"
       aria-label={ariaLabel}
     >
-      <span className="font-mono text-[9.5px] uppercase leading-[1] tracking-[0.16em] text-ima-text-secondary">
+      <span className="text-[10px] font-semibold uppercase leading-[1] tracking-[0.08em] text-ima-text-muted">
         {label}
       </span>
-      <span className="text-[13px] font-semibold leading-[1] tabular-nums text-ima-text">
+      <span className="text-sm font-semibold leading-[1] tabular-nums tracking-tight text-ima-text">
         {value}
       </span>
     </div>
@@ -200,7 +200,6 @@ function CounterKpi({
 function RingCounterKpi({
   label,
   value,
-  targetDisplay,
   ariaLabel,
 }: {
   label: string;
@@ -210,40 +209,15 @@ function RingCounterKpi({
 }) {
   return (
     <div
-      className="flex items-center gap-2.5 whitespace-nowrap rounded-lg px-3 py-1.5 motion-safe:transition-colors hover:bg-ima-surface-light/60"
+      className="flex flex-col whitespace-nowrap rounded-lg px-3 py-1.5 motion-safe:transition-colors hover:bg-ima-surface-light/60"
       aria-label={ariaLabel}
     >
-      <div
-        className="relative shrink-0"
-        style={{ width: RING_SIZE, height: RING_SIZE }}
-        aria-hidden="true"
-      >
-        <svg
-          width={RING_SIZE}
-          height={RING_SIZE}
-          viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
-        >
-          <circle
-            cx={RING_SIZE / 2}
-            cy={RING_SIZE / 2}
-            r={RING_RADIUS}
-            fill="none"
-            strokeWidth={RING_STROKE}
-            className="stroke-ima-border"
-          />
-        </svg>
-      </div>
-      <div className="flex flex-col">
-        <span className="font-mono text-[9.5px] uppercase leading-[1] tracking-[0.16em] text-ima-text-secondary">
-          {label}
-        </span>
-        <span className="mt-1 text-[13px] font-semibold leading-[1.1] tabular-nums">
-          <span className="text-ima-text">{value}</span>
-          {targetDisplay && (
-            <span className="text-ima-text-secondary"> / {targetDisplay}</span>
-          )}
-        </span>
-      </div>
+      <span className="text-[10px] font-semibold uppercase leading-[1] tracking-[0.08em] text-ima-text-muted">
+        {label}
+      </span>
+      <span className="mt-1 text-sm font-semibold leading-[1.1] tabular-nums tracking-tight text-ima-text">
+        {value}
+      </span>
     </div>
   );
 }
@@ -289,7 +263,6 @@ export function ProgressBanner({
           <RingCounterKpi
             label="Lifetime Hours"
             value={formatHoursMinutes(lifetimeMinutesWorked)}
-            targetDisplay="∞"
             ariaLabel={`Lifetime hours worked: ${formatHoursMinutes(lifetimeMinutesWorked)}`}
           />
         </div>

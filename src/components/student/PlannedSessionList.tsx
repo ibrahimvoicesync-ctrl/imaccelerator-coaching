@@ -25,10 +25,10 @@ export function PlannedSessionList({
     <div className="rounded-2xl border border-ima-border bg-ima-bg/60 p-5 md:p-7 mb-8">
       {/* Editorial progress header */}
       <div className="flex items-baseline justify-between mb-5 gap-3 flex-wrap">
-        <p className="text-xs uppercase tracking-[0.22em] font-semibold text-ima-text">
+        <p className="text-xs uppercase tracking-[0.08em] font-semibold text-ima-text">
           Today&apos;s plan
         </p>
-        <p className="text-[11px] uppercase tracking-[0.18em] font-medium text-ima-text-muted tabular-nums">
+        <p className="text-[11px] uppercase tracking-[0.08em] font-medium text-ima-text-muted tabular-nums">
           {`${completedCount} / ${plan.sessions.length} sessions`}
         </p>
       </div>
@@ -67,7 +67,7 @@ export function PlannedSessionList({
 
               {/* Editorial label + duration */}
               <div className="flex-1 min-w-0">
-                <p className="text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-text-muted leading-none">
+                <p className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted leading-none">
                   {`Session ${String(index + 1).padStart(2, "0")}`}
                 </p>
                 <p className="mt-2 text-lg font-semibold text-ima-text tabular-nums leading-tight">

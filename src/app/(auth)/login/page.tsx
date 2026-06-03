@@ -66,7 +66,7 @@ function LoginContent() {
       >
         <div className="rounded-xl border border-ima-border bg-ima-surface p-8 shadow-sm md:p-10">
           <div className="flex flex-col items-center text-center">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ima-text-muted">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ima-text-muted">
               Sign In
             </p>
             <span
@@ -139,7 +139,7 @@ function LoginContent() {
             </div>
           )}
 
-          <p className="mt-6 text-center text-[10px] font-semibold uppercase tracking-[0.22em] text-ima-text-muted">
+          <p className="mt-6 text-center text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-text-muted">
             Invite-Only Access
           </p>
         </div>

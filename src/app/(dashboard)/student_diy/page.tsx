@@ -117,7 +117,7 @@ export default async function StudentDiyDashboard() {
         {/* Masthead */}
         <header className="motion-safe:animate-fadeIn">
           <p
-            className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+            className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
           >
             Dashboard
           </p>
@@ -139,7 +139,7 @@ export default async function StudentDiyDashboard() {
             <div className="flex items-center justify-between gap-3">
               <p
                 id="todays-work-label"
-                className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+                className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
               >
                 Today&apos;s Work
               </p>
@@ -150,7 +150,7 @@ export default async function StudentDiyDashboard() {
                 </span>
               ) : (
                 <span
-                  className="text-[10px] font-semibold tracking-[0.18em] text-ima-text-secondary uppercase tabular-nums"
+                  className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase tabular-nums"
                 >
                   {completedCount} Session{completedCount !== 1 ? "s" : ""}
                 </span>

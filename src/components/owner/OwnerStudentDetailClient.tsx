@@ -184,7 +184,7 @@ export function OwnerStudentDetailClient({
           <div className="flex flex-col gap-1">
             <label
               htmlFor="coach-assign"
-              className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ima-text-secondary"
+              className="text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-text-secondary"
             >
               Assigned Coach
             </label>

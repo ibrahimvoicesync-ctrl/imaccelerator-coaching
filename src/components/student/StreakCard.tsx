@@ -30,13 +30,13 @@ export function StreakCard({ info, className = "" }: StreakCardProps) {
     >
       <div className="flex items-center justify-between gap-3">
         <p
-          className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+          className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
         >
           Consistency
         </p>
         {longest > 0 && (
           <span
-            className="text-[10px] font-semibold tracking-[0.14em] text-ima-text-secondary uppercase tabular-nums"
+            className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase tabular-nums"
           >
             Best {longest}d
           </span>

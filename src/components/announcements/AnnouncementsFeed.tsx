@@ -121,7 +121,7 @@ export function AnnouncementsFeed({
           >
             <Megaphone className="h-6 w-6" strokeWidth={2.25} />
           </span>
-          <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-ima-text-muted">
+          <p className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted">
             Empty feed
           </p>
           <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-ima-text leading-tight">
@@ -164,7 +164,7 @@ export function AnnouncementsFeed({
 
       {showCreate && canAuthor && (
         <div className="rounded-2xl border border-ima-primary/25 bg-ima-surface-accent p-5 md:p-6 mb-8 motion-safe:animate-fadeIn">
-          <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-ima-primary mb-3">
+          <p className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-primary mb-3">
             New announcement
           </p>
           <AnnouncementForm
@@ -195,7 +195,7 @@ export function AnnouncementsFeed({
             onClick={handleLoadMore}
             disabled={loadingMore}
             aria-busy={loadingMore || undefined}
-            className="inline-flex items-center gap-2 min-h-[44px] px-5 rounded-lg text-xs uppercase tracking-[0.22em] font-semibold text-ima-primary hover:text-ima-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2 disabled:opacity-60 motion-safe:transition-colors"
+            className="inline-flex items-center gap-2 min-h-[44px] px-5 rounded-lg text-xs uppercase tracking-[0.08em] font-semibold text-ima-primary hover:text-ima-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2 disabled:opacity-60 motion-safe:transition-colors"
           >
             {loadingMore ? (
               <>

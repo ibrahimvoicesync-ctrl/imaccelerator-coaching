@@ -112,7 +112,7 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
             <p
-              className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
+              className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
             >
               Roadmap Progress
             </p>
@@ -134,7 +134,7 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
           </div>
           <div className="sm:text-right shrink-0">
             <p
-              className="text-[10px] font-semibold tracking-[0.2em] uppercase text-ima-text-secondary"
+              className="text-[10px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary"
             >
               Active Step
             </p>
@@ -191,7 +191,7 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
               {/* Stage header */}
               <div className="flex items-center gap-3">
                 <span
-                  className="text-[10px] font-semibold tracking-[0.2em] uppercase text-ima-text-secondary tabular-nums"
+                  className="text-[10px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary tabular-nums"
                 >
                   Stage {String(idx + 1).padStart(2, "0")}
                 </span>
@@ -273,7 +273,7 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                           <span
-                            className="text-[10px] font-semibold tracking-[0.2em] uppercase text-ima-text-secondary tabular-nums"
+                            className="text-[10px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary tabular-nums"
                           >
                             Step {String(step.step).padStart(2, "0")}
                           </span>

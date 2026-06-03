@@ -473,7 +473,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
           <div className="flex items-center justify-between gap-3">
             <p
               id="todays-work-label"
-              className="text-[11px] font-semibold tracking-[0.22em] text-ima-text-secondary uppercase"
+              className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
             >
               Today&apos;s Work
             </p>
@@ -484,7 +484,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
               </span>
             ) : (
               <span
-                className="text-[10px] font-semibold tracking-[0.14em] text-ima-text-secondary uppercase tabular-nums"
+                className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase tabular-nums"
               >
                 {completedCount} Session{completedCount !== 1 ? "s" : ""}
               </span>
@@ -534,7 +534,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
             {isBreakView && phase.kind === "break" && (
               <div className="flex flex-col items-center gap-5 text-center">
                 <p
-                  className="text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-text-secondary"
+                  className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary"
                 >
                   Break
                 </p>
@@ -563,7 +563,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
               <div className="flex flex-col items-center gap-8">
                 <div className="text-center w-full">
                   <p
-                    className="text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-text-secondary mb-4"
+                    className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary mb-4"
                   >
                     Session duration
                   </p>
@@ -588,7 +588,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
                   <div className="mt-3 flex items-center justify-center gap-2.5">
                     <label
                       htmlFor="custom-session-minutes"
-                      className={`text-[11px] uppercase tracking-[0.18em] font-semibold motion-safe:transition-colors ${
+                      className={`text-[11px] uppercase tracking-[0.08em] font-semibold motion-safe:transition-colors ${
                         isCustomDuration ? "text-ima-primary" : "text-ima-text-secondary"
                       }`}
                     >
@@ -627,7 +627,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
 
                 <div className="text-center w-full">
                   <p
-                    className="text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-text-secondary mb-4"
+                    className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary mb-4"
                   >
                     Break before next session
                   </p>
@@ -688,7 +688,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
             {isActiveView && activeSession && (
               <div className="flex flex-col items-center gap-6">
                 <div
-                  className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] font-semibold text-ima-primary"
+                  className="flex items-center gap-2 text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-primary"
                 >
                   <span className="relative flex h-2 w-2" aria-hidden="true">
                     <span className="absolute inline-flex h-full w-full rounded-full bg-ima-primary opacity-60 motion-safe:animate-ping" />
@@ -723,7 +723,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
                   <button
                     onClick={() => handleAbandon(activeSession.id)}
                     disabled={isLoading}
-                    className="text-ima-text-secondary hover:text-ima-error hover:bg-ima-error/10 rounded-[10px] px-4 min-h-[44px] text-[11px] uppercase tracking-[0.18em] font-semibold motion-safe:transition-colors"
+                    className="text-ima-text-secondary hover:text-ima-error hover:bg-ima-error/10 rounded-[10px] px-4 min-h-[44px] text-[11px] uppercase tracking-[0.08em] font-semibold motion-safe:transition-colors"
                   >
                     Abandon
                   </button>
@@ -756,7 +756,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
               <div className="flex flex-col items-center gap-5 text-center">
                 <div className="flex flex-col items-center gap-2">
                   <p
-                    className="text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-text-secondary"
+                    className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary"
                   >
                     {`Session ${String(pausedSession.cycle_number).padStart(2, "0")} \u00B7 Paused`}
                   </p>
@@ -768,7 +768,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
                     )}
                   </p>
                   <p
-                    className="text-[10px] uppercase tracking-[0.22em] font-medium text-ima-text-secondary mt-1"
+                    className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-secondary mt-1"
                   >
                     Remaining
                   </p>
@@ -784,7 +784,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
                   <button
                     onClick={() => handleAbandon(pausedSession.id)}
                     disabled={isLoading}
-                    className="text-ima-text-secondary hover:text-ima-error hover:bg-ima-error/10 rounded-[10px] px-4 min-h-[44px] text-[11px] uppercase tracking-[0.18em] font-semibold motion-safe:transition-colors"
+                    className="text-ima-text-secondary hover:text-ima-error hover:bg-ima-error/10 rounded-[10px] px-4 min-h-[44px] text-[11px] uppercase tracking-[0.08em] font-semibold motion-safe:transition-colors"
                   >
                     Abandon
                   </button>
@@ -865,7 +865,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
           <div className="bg-white border border-ima-border rounded-[14px] p-6 md:p-8">
             <div className="flex flex-col items-center gap-3 text-center">
               <p
-                className="text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-success"
+                className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-success"
               >
                 Plan complete
               </p>
@@ -903,7 +903,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
           </div>
           <div className="flex-1 min-w-0 text-left">
             <p
-              className="text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-primary leading-none"
+              className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-primary leading-none"
             >
               Daily report
             </p>
@@ -941,18 +941,18 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
           >
             <div className="flex items-baseline gap-x-3 gap-y-1 flex-wrap mb-4">
               <p
-                className="text-[11px] uppercase tracking-[0.22em] font-semibold text-ima-text-secondary"
+                className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary"
               >
                 Today&apos;s sessions
               </p>
               <p
-                className="text-[10px] uppercase tracking-[0.18em] font-medium text-ima-text-secondary tabular-nums"
+                className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-secondary tabular-nums"
               >
                 {`${visibleSessions.length} logged`}
               </p>
               {completedOnly > 0 && (
                 <p
-                  className="text-[10px] uppercase tracking-[0.18em] font-semibold text-ima-success tabular-nums"
+                  className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-success tabular-nums"
                 >
                   {`${completedOnly} win${completedOnly !== 1 ? "s" : ""}`}
                 </p>
@@ -1004,7 +1004,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
             {hiddenCount > 0 && !showAllSessions && (
               <button
                 onClick={() => setShowAllSessions(true)}
-                className="mt-4 text-[11px] uppercase tracking-[0.18em] font-semibold text-ima-primary hover:text-ima-primary-hover min-h-[44px] motion-safe:transition-colors"
+                className="mt-4 text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-primary hover:text-ima-primary-hover min-h-[44px] motion-safe:transition-colors"
               >
                 {`Show ${hiddenCount} more session${hiddenCount !== 1 ? "s" : ""}`}
               </button>
@@ -1012,7 +1012,7 @@ export function WorkTrackerClient({ initialSessions, initialPlan, dailyReportHre
             {showAllSessions && hiddenCount > 0 && (
               <button
                 onClick={() => setShowAllSessions(false)}
-                className="mt-4 text-[11px] uppercase tracking-[0.18em] font-semibold text-ima-primary hover:text-ima-primary-hover min-h-[44px] motion-safe:transition-colors"
+                className="mt-4 text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-primary hover:text-ima-primary-hover min-h-[44px] motion-safe:transition-colors"
               >
                 Show less
               </button>

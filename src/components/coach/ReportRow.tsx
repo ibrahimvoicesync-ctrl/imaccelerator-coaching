@@ -165,7 +165,7 @@ export function ReportRow({
               {report.wins && (
                 <div>
                   <p
-                    className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
+                    className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
                   >
                     Wins
                   </p>
@@ -175,7 +175,7 @@ export function ReportRow({
               {report.improvements && (
                 <div>
                   <p
-                    className="text-[10px] font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
+                    className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
                   >
                     Improvements
                   </p>

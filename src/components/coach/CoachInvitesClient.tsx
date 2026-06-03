@@ -221,7 +221,7 @@ export function CoachInvitesClient({ invites, magicLinks }: Props) {
       <div>
         <label
           htmlFor="coach-invite-role"
-          className="block text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase mb-3"
+          className="block text-xs font-semibold tracking-[0.08em] text-ima-text-secondary uppercase mb-3"
         >
           Invite Role
         </label>
@@ -388,7 +388,7 @@ export function CoachInvitesClient({ invites, magicLinks }: Props) {
       {lastUrl && activeTab === "magic" && (
         <div className="bg-ima-surface border border-ima-primary/20 rounded-[14px] p-5">
           <p
-            className="text-xs font-semibold tracking-[0.2em] uppercase text-ima-text-secondary"
+            className="text-xs font-semibold tracking-[0.08em] uppercase text-ima-text-secondary"
           >
             Generated invite link
           </p>
@@ -416,7 +416,7 @@ export function CoachInvitesClient({ invites, magicLinks }: Props) {
       {/* Invite history */}
       <section>
         <h2
-          className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
+          className="text-xs font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
         >
           Invite History
         </h2>
@@ -477,7 +477,7 @@ export function CoachInvitesClient({ invites, magicLinks }: Props) {
       {/* Magic links history */}
       <section>
         <h2
-          className="text-xs font-semibold tracking-[0.2em] text-ima-text-secondary uppercase"
+          className="text-xs font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
         >
           Invite Links
         </h2>
