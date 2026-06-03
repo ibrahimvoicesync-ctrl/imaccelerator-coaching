@@ -42,7 +42,7 @@ export function RoadmapStep({ step, progress, isLast, joinedAt, onComplete }: Ro
           className={cn(
             "flex items-center justify-center w-11 h-11 rounded-full shrink-0 motion-safe:transition-all",
             status === "completed" && "bg-ima-success text-white shadow-sm",
-            status === "active" && "bg-ima-primary text-white ring-4 ring-ima-primary/20 motion-safe:animate-pulse shadow-md",
+            status === "active" && "bg-ima-primary text-white ring-4 ring-ima-primary/20 motion-safe:animate-pulse",
             status === "locked" && "border-2 border-ima-border text-ima-text-muted bg-ima-surface-light"
           )}
         >

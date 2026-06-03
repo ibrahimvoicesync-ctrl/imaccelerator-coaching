@@ -112,7 +112,7 @@ export function KPIGrid({ stats }: { stats: CoachAnalyticsStats }) {
               <Icon className={`h-[18px] w-[18px] ${tint.text}`} aria-hidden="true" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-2xl font-semibold leading-none tabular-nums text-ima-text">
+              <p className="text-2xl font-semibold leading-none tabular-nums tracking-tight text-ima-text">
                 {card.value}
               </p>
               {card.subLabel ? (

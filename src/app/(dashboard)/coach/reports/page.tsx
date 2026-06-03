@@ -201,7 +201,7 @@ export default async function CoachReportsPage({
                 <s.icon className={`h-[18px] w-[18px] ${s.iconColor}`} aria-hidden="true" />
               </div>
               <div className="min-w-0">
-                <p className={`text-2xl font-semibold leading-none tabular-nums ${s.valueColor}`}>
+                <p className={`text-2xl font-semibold leading-none tabular-nums tracking-tight ${s.valueColor}`}>
                   {s.value}
                 </p>
                 <p className="mt-[6px] text-xs text-ima-text-secondary">{s.label}</p>

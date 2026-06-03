@@ -106,7 +106,7 @@ export default async function CoachInvitesPage() {
                 <s.icon className={`h-[18px] w-[18px] ${s.iconColor}`} aria-hidden="true" />
               </div>
               <div className="min-w-0">
-                <p className="text-2xl font-semibold leading-none tabular-nums text-ima-text">
+                <p className="text-2xl font-semibold leading-none tabular-nums tracking-tight text-ima-text">
                   {s.value}
                 </p>
                 <p className="mt-[6px] text-xs text-ima-text-secondary">{s.label}</p>

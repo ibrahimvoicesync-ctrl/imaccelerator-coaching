@@ -270,7 +270,7 @@ export function ProgressBanner({
 
   return (
     <div
-      className="sticky top-0 z-10 border-b border-ima-border bg-ima-surface/75 px-4 backdrop-blur-[20px] backdrop-saturate-[1.4] supports-[backdrop-filter]:bg-ima-surface/70"
+      className="sticky top-0 z-10 border-b border-ima-border bg-ima-surface px-4"
       role="region"
       aria-label="KPI summary"
     >

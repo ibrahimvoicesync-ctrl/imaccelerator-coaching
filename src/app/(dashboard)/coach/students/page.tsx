@@ -269,7 +269,7 @@ export default async function CoachStudentsPage() {
                 </div>
                 <div className="min-w-0">
                   <p
-                    className={`text-2xl font-semibold leading-none tabular-nums ${s.valueColor}`}
+                    className={`text-2xl font-semibold leading-none tabular-nums tracking-tight ${s.valueColor}`}
                   >
                     {s.value}
                   </p>

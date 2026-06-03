@@ -204,7 +204,7 @@ export function DealsTab({
                 key={m.label}
                 className="rounded-[10px] border border-ima-border bg-ima-bg px-4 py-3"
               >
-                <p className="text-xl font-semibold leading-none tabular-nums text-ima-text">
+                <p className="text-xl font-semibold leading-none tabular-nums tracking-tight text-ima-text">
                   {m.value}
                 </p>
                 <p

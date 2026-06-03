@@ -8,7 +8,6 @@ const cardVariants = cva("rounded-xl", {
       default: "bg-ima-surface border border-ima-border shadow-sm",
       warm: "bg-ima-surface-light border border-ima-border shadow-sm",
       accent: "bg-ima-surface-accent border border-ima-border shadow-sm",
-      "bordered-left": "bg-ima-surface border border-ima-border border-l-4 border-l-ima-primary shadow-sm",
     },
     interactive: {
       true: "hover:shadow-md hover:-translate-y-0.5 motion-safe:transition-all motion-safe:duration-200 cursor-pointer",

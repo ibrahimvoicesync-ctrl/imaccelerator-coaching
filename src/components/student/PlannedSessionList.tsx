@@ -46,7 +46,7 @@ export function PlannedSessionList({
               className={cn(
                 "rounded-2xl border bg-ima-surface px-5 py-5 flex items-center gap-5 min-h-[88px] motion-safe:transition-shadow",
                 isCompleted && "border-ima-success/25",
-                isCurrent && "border-ima-primary/40 shadow-card-hover",
+                isCurrent && "border-ima-primary/40 hover:shadow-card-hover",
                 isUpcoming && "border-ima-border opacity-60"
               )}
             >

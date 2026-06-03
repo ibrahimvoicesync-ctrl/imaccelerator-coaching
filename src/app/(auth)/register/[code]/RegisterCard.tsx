@@ -49,7 +49,7 @@ export function RegisterCard({ invite, error }: RegisterCardProps) {
   return (
     <main className="flex min-h-screen items-center justify-center bg-ima-bg px-4">
       <div className="w-full max-w-md rounded-xl bg-ima-surface p-8 shadow-sm border border-ima-border text-center">
-        <h1 className="text-2xl font-bold text-ima-text">
+        <h1 className="text-2xl font-bold tracking-tight text-ima-text">
           You&apos;ve been invited as a{" "}
           <span className="inline-flex items-center rounded-full bg-ima-primary/10 px-3 py-1 text-sm font-medium text-ima-primary">
             {capitalizedRole}

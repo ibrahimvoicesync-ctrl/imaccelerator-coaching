@@ -36,7 +36,7 @@ export function KPICard({ label, value, icon: Icon, tint, href, ariaLabel }: Pro
             <Icon className={`h-5 w-5 ${t.text}`} aria-hidden="true" />
           </div>
           <div className="min-w-0">
-            <p className="text-2xl font-semibold text-ima-text tabular-nums">{value}</p>
+            <p className="text-2xl font-semibold tracking-tight text-ima-text tabular-nums">{value}</p>
             <p className="text-xs text-ima-text-secondary">{label}</p>
           </div>
         </CardContent>

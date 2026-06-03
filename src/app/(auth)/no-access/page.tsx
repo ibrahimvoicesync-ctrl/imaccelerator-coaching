@@ -9,7 +9,7 @@ export default function NoAccessPage() {
           className="mx-auto h-12 w-12 text-ima-text-muted"
           aria-hidden="true"
         />
-        <h1 className="mt-4 text-2xl font-bold text-ima-text">
+        <h1 className="mt-4 text-2xl font-bold tracking-tight text-ima-text">
           Access Required
         </h1>
         <p className="mt-3 text-ima-text-secondary">

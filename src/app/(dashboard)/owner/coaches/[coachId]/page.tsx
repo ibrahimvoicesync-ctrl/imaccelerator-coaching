@@ -294,7 +294,7 @@ export default async function CoachDetailPage({
               />
             </div>
             <div>
-              <p className="text-2xl font-bold tabular-nums slashed-zero text-ima-text">
+              <p className="text-2xl font-bold tabular-nums slashed-zero tracking-tight text-ima-text">
                 {studentList.length}
               </p>
               <p className="text-xs text-ima-text-secondary">Students</p>
@@ -312,7 +312,7 @@ export default async function CoachDetailPage({
               />
             </div>
             <div>
-              <p className="text-2xl font-bold tabular-nums slashed-zero text-ima-text">{avgRatingStr}</p>
+              <p className="text-2xl font-bold tabular-nums slashed-zero tracking-tight text-ima-text">{avgRatingStr}</p>
               <p className="text-xs text-ima-text-secondary">Avg Rating</p>
             </div>
           </CardContent>
@@ -328,7 +328,7 @@ export default async function CoachDetailPage({
               />
             </div>
             <div>
-              <p className="text-2xl font-bold tabular-nums slashed-zero text-ima-text">{reviewRate}%</p>
+              <p className="text-2xl font-bold tabular-nums slashed-zero tracking-tight text-ima-text">{reviewRate}%</p>
               <p className="text-xs text-ima-text-secondary">Review Rate</p>
             </div>
           </CardContent>
@@ -347,8 +347,8 @@ export default async function CoachDetailPage({
               <p
                 className={
                   atRiskCount > 0
-                    ? "text-2xl font-bold tabular-nums slashed-zero text-ima-error"
-                    : "text-2xl font-bold tabular-nums slashed-zero text-ima-text"
+                    ? "text-2xl font-bold tabular-nums slashed-zero tracking-tight text-ima-error"
+                    : "text-2xl font-bold tabular-nums slashed-zero tracking-tight text-ima-text"
                 }
               >
                 {atRiskCount}
