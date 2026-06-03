@@ -779,6 +779,8 @@ export type Database = {
           niche: string | null
           referral_code: string | null
           referral_short_url: string | null
+          reminder_hour: number
+          reminder_offset_min: number
           // HAND-EDIT: narrow from DB CHECK constraint — reapply after regen.
           role: "owner" | "coach" | "student" | "student_diy"
           status: "active" | "inactive" | "suspended"
@@ -797,6 +799,8 @@ export type Database = {
           niche?: string | null
           referral_code?: string | null
           referral_short_url?: string | null
+          reminder_hour?: number
+          reminder_offset_min?: number
           role: "owner" | "coach" | "student" | "student_diy"
           status?: "active" | "inactive" | "suspended"
           streak_count?: number
@@ -814,6 +818,8 @@ export type Database = {
           niche?: string | null
           referral_code?: string | null
           referral_short_url?: string | null
+          reminder_hour?: number
+          reminder_offset_min?: number
           role?: "owner" | "coach" | "student" | "student_diy"
           status?: "active" | "inactive" | "suspended"
           streak_count?: number

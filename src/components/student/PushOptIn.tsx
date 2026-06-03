@@ -17,18 +17,30 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
   return output;
 }
 
+/** "0" -> "12:00 AM", "13" -> "1:00 PM". */
+function formatHourLabel(hour: number): string {
+  const period = hour < 12 ? "AM" : "PM";
+  const display = hour % 12 === 0 ? 12 : hour % 12;
+  return `${display}:00 ${period}`;
+}
+
+const HOURS = Array.from({ length: 24 }, (_, h) => h);
+
 /**
  * Daily-reminder opt-in. Renders nothing when push isn't configured or the
- * browser can't support it, so it degrades cleanly. Otherwise shows a single
- * calm toggle to turn browser reminders on/off.
+ * browser can't support it, so it degrades cleanly. Otherwise shows a calm
+ * toggle to turn browser reminders on/off, plus a per-student time picker for
+ * when the daily nudge should arrive.
  */
-export function PushOptIn() {
+export function PushOptIn({ initialHour = 17 }: { initialHour?: number }) {
   const toastRef = useRef(useToast());
   const [supported, setSupported] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
   const [permission, setPermission] = useState<NotificationPermission>("default");
   const [busy, setBusy] = useState(false);
   const [ready, setReady] = useState(false);
+  const [hour, setHour] = useState(initialHour);
+  const [savingHour, setSavingHour] = useState(false);
 
   useEffect(() => {
     if (
@@ -120,14 +132,45 @@ export function PushOptIn() {
     }
   }, []);
 
+  const saveHour = useCallback(async (nextHour: number) => {
+    const previous = hour;
+    setHour(nextHour);
+    setSavingHour(true);
+    try {
+      const response = await fetch("/api/push/preferences", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reminder_hour: nextHour,
+          // getTimezoneOffset(): minutes to add to local to reach UTC.
+          reminder_offset_min: new Date().getTimezoneOffset(),
+        }),
+      });
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({ error: null }));
+        setHour(previous);
+        toastRef.current.toast({ type: "error", title: err.error || "Couldn't save reminder time" });
+        return;
+      }
+      toastRef.current.toast({ type: "success", title: `Reminder set for ${formatHourLabel(nextHour)}` });
+    } catch (err) {
+      console.error("[PushOptIn] save hour error:", err);
+      setHour(previous);
+      toastRef.current.toast({ type: "error", title: "Couldn't save reminder time" });
+    } finally {
+      setSavingHour(false);
+    }
+  }, [hour]);
+
   // Nothing to show until detection finishes, or if push is unsupported.
   if (!ready || !supported) return null;
 
   const blocked = permission === "denied";
 
   return (
-    <div className="flex items-center gap-4 bg-white border border-ima-border rounded-[14px] px-6 py-5 min-h-[84px]">
-      <div className="w-9 h-9 rounded-[8px] bg-ima-surface-accent flex items-center justify-center shrink-0">
+    <div className="bg-white border border-ima-border rounded-[14px] px-6 py-5">
+      <div className="flex items-center gap-4 min-h-[60px]">
+        <div className="w-9 h-9 rounded-[8px] bg-ima-surface-accent flex items-center justify-center shrink-0">
         <Bell className="h-[18px] w-[18px] text-ima-primary" aria-hidden="true" />
       </div>
       <div className="flex-1 min-w-0">
@@ -156,6 +199,31 @@ export function PushOptIn() {
       >
         {busy ? "…" : subscribed ? "Turn off" : "Enable"}
       </button>
+      </div>
+
+      {subscribed && !blocked && (
+        <div className="mt-4 pt-4 border-t border-ima-border flex items-center justify-between gap-3">
+          <label
+            htmlFor="reminder-hour"
+            className="text-[13px] font-medium text-ima-text-secondary"
+          >
+            Remind me at
+          </label>
+          <select
+            id="reminder-hour"
+            value={hour}
+            disabled={savingHour}
+            onChange={(e) => saveHour(Number(e.target.value))}
+            className="h-11 min-h-[44px] rounded-[10px] border border-ima-border bg-ima-surface px-3 text-sm font-medium text-ima-text tabular-nums focus:outline-none focus:ring-2 focus:ring-ima-primary focus:border-transparent disabled:opacity-50 motion-safe:transition-colors"
+          >
+            {HOURS.map((h) => (
+              <option key={h} value={h}>
+                {formatHourLabel(h)}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
     </div>
   );
 }

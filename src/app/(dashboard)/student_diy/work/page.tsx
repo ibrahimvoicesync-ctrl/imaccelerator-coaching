@@ -35,6 +35,12 @@ export default async function StudentDiyWorkPage() {
     console.error("[student_diy work page] Failed to load daily plan:", planError);
   }
 
+  const { data: prefRow } = await admin
+    .from("users")
+    .select("reminder_hour")
+    .eq("id", user.id)
+    .single();
+
   return (
     <div
       className={`-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg`}
@@ -68,7 +74,7 @@ export default async function StudentDiyWorkPage() {
           className="mt-[14px] motion-safe:animate-fadeIn"
           style={{ animationDelay: "150ms" }}
         >
-          <PushOptIn />
+          <PushOptIn initialHour={prefRow?.reminder_hour ?? 17} />
         </div>
       </div>
     </div>

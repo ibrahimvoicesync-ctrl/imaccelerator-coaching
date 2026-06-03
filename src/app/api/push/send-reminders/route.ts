@@ -52,14 +52,38 @@ export async function GET(request: Request) {
     .in("student_id", studentIds);
   const activeToday = new Set((completed ?? []).map((c) => c.student_id));
 
-  // Role per student → which work page the notification deep-links to.
-  const { data: users } = await admin
+  // Per-student role (deep-link target) + reminder-time preference.
+  const { data: users, error: usersError } = await admin
     .from("users")
-    .select("id, role")
+    .select("id, role, reminder_hour, reminder_offset_min")
     .in("id", studentIds);
+  if (usersError) {
+    console.error("[push send-reminders] failed to load users:", usersError);
+    return NextResponse.json({ error: "Failed to load users" }, { status: 500 });
+  }
   const roleById = new Map((users ?? []).map((u) => [u.id, u.role]));
+  const reminderById = new Map(
+    (users ?? []).map((u) => [
+      u.id,
+      { hour: u.reminder_hour, offset: u.reminder_offset_min },
+    ])
+  );
 
-  const targets = subs.filter((s) => !activeToday.has(s.student_id));
+  // The job runs hourly; each student's reminder fires only during the local
+  // hour they chose. Convert "now" into their local hour via the stored UTC
+  // offset (minutes, from Date.getTimezoneOffset()) and match reminder_hour.
+  const now = new Date();
+  const utcMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
+  const isReminderHour = (studentId: string): boolean => {
+    const pref = reminderById.get(studentId);
+    if (!pref) return false;
+    const localMinutes = (((utcMinutes - pref.offset) % 1440) + 1440) % 1440;
+    return Math.floor(localMinutes / 60) === pref.hour;
+  };
+
+  const targets = subs.filter(
+    (s) => !activeToday.has(s.student_id) && isReminderHour(s.student_id)
+  );
 
   let sent = 0;
   let pruned = 0;
