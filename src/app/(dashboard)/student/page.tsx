@@ -1,17 +1,10 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  Briefcase,
   CheckCircle2,
-  Clock,
-  DollarSign,
   FileText,
-  Mail,
   Map as MapIcon,
-  Megaphone,
-  TrendingUp,
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 import { requireRole } from "@/lib/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getStreakInfo } from "@/lib/streak";
@@ -22,44 +15,11 @@ import { StreakCard } from "@/components/student/StreakCard";
 import { WeeklyWorkLeaderboard } from "@/components/student/WeeklyWorkLeaderboard";
 import { WeeklyHoursChart } from "@/components/student/WeeklyHoursChart";
 import { CoachNoteCard } from "@/components/student/CoachNoteCard";
-import { KPI_TARGETS, ROADMAP_STEPS, WORK_TRACKER } from "@/lib/config";
+import { ROADMAP_STEPS, WORK_TRACKER } from "@/lib/config";
 import { cn, formatHoursMinutes, getToday } from "@/lib/utils";
-import {
-  dailyHoursRag,
-  dailyOutreachRag,
-  daysInProgram as computeDaysInProgram,
-  lifetimeOutreachRag,
-  type RagStatus,
-} from "@/lib/kpi";
 import type { Database } from "@/lib/types";
 
 type WorkSession = Database["public"]["Tables"]["work_sessions"]["Row"];
-
-function ragText(r: RagStatus): string {
-  switch (r) {
-    case "green":
-      return "text-ima-success";
-    case "amber":
-      return "text-ima-warning";
-    case "red":
-      return "text-ima-error";
-    default:
-      return "text-ima-text";
-  }
-}
-
-function ragBg(r: RagStatus): string {
-  switch (r) {
-    case "green":
-      return "bg-ima-success";
-    case "amber":
-      return "bg-ima-warning";
-    case "red":
-      return "bg-ima-error";
-    default:
-      return "bg-ima-surface-light";
-  }
-}
 
 function getNextAction(
   completedCount: number,
@@ -91,9 +51,6 @@ export default async function StudentDashboard() {
     { data: sessions, error: sessionsError },
     { data: roadmapRows, error: roadmapError },
     reportResult,
-    lifetimeResult,
-    userResult,
-    { data: deals, error: dealsError },
     streakInfo,
     leaderboard,
     weeklyHours,
@@ -112,16 +69,10 @@ export default async function StudentDashboard() {
       .order("step_number", { ascending: true }),
     admin
       .from("daily_reports")
-      .select("submitted_at, brands_contacted, influencers_contacted")
+      .select("submitted_at")
       .eq("student_id", user.id)
       .eq("date", today)
       .maybeSingle(),
-    admin
-      .from("daily_reports")
-      .select("brands_contacted, influencers_contacted")
-      .eq("student_id", user.id),
-    admin.from("users").select("joined_at").eq("id", user.id).single(),
-    admin.from("deals").select("revenue, profit").eq("student_id", user.id),
     getStreakInfo(user.id),
     getWeeklyWorkLeaderboard(5),
     getWeeklyHoursByDay(user.id),
@@ -131,18 +82,9 @@ export default async function StudentDashboard() {
   if (sessionsError) console.error("[student dashboard] Failed to load sessions:", sessionsError);
   if (roadmapError) console.error("[student dashboard] Failed to load roadmap:", roadmapError);
   if (reportResult.error) console.error("[student dashboard] Failed to load report:", reportResult.error);
-  if (lifetimeResult.error) console.error("[student dashboard] Failed to load lifetime KPIs:", lifetimeResult.error);
-  if (userResult.error) console.error("[student dashboard] Failed to load user joined_at:", userResult.error);
-  if (dealsError) console.error("[student dashboard] Failed to load deals:", dealsError);
 
   const todayReport = reportResult.data;
   const reportSubmitted = Boolean(todayReport?.submitted_at);
-
-  const dealsData = deals ?? [];
-  const dealsClosed = dealsData.length;
-  const totalRevenue = dealsData.reduce((sum, d) => sum + Number(d.revenue), 0);
-  const totalProfit = dealsData.reduce((sum, d) => sum + Number(d.profit), 0);
-  const hasDeals = dealsClosed > 0;
 
   const todaySessions = (sessions ?? []) as WorkSession[];
   const completedCount = todaySessions.filter((s) => s.status === "completed").length;
@@ -166,28 +108,6 @@ export default async function StudentDashboard() {
     reportSubmitted,
   );
 
-  const allReports = lifetimeResult.data ?? [];
-  const lifetimeOutreach = allReports.reduce(
-    (sum, r) => sum + (r.brands_contacted ?? 0) + (r.influencers_contacted ?? 0),
-    0,
-  );
-  const days = computeDaysInProgram(userResult.data?.joined_at ?? new Date().toISOString());
-  const dailyOutreachTotal =
-    (todayReport?.brands_contacted ?? 0) + (todayReport?.influencers_contacted ?? 0);
-
-  const lifetimeRag = lifetimeOutreachRag(lifetimeOutreach, days);
-  const dailyOutRag = dailyOutreachRag(dailyOutreachTotal, days);
-  const hoursRag = dailyHoursRag(totalMinutesWorked, days);
-
-  const lifetimePercent = Math.min(
-    100,
-    Math.round((lifetimeOutreach / KPI_TARGETS.lifetimeOutreach) * 100),
-  );
-  const dailyOutreachPercent = Math.min(
-    100,
-    Math.round((dailyOutreachTotal / KPI_TARGETS.dailyOutreach) * 100),
-  );
-
   const roadmapCompleted = (roadmapRows ?? []).filter((r) => r.status === "completed").length;
   const activeRoadmapStep = (roadmapRows ?? []).find((r) => r.status === "active");
   const allRoadmapDone =
@@ -198,12 +118,6 @@ export default async function StudentDashboard() {
     roadmapRows && roadmapRows.length > 0
       ? Math.round((roadmapCompleted / ROADMAP_STEPS.length) * 100)
       : 0;
-
-  const currencyFormat = (value: number) =>
-    `$${value.toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
 
   return (
     <div
@@ -310,44 +224,6 @@ export default async function StudentDashboard() {
             <CoachNoteCard note={coachNote} basePath="/student" />
           </div>
         )}
-
-        {/* KPI tracking — compact cards with progress bars */}
-        <section
-          aria-label="KPI tracking"
-          className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-[14px] motion-safe:animate-fadeIn"
-          style={{ animationDelay: "150ms" }}
-        >
-          <KpiCard
-            icon={Megaphone}
-            iconBg="bg-ima-surface-accent"
-            iconColor="text-ima-primary"
-            label="Lifetime Outreach"
-            value={lifetimeOutreach.toLocaleString()}
-            target={`Target ${KPI_TARGETS.lifetimeOutreach.toLocaleString()}`}
-            percent={lifetimePercent}
-            rag={lifetimeRag}
-          />
-          <KpiCard
-            icon={Mail}
-            iconBg="bg-ima-warning/10"
-            iconColor="text-ima-warning"
-            label="Daily Outreach"
-            value={String(dailyOutreachTotal)}
-            target={`Target ${KPI_TARGETS.dailyOutreach}/day`}
-            percent={dailyOutreachPercent}
-            rag={dailyOutRag}
-          />
-          <KpiCard
-            icon={Clock}
-            iconBg="bg-ima-surface-light"
-            iconColor="text-ima-text-secondary"
-            label="Hours Today"
-            value={formatHoursMinutes(totalMinutesWorked)}
-            target={`Target ${WORK_TRACKER.dailyGoalHours}h/day`}
-            percent={progressBarWidth}
-            rag={hoursRag}
-          />
-        </section>
 
         {/* Hours this week — visual */}
         <div
@@ -489,35 +365,6 @@ export default async function StudentDashboard() {
           </div>
         </section>
 
-        {/* Deals — compact horizontal stat cards (matches coach Row A) */}
-        <section
-          aria-label="Deals summary"
-          className="mt-[14px] grid grid-cols-1 sm:grid-cols-3 gap-[14px] motion-safe:animate-fadeIn"
-          style={{ animationDelay: "250ms" }}
-        >
-          <CompactStat
-            icon={Briefcase}
-            iconBg="bg-ima-warning/10"
-            iconColor="text-ima-warning"
-            value={String(dealsClosed)}
-            label={hasDeals ? "Deals Closed — all time" : "Deals Closed — none yet"}
-          />
-          <CompactStat
-            icon={DollarSign}
-            iconBg="bg-ima-surface-accent"
-            iconColor="text-ima-primary"
-            value={currencyFormat(totalRevenue)}
-            label={`Revenue — ${dealsClosed} deal${dealsClosed !== 1 ? "s" : ""}`}
-          />
-          <CompactStat
-            icon={TrendingUp}
-            iconBg="bg-ima-success/10"
-            iconColor="text-ima-success"
-            value={currencyFormat(totalProfit)}
-            label={hasDeals ? "Profit — all time" : "Profit — none yet"}
-          />
-        </section>
-
         {/* Weekly leaderboard — community motivation */}
         <div
           className="mt-[14px] motion-safe:animate-fadeIn"
@@ -526,120 +373,6 @@ export default async function StudentDashboard() {
           <WeeklyWorkLeaderboard rows={leaderboard} currentStudentId={user.id} />
         </div>
 
-      </div>
-    </div>
-  );
-}
-
-function KpiCard({
-  icon: Icon,
-  iconBg,
-  iconColor,
-  label,
-  value,
-  target,
-  percent,
-  rag,
-}: {
-  icon: LucideIcon;
-  iconBg: string;
-  iconColor: string;
-  label: string;
-  value: string;
-  target: string;
-  percent: number;
-  rag: RagStatus;
-}) {
-  return (
-    <div className="bg-white border border-ima-border rounded-[14px] p-6">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3 min-w-0">
-          <div
-            className={cn(
-              "w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0",
-              iconBg,
-            )}
-          >
-            <Icon className={cn("h-[18px] w-[18px]", iconColor)} aria-hidden="true" />
-          </div>
-          <p
-            className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
-          >
-            {label}
-          </p>
-        </div>
-        <span
-          className={cn("inline-block h-[8px] w-[8px] rounded-full shrink-0", ragBg(rag))}
-          aria-hidden="true"
-        />
-      </div>
-
-      <div className="mt-5 flex items-baseline justify-between gap-3">
-        <p
-          className={cn(
-            "text-[28px] md:text-[30px] font-semibold tabular-nums tracking-tight leading-none",
-            ragText(rag),
-          )}
-        >
-          {value}
-        </p>
-        <p
-          className="text-[11px] font-semibold tabular-nums text-ima-text-secondary"
-        >
-          {percent}%
-        </p>
-      </div>
-
-      <p className="mt-[10px] text-[12px] text-ima-text-secondary">{target}</p>
-
-      <div
-        className="mt-4 h-[4px] rounded-full bg-ima-surface-light overflow-hidden"
-        role="progressbar"
-        aria-valuenow={percent}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label={`${label}: ${percent}%`}
-      >
-        <div
-          className={cn(
-            "h-full rounded-full motion-safe:transition-[width] duration-700 ease-out",
-            ragBg(rag),
-          )}
-          style={{ width: `${percent}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
-function CompactStat({
-  icon: Icon,
-  iconBg,
-  iconColor,
-  value,
-  label,
-}: {
-  icon: LucideIcon;
-  iconBg: string;
-  iconColor: string;
-  value: string;
-  label: string;
-}) {
-  return (
-    <div className="flex items-center gap-4 bg-white border border-ima-border rounded-[12px] px-[18px] py-[16px] min-h-[72px]">
-      <div
-        className={cn(
-          "w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0",
-          iconBg,
-        )}
-      >
-        <Icon className={cn("h-[18px] w-[18px]", iconColor)} aria-hidden="true" />
-      </div>
-      <div className="min-w-0">
-        <p className="text-[24px] md:text-[26px] font-semibold leading-none tabular-nums tracking-tight text-ima-text">
-          {value}
-        </p>
-        <p className="mt-[6px] text-[12px] text-ima-text-secondary">{label}</p>
       </div>
     </div>
   );
