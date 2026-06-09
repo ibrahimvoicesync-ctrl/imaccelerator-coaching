@@ -3,8 +3,9 @@ import { getSessionUser } from "@/lib/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { ToastProvider } from "@/components/ui/Toast";
+import { ReferralPill } from "@/components/student/ReferralPill";
 import type { SidebarBadgesResult } from "@/lib/rpc/types";
-import { type Role } from "@/lib/config";
+import { ROLES, type Role } from "@/lib/config";
 
 const getSidebarBadges = unstable_cache(
   async (userId: string, role: string): Promise<SidebarBadgesResult> => {
@@ -33,6 +34,9 @@ export default async function DashboardLayout({
 }) {
   const user = await getSessionUser();
 
+  const isStudent =
+    user.role === ROLES.STUDENT || user.role === ROLES.STUDENT_DIY;
+
   const badges = await getSidebarBadges(user.id, user.role);
   const badgeCounts: Record<string, number> = {};
   if (badges.active_alerts !== undefined) {
@@ -51,6 +55,7 @@ export default async function DashboardLayout({
       <main id="main-content" className="min-h-screen pt-16 md:pt-0 md:ml-60">
         <ToastProvider>
           <div className="p-4 md:p-8">{children}</div>
+          {isStudent && <ReferralPill />}
         </ToastProvider>
       </main>
     </div>

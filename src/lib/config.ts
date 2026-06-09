@@ -296,17 +296,23 @@ export type NavItem = {
   badge?: string;      // key for dynamic badge count
 };
 
+// TEMPORARY (2026-06-09): Deals, Analytics, Resources, and Announcements tabs
+// are hidden across every role to keep the platform straightforward. Referral
+// is no longer a tab either — it now lives as a floating "Get my referral link"
+// pill (see src/components/student/ReferralPill.tsx). The routes/pages still
+// exist; only the nav links are removed. Restore by un-commenting the lines
+// below.
 export const NAVIGATION: Record<Role, NavItem[]> = {
   owner: [
     { label: "Dashboard",   href: "/owner",             icon: "LayoutDashboard" },
     { label: "Coaches",     href: "/owner/coaches",     icon: "Shield" },
     { label: "Students",    href: "/owner/students",    icon: "Users" },
-    { label: "Analytics",   href: ROUTES.owner.analytics, icon: "BarChart3" },
+    // { label: "Analytics",   href: ROUTES.owner.analytics, icon: "BarChart3" },
     { label: "Invites",     href: "/owner/invites",     icon: "UserPlus",      separator: true },
     { label: "Assignments", href: "/owner/assignments", icon: "ArrowLeftRight" },
     { label: "Alerts",      href: "/owner/alerts",      icon: "Bell",          badge: "active_alerts" },
-    { label: "Announcements", href: "/owner/announcements", icon: "Megaphone" },
-    { label: "Resources",   href: ROUTES.owner.resources, icon: "BookOpen",    separator: true },
+    // { label: "Announcements", href: "/owner/announcements", icon: "Megaphone" },
+    // { label: "Resources",   href: ROUTES.owner.resources, icon: "BookOpen",    separator: true },
   ],
   coach: [
     { label: "Dashboard",       href: "/coach",              icon: "LayoutDashboard" },
@@ -314,10 +320,10 @@ export const NAVIGATION: Record<Role, NavItem[]> = {
     { label: "Reports",         href: "/coach/reports",      icon: "FileText",      badge: "unreviewed_reports" },
     { label: "Invite Students", href: "/coach/invites",      icon: "UserPlus",      separator: true },
     { label: "Assignments",     href: "/coach/assignments",  icon: "ArrowLeftRight" },
-    { label: "Analytics",       href: "/coach/analytics",    icon: "BarChart3" },
+    // { label: "Analytics",       href: "/coach/analytics",    icon: "BarChart3" },
     { label: "Alerts",          href: "/coach/alerts",       icon: "Bell",          badge: "coach_milestone_alerts" },
-    { label: "Announcements",   href: "/coach/announcements", icon: "Megaphone" },
-    { label: "Resources",       href: ROUTES.coach.resources, icon: "BookOpen",      separator: true },
+    // { label: "Announcements",   href: "/coach/announcements", icon: "Megaphone" },
+    // { label: "Resources",       href: ROUTES.coach.resources, icon: "BookOpen",      separator: true },
   ],
   student: [
     { label: "Dashboard",     href: "/student",         icon: "LayoutDashboard" },
@@ -325,21 +331,23 @@ export const NAVIGATION: Record<Role, NavItem[]> = {
     { label: "Daily Report",  href: "/student/report",  icon: "FileText" },
     { label: "Roadmap",       href: "/student/roadmap", icon: "Map" },
     { label: "Ask Abu Lahya", href: "/student/ask",     icon: "MessageSquare" },
-    { label: "Announcements", href: "/student/announcements", icon: "Megaphone" },
-    { label: "Deals",         href: ROUTES.student.deals, icon: "DollarSign" },
-    { label: "Analytics",     href: ROUTES.student.analytics, icon: "BarChart3" },
-    { label: "Resources",     href: ROUTES.student.resources, icon: "BookOpen" },
-    { label: "Referral",      href: ROUTES.student.referral, icon: "Gift" },
+    // { label: "Announcements", href: "/student/announcements", icon: "Megaphone" },
+    // { label: "Deals",         href: ROUTES.student.deals, icon: "DollarSign" },
+    // { label: "Analytics",     href: ROUTES.student.analytics, icon: "BarChart3" },
+    // { label: "Resources",     href: ROUTES.student.resources, icon: "BookOpen" },
+    // Referral moved to floating pill (ReferralPill.tsx)
+    // { label: "Referral",      href: ROUTES.student.referral, icon: "Gift" },
   ],
   student_diy: [
     { label: "Dashboard",    href: "/student_diy",         icon: "LayoutDashboard" },
     { label: "Work Tracker", href: "/student_diy/work",    icon: "Timer" },
     { label: "Roadmap",      href: "/student_diy/roadmap", icon: "Map" },
-    { label: "Announcements", href: "/student_diy/announcements", icon: "Megaphone" },
-    { label: "Deals",        href: ROUTES.student_diy.deals, icon: "DollarSign" },
-    { label: "Analytics",    href: ROUTES.student_diy.analytics, icon: "BarChart3" },
-    { label: "Resources",    href: ROUTES.student_diy.resources, icon: "BookOpen" },
-    { label: "Referral",     href: ROUTES.student_diy.referral, icon: "Gift" },
+    // { label: "Announcements", href: "/student_diy/announcements", icon: "Megaphone" },
+    // { label: "Deals",        href: ROUTES.student_diy.deals, icon: "DollarSign" },
+    // { label: "Analytics",    href: ROUTES.student_diy.analytics, icon: "BarChart3" },
+    // { label: "Resources",    href: ROUTES.student_diy.resources, icon: "BookOpen" },
+    // Referral moved to floating pill (ReferralPill.tsx)
+    // { label: "Referral",     href: ROUTES.student_diy.referral, icon: "Gift" },
   ],
 };
 
