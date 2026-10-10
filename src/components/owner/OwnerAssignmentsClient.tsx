@@ -271,7 +271,7 @@ export function OwnerAssignmentsClient({
 
       {/* Student Assignment Rows */}
       {filteredStudents.length === 0 ? (
-        <div className="bg-white border border-ima-border rounded-[14px] p-6">
+        <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-6">
           <EmptyState
             icon={<Users className="h-6 w-6" />}
             title="No students found"
@@ -309,7 +309,7 @@ export function OwnerAssignmentsClient({
             return (
               <li
                 key={student.id}
-                className="bg-white border border-ima-border rounded-[14px] p-5 flex flex-col sm:flex-row sm:items-center gap-3"
+                className="bg-white border border-ima-border rounded-[14px] shadow-card p-5 flex flex-col sm:flex-row sm:items-center gap-3"
               >
                 {/* Left: Avatar + info */}
                 <div className="flex items-center gap-3 flex-1 min-w-0">

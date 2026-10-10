@@ -14,8 +14,13 @@
  */
 
 import { requireRole } from "@/lib/session";
-import { getOwnerAnalyticsCached } from "@/lib/rpc/owner-analytics";
+import {
+  getOwnerAnalyticsCached,
+  getOwnerPlatformMetricsCached,
+} from "@/lib/rpc/owner-analytics";
 import { OwnerAnalyticsClient } from "./OwnerAnalyticsClient";
+import { PlatformHoursPanel } from "@/components/owner/analytics/PlatformHoursPanel";
+import { RoadmapStageBreakdown } from "@/components/owner/analytics/RoadmapStageBreakdown";
 
 
 // Align route-level revalidation with the RPC cache TTL.
@@ -24,13 +29,16 @@ export const revalidate = 60;
 export default async function OwnerAnalyticsPage() {
   await requireRole("owner");
 
-  const payload = await getOwnerAnalyticsCached();
+  const [payload, metrics] = await Promise.all([
+    getOwnerAnalyticsCached(),
+    getOwnerPlatformMetricsCached(),
+  ]);
 
   return (
     <div
       className={`-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg`}
     >
-      <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
+      <div className="mx-auto max-w-[1200px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
         {/* Masthead */}
         <header className="motion-safe:animate-fadeIn">
           <p
@@ -49,6 +57,18 @@ export default async function OwnerAnalyticsPage() {
             independently.
           </p>
         </header>
+
+        {/* Platform totals — hours by window + roadmap stage funnel */}
+        <div
+          className="mt-9 space-y-10 motion-safe:animate-fadeIn"
+          style={{ animationDelay: "50ms" }}
+        >
+          <PlatformHoursPanel hours={metrics.hours} />
+          <RoadmapStageBreakdown
+            roadmap={metrics.roadmap}
+            totalStudents={metrics.total_students}
+          />
+        </div>
 
         <OwnerAnalyticsClient payload={payload} />
       </div>

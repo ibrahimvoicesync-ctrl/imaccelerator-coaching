@@ -6,7 +6,6 @@ interface CoachCardProps {
     name: string;
     email: string;
     studentCount: number;
-    avgRating: number | null;
   };
 }
 
@@ -22,7 +21,7 @@ export function CoachCard({ coach }: CoachCardProps) {
     <Link
       href={`/owner/coaches/${coach.id}`}
       aria-label={coach.name}
-      className="block rounded-[14px] border border-ima-border bg-white p-5 min-h-[128px] motion-safe:transition-[transform,border-color] hover:-translate-y-[1px] hover:border-ima-border focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2"
+      className="block rounded-[14px] border border-ima-border bg-white shadow-card p-5 min-h-[128px] motion-safe:transition-[transform,border-color] hover:-translate-y-[1px] hover:border-ima-border focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2"
     >
       {/* Top row: avatar + name/email */}
       <div className="flex items-center gap-3">
@@ -40,10 +39,10 @@ export function CoachCard({ coach }: CoachCardProps) {
       </div>
 
       {/* Divider */}
-      <div className="h-px bg-ima-surface-light mt-4" aria-hidden="true" />
+      <div className="h-px bg-ima-border mt-4" aria-hidden="true" />
 
       {/* Stats row */}
-      <div className="mt-4 grid grid-cols-2 gap-4">
+      <div className="mt-4">
         <div>
           <p
             className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
@@ -52,16 +51,6 @@ export function CoachCard({ coach }: CoachCardProps) {
           </p>
           <p className="mt-[6px] text-[16px] font-semibold text-ima-text tabular-nums slashed-zero tracking-[-0.005em]">
             {coach.studentCount}
-          </p>
-        </div>
-        <div>
-          <p
-            className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
-          >
-            Avg Rating (7d)
-          </p>
-          <p className="mt-[6px] text-[16px] font-semibold text-ima-text tabular-nums slashed-zero tracking-[-0.005em]">
-            {coach.avgRating !== null ? coach.avgRating.toFixed(1) : "—"}
           </p>
         </div>
       </div>

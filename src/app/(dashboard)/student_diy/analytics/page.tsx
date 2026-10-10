@@ -44,7 +44,7 @@ export default async function StudentDiyAnalyticsPage({
     >
       <section
         aria-labelledby="student-analytics-h1"
-        className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20"
+        className="mx-auto max-w-[1200px] px-5 md:px-10 pt-8 md:pt-10 pb-16"
       >
         <AnalyticsClient
           initialData={data}

@@ -1,7 +1,6 @@
 import { requireRole } from "@/lib/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { COACH_CONFIG } from "@/lib/config";
-import { getToday } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { buttonVariants } from "@/components/ui";
 import { Users, Shield, UserSquare2 } from "lucide-react";
@@ -24,13 +23,6 @@ export default async function OwnerCoachesPage({
   const to = from + PAGE_SIZE - 1;
 
   const admin = createAdminClient();
-  const today = getToday();
-  const nowMs = new Date(today + "T23:59:59Z").getTime();
-  const sevenDaysAgo = new Date(
-    nowMs - COACH_CONFIG.reportInboxDays * 24 * 60 * 60 * 1000
-  )
-    .toISOString()
-    .split("T")[0];
 
   // Paginated coaches + global active-student count in parallel
   const [coachesResult, studentCountResult] = await Promise.all([
@@ -71,36 +63,24 @@ export default async function OwnerCoachesPage({
     status: string;
     joined_at: string;
     studentCount: number;
-    avgRating: number | null;
   }> = [];
 
   if (coachList.length > 0) {
     const coachIds = coachList.map((c) => c.id);
 
-    const [studentsResult, reportsResult] = await Promise.all([
-      admin
-        .from("users")
-        .select("id, coach_id")
-        .eq("role", "student")
-        .eq("status", "active")
-        .in("coach_id", coachIds),
-      admin
-        .from("daily_reports")
-        .select("student_id, star_rating")
-        .gte("date", sevenDaysAgo)
-        .not("star_rating", "is", null),
-    ]);
+    const studentsResult = await admin
+      .from("users")
+      .select("id, coach_id")
+      .eq("role", "student")
+      .eq("status", "active")
+      .in("coach_id", coachIds);
 
     if (studentsResult.error) {
       console.error("[owner coaches] Failed to load students:", studentsResult.error);
     }
-    if (reportsResult.error) {
-      console.error("[owner coaches] Failed to load reports:", reportsResult.error);
-    }
 
-    // Build lookup maps
+    // Build lookup map
     const studentsByCoach = new Map<string, number>();
-    const studentCoachMap = new Map<string, string>();
 
     for (const student of studentsResult.data ?? []) {
       if (student.coach_id) {
@@ -108,28 +88,12 @@ export default async function OwnerCoachesPage({
           student.coach_id,
           (studentsByCoach.get(student.coach_id) ?? 0) + 1
         );
-        studentCoachMap.set(student.id, student.coach_id);
-      }
-    }
-
-    const coachRatings = new Map<string, number[]>();
-    for (const report of reportsResult.data ?? []) {
-      const coachId = studentCoachMap.get(report.student_id);
-      if (coachId && report.star_rating !== null) {
-        const arr = coachRatings.get(coachId) ?? [];
-        arr.push(report.star_rating);
-        coachRatings.set(coachId, arr);
       }
     }
 
     enrichedCoaches = coachList.map((coach) => ({
       ...coach,
       studentCount: studentsByCoach.get(coach.id) ?? 0,
-      avgRating: (() => {
-        const ratings = coachRatings.get(coach.id);
-        if (!ratings || ratings.length === 0) return null;
-        return ratings.reduce((a, b) => a + b, 0) / ratings.length;
-      })(),
     }));
   }
 
@@ -161,7 +125,7 @@ export default async function OwnerCoachesPage({
     <div
       className={`-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg`}
     >
-      <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
+      <div className="mx-auto max-w-[1200px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
         {/* Masthead */}
         <header className="motion-safe:animate-fadeIn">
           <p
@@ -213,7 +177,7 @@ export default async function OwnerCoachesPage({
         {/* Coach list */}
         {enrichedCoaches.length === 0 ? (
           <div
-            className="mt-8 bg-white border border-ima-border rounded-[14px] p-6 motion-safe:animate-fadeIn"
+            className="mt-8 bg-white border border-ima-border rounded-[14px] shadow-card p-6 motion-safe:animate-fadeIn"
             style={{ animationDelay: "100ms" }}
           >
             <EmptyState

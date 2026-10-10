@@ -73,7 +73,7 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
   if (roadmap.length === 0) {
     return (
       <div role="tabpanel" id="tabpanel-roadmap" aria-labelledby="tab-roadmap">
-        <div className="bg-white border border-ima-border rounded-[14px] p-6">
+        <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-6">
           <EmptyState
             variant="compact"
             icon={<Route className="h-5 w-5" />}
@@ -107,7 +107,7 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
       {/* Progress hero card */}
       <section
         aria-label="Roadmap progress"
-        className="bg-white border border-ima-border rounded-[14px] p-5 md:p-6"
+        className="bg-white border border-ima-border rounded-[14px] shadow-card p-5 md:p-6"
       >
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
@@ -127,7 +127,7 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
               </span>
             </p>
             <p
-              className="mt-2 text-xs font-semibold tracking-widest uppercase text-ima-text-secondary"
+              className="mt-2 text-xs font-semibold tracking-[0.08em] uppercase text-ima-text-secondary"
             >
               Steps Completed
             </p>
@@ -165,7 +165,7 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
           </div>
           <div className="mt-2 flex items-center justify-between">
             <span
-              className="text-xs font-semibold tracking-widest uppercase text-ima-text-secondary"
+              className="text-xs font-semibold tracking-[0.08em] uppercase text-ima-text-secondary"
             >
               Overall
             </span>
@@ -196,13 +196,13 @@ export function RoadmapTab({ roadmap, joinedAt, studentId }: RoadmapTabProps) {
                   Stage {String(idx + 1).padStart(2, "0")}
                 </span>
                 <span
-                  className="text-xs font-semibold tracking-widest uppercase text-ima-text"
+                  className="text-xs font-semibold tracking-[0.08em] uppercase text-ima-text"
                 >
                   {stageName}
                 </span>
-                <div className="flex-1 h-px bg-ima-surface-light" aria-hidden="true" />
+                <div className="flex-1 h-px bg-ima-border" aria-hidden="true" />
                 <span
-                  className="text-[10px] font-semibold tracking-widest uppercase text-ima-text-secondary tabular-nums"
+                  className="text-[10px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary tabular-nums"
                 >
                   {stageCompleted}/{stageSteps.length}
                 </span>

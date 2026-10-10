@@ -175,7 +175,7 @@ export function StudentListTable({
               Search students by name
             </label>
             <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ima-text-muted pointer-events-none"
+              className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ima-text-secondary pointer-events-none"
               aria-hidden="true"
             />
             <Input
@@ -239,14 +239,14 @@ export function StudentListTable({
                             : ChevronsUpDown;
                       const chevronClass =
                         dir === null
-                          ? "text-ima-text-muted"
+                          ? "text-ima-text-secondary"
                           : "text-ima-primary";
                       return (
                         <th
                           key={col.key}
                           scope="col"
                           aria-sort={ariaSort}
-                          className={`px-4 py-3 text-xs font-semibold text-ima-text-muted uppercase tracking-wide ${col.align === "right" ? "text-right" : "text-left"}`}
+                          className={`px-4 py-3 text-xs font-semibold text-ima-text-secondary uppercase tracking-wide ${col.align === "right" ? "text-right" : "text-left"}`}
                         >
                           <button
                             type="button"
@@ -265,7 +265,7 @@ export function StudentListTable({
                     })}
                     <th
                       scope="col"
-                      className="px-4 py-3 text-xs font-semibold text-ima-text-muted uppercase tracking-wide text-left"
+                      className="px-4 py-3 text-xs font-semibold text-ima-text-secondary uppercase tracking-wide text-left"
                     >
                       Status
                     </th>
@@ -303,7 +303,7 @@ export function StudentListTable({
                             {formatRelative(row.last_active_date)}
                           </time>
                         ) : (
-                          <span className="text-ima-text-muted">Never</span>
+                          <span className="text-ima-text-secondary">Never</span>
                         )}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">

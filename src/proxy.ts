@@ -45,6 +45,11 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
   const path = request.nextUrl.pathname;
 
+  // Fully public — no sign-in, and no redirect for signed-in users either
+  if (path === "/ai-preview" || path.startsWith("/ai-preview/")) {
+    return supabaseResponse;
+  }
+
   // Public routes — if logged in, redirect to role dashboard
   if (
     path.startsWith("/login") ||
@@ -55,7 +60,7 @@ export async function proxy(request: NextRequest) {
       // Use service-role client to bypass RLS — the anon client's RLS
       // policies can fail when session isn't fully established yet
       const admin = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_INTERNAL_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.SUPABASE_SERVICE_ROLE_KEY!
       );
       const { data: profile } = await admin
@@ -82,7 +87,7 @@ export async function proxy(request: NextRequest) {
 
   // Role-based route protection — use service-role client to bypass RLS
   const admin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_INTERNAL_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
   const { data: profile } = await admin

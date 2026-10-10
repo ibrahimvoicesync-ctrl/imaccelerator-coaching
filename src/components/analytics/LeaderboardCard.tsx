@@ -76,7 +76,7 @@ export function LeaderboardCard({
           #1
         </span>
       ) : (
-        <span className="text-xs font-semibold text-ima-text-muted tabular-nums w-6 text-center shrink-0">
+        <span className="text-xs font-semibold text-ima-text-secondary tabular-nums w-6 text-center shrink-0">
           #{row.rank}
         </span>
       )}

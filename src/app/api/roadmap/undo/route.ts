@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { ROADMAP_STEPS } from "@/lib/config";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { verifyOrigin } from "@/lib/csrf";
+import { ownerAnalyticsTag } from "@/lib/rpc/owner-analytics-types";
 
 const undoSchema = z.object({
   studentId: z.string().uuid(),
@@ -125,6 +127,13 @@ export async function PATCH(request: NextRequest) {
       student_id: studentId,
       step_number,
     });
+
+    // Owner platform metrics (roadmap stage funnel) reflect this revert.
+    try {
+      revalidateTag(ownerAnalyticsTag(), "default");
+    } catch (e) {
+      console.error("[revalidate-tag owner-analytics]", e);
+    }
 
     return NextResponse.json({
       data: { reverted, relocked, cascade: relocked.length > 0, cascadeCount: relocked.length },

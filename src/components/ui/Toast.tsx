@@ -79,7 +79,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       <div
         role="log"
         aria-live="polite"
-        className="fixed bottom-4 right-4 left-4 sm:left-auto z-[100] flex flex-col gap-2"
+        className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] md:bottom-4 right-4 left-4 sm:left-auto z-[100] flex flex-col gap-2"
       >
         {toasts.map((t) => {
           const Icon = iconMap[t.type];
@@ -98,7 +98,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               </div>
               <button
                 onClick={() => dismiss(t.id)}
-                className="text-ima-text-muted hover:text-ima-text shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center -m-2 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary"
+                className="text-ima-text-secondary hover:text-ima-text shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center -m-2 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary"
                 aria-label="Dismiss"
               >
                 <X className="h-4 w-4" aria-hidden="true" />

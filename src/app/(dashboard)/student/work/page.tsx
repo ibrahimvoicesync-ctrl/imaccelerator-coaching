@@ -1,13 +1,15 @@
 import { requireRole } from "@/lib/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { WorkTrackerClient } from "@/components/student/WorkTrackerClient";
-import { PushOptIn } from "@/components/student/PushOptIn";
+import { ReminderBell } from "@/components/student/ReminderBell";
+import { QuickEmailLog } from "@/components/student/QuickEmailLog";
+import { emailCountsFromReport } from "@/lib/emails";
+import { getToday } from "@/lib/utils";
 import { ROUTES } from "@/lib/config";
 import type { Database } from "@/lib/types";
 
 
 type WorkSession = Database["public"]["Tables"]["work_sessions"]["Row"];
-type DailyPlan = Database["public"]["Tables"]["daily_plans"]["Row"];
 
 export default async function WorkPage() {
   const user = await requireRole("student");
@@ -25,58 +27,42 @@ export default async function WorkPage() {
     console.error("[work page] Failed to load sessions:", error);
   }
 
-  const { data: plan, error: planError } = await admin
-    .from("daily_plans")
-    .select("*")
-    .eq("student_id", user.id)
-    .eq("date", today)
-    .maybeSingle();
-
-  if (planError) {
-    console.error("[work page] Failed to load daily plan:", planError);
-  }
-
   const { data: prefRow } = await admin
     .from("users")
     .select("reminder_hour")
     .eq("id", user.id)
     .single();
 
+  // Same date the quick-log API writes to (local getToday, like the dashboard).
+  const { data: todayReport, error: reportError } = await admin
+    .from("daily_reports")
+    .select("brands_contacted, influencers_contacted, outreach_count")
+    .eq("student_id", user.id)
+    .eq("date", getToday())
+    .maybeSingle();
+  if (reportError) {
+    console.error("[work page] Failed to load today's report:", reportError);
+  }
+
   return (
     <div
       className={`-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg`}
     >
-      <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
-        <header className="motion-safe:animate-fadeIn">
-          <p
-            className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
-          >
-            Work Tracker
-          </p>
-          <h1 className="mt-3 text-[32px] md:text-[36px] font-semibold leading-[1.05] text-ima-text tracking-[-0.02em]">
-            Today&apos;s focus.
-          </h1>
-          <p className="mt-2 max-w-[58ch] text-[15px] text-ima-text-secondary leading-[1.55]">
-            Plan it, run it, log it.
-          </p>
+      <div className="mx-auto max-w-[1200px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
+        <header className="relative z-30 mx-auto flex max-w-[880px] items-center justify-end motion-safe:animate-fadeIn">
+          <ReminderBell initialHour={prefRow?.reminder_hour ?? 17} />
         </header>
 
         <div
-          className="mt-9 motion-safe:animate-fadeIn"
+          className="mt-5 motion-safe:animate-fadeIn"
           style={{ animationDelay: "100ms" }}
         >
           <WorkTrackerClient
             initialSessions={(sessions ?? []) as WorkSession[]}
-            initialPlan={(plan ?? null) as DailyPlan | null}
+            calendarHref={ROUTES.student.calendar}
             dailyReportHref={ROUTES.student.report}
+            emailLog={<QuickEmailLog initialCounts={emailCountsFromReport(todayReport)} />}
           />
-        </div>
-
-        <div
-          className="mt-[14px] motion-safe:animate-fadeIn"
-          style={{ animationDelay: "150ms" }}
-        >
-          <PushOptIn initialHour={prefRow?.reminder_hour ?? 17} />
         </div>
       </div>
     </div>

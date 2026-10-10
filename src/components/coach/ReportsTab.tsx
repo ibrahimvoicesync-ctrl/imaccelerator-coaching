@@ -83,13 +83,13 @@ export function ReportsTab({ reports }: ReportsTabProps) {
             {/* Wins/Improvements */}
             {report.wins && (
               <div>
-                <p className="text-xs text-ima-text-muted">Wins</p>
+                <p className="text-xs text-ima-text-secondary">Wins</p>
                 <p className="text-sm text-ima-text">{report.wins}</p>
               </div>
             )}
             {report.improvements && (
               <div>
-                <p className="text-xs text-ima-text-muted">Improvements</p>
+                <p className="text-xs text-ima-text-secondary">Improvements</p>
                 <p className="text-sm text-ima-text">{report.improvements}</p>
               </div>
             )}

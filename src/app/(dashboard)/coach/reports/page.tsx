@@ -55,10 +55,10 @@ export default async function CoachReportsPage({
   if (studentIds.length === 0) {
     return (
       <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg">
-        <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
+        <div className="mx-auto max-w-[1200px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
           {shellHeader}
           <div
-            className="mt-10 bg-white border border-ima-border rounded-[14px] p-6 motion-safe:animate-fadeIn"
+            className="mt-10 bg-white border border-ima-border rounded-[14px] shadow-card p-6 motion-safe:animate-fadeIn"
             style={{ animationDelay: "100ms" }}
           >
             <EmptyState
@@ -98,16 +98,24 @@ export default async function CoachReportsPage({
   const allReports = reports ?? [];
 
   const reportIds = allReports.map((r) => r.id);
-  const { data: commentsData } = reportIds.length > 0
+  const { data: commentsData, error: commentsError } = reportIds.length > 0
     ? await admin
         .from("report_comments")
         .select("report_id, comment")
         .in("report_id", reportIds)
-    : { data: [] };
+        .order("created_at", { ascending: false })
+    : { data: [], error: null };
 
+  if (commentsError) {
+    console.error("[coach/reports] Failed to load comments:", commentsError);
+  }
+
+  // A report can carry more than one comment; ordering created_at DESC and
+  // keeping the first one seen makes the surfaced feedback the latest comment
+  // deterministically (instead of an arbitrary row per load).
   const commentMap: Record<string, string> = {};
   for (const c of commentsData ?? []) {
-    commentMap[c.report_id] = c.comment;
+    if (!(c.report_id in commentMap)) commentMap[c.report_id] = c.comment;
   }
 
   const totalReports = allReports.length;
@@ -181,7 +189,7 @@ export default async function CoachReportsPage({
 
   return (
     <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg">
-      <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
+      <div className="mx-auto max-w-[1200px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
         {shellHeader}
 
         {/* Stats row */}

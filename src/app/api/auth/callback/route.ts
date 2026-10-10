@@ -1,18 +1,38 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
-import { ROLE_REDIRECTS, ROADMAP_STEPS, VALIDATION, type Role } from "@/lib/config";
+import { ROLE_REDIRECTS, ROADMAP_STEPS, VALIDATION, APP_CONFIG, type Role } from "@/lib/config";
+
+// Hosts we will honor when deriving the redirect origin from client-supplied
+// forwarded headers. x-forwarded-host is attacker-controllable, so anything not
+// on this list falls back to the pinned default — otherwise it's an
+// open-redirect / OAuth-code-phishing vector.
+const ALLOWED_REDIRECT_HOSTS = new Set([
+  new URL(APP_CONFIG.url).host,
+  "localhost",
+  "localhost:3000",
+  "localhost:3001",
+  "127.0.0.1",
+  "127.0.0.1:3000",
+  "127.0.0.1:3001",
+]);
 
 function getAppOrigin(request: Request): string {
+  // 1. Pinned origin via env var always wins (prod + configured dev).
   if (process.env.NEXT_PUBLIC_APP_URL) {
     return new URL(process.env.NEXT_PUBLIC_APP_URL).origin;
   }
+  // 2. Derive from forwarded headers ONLY when the host is allow-listed.
   const forwardedHost = request.headers.get("x-forwarded-host");
-  if (forwardedHost) {
+  if (forwardedHost && ALLOWED_REDIRECT_HOSTS.has(forwardedHost)) {
     const proto = request.headers.get("x-forwarded-proto") ?? "https";
     return `${proto}://${forwardedHost}`;
   }
-  return new URL(request.url).origin;
+  // 3. Fall back to the request's own origin if allow-listed, else the pinned default.
+  if (ALLOWED_REDIRECT_HOSTS.has(new URL(request.url).host)) {
+    return new URL(request.url).origin;
+  }
+  return new URL(APP_CONFIG.url).origin;
 }
 
 export async function GET(request: Request) {
@@ -349,14 +369,19 @@ export async function GET(request: Request) {
   }
 
   // No invite_code or magic_code param — check if email is whitelisted via invite
-  // IMPORTANT: Use .ilike() for case-insensitive email matching.
-  // Postgres = (via .eq) is case-sensitive. Google may return "user@example.com"
-  // while the invite was stored as "User@Example.com". ilike maps to Postgres
-  // ILIKE which handles this correctly.
+  // IMPORTANT: match on a normalized value with .eq(), never .ilike().
+  // ILIKE treats `_` and `%` in the pattern as wildcards, and the pattern here
+  // is an IdP-supplied address the signer-in chooses. `newcoac_@corp.com` would
+  // ILIKE-match an invite issued to `newcoach@corp.com`, consuming someone
+  // else's invite and inheriting its role (up to coach) and coach_id. Invite
+  // emails are normalized to lowercase on write (api/invites), so comparing
+  // lowercase-to-lowercase preserves the case-insensitivity this needs without
+  // giving the caller pattern syntax. A mixed-case row seeded directly via SQL
+  // would not match — that fails closed, which is the safe direction.
   const { data: whitelistInvite } = await admin
     .from("invites")
     .select("id, email, role, coach_id, used, expires_at")
-    .ilike("email", user.email)
+    .eq("email", user.email.toLowerCase())
     .eq("used", false)
     .gt("expires_at", new Date().toISOString())
     .order("created_at", { ascending: false })

@@ -62,7 +62,8 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
   >("student");
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [maxUses, setMaxUses] = useState<number>(10);
+  // number | "" so the field can be cleared while typing (empty defaults to 10 on blur/submit).
+  const [maxUses, setMaxUses] = useState<number | "">(10);
   const [lastUrl, setLastUrl] = useState<string | null>(null);
   const [lastWhitelistedEmail, setLastWhitelistedEmail] = useState<string | null>(
     null,
@@ -116,7 +117,10 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
       const res = await fetch("/api/magic-links", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role: selectedRole, max_uses: maxUses }),
+        body: JSON.stringify({
+          role: selectedRole,
+          max_uses: typeof maxUses === "number" && maxUses >= 1 ? maxUses : 10,
+        }),
       });
       if (!res.ok) {
         const json = await res.json().catch(() => ({}));
@@ -284,7 +288,7 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
 
       {/* Email invite tab */}
       {activeTab === "email" && (
-        <div className="bg-white border border-ima-border rounded-[14px] p-6">
+        <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-6">
           <h2 className="text-[15px] font-semibold text-ima-text leading-tight">
             Whitelist an Email
           </h2>
@@ -292,7 +296,7 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
             The {selectedRole} can then sign in with Google to create their
             account. Expires in 72 hours.
           </p>
-          <div className="h-px bg-ima-surface-light mt-4" aria-hidden="true" />
+          <div className="h-px bg-ima-border mt-4" aria-hidden="true" />
           <form
             onSubmit={handleCreateInvite}
             className="mt-5 flex flex-col sm:flex-row gap-3"
@@ -324,7 +328,7 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
 
       {/* Magic link tab */}
       {activeTab === "magic" && (
-        <div className="bg-white border border-ima-border rounded-[14px] p-6">
+        <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-6">
           <h2 className="text-[15px] font-semibold text-ima-text leading-tight">
             Generate Invite Link
           </h2>
@@ -333,7 +337,7 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
             the link can register with the selected role. No email restriction,
             no expiry.
           </p>
-          <div className="h-px bg-ima-surface-light mt-4" aria-hidden="true" />
+          <div className="h-px bg-ima-border mt-4" aria-hidden="true" />
           <div className="mt-5 flex flex-col sm:flex-row items-end gap-3">
             <div className="w-32">
               <Input
@@ -341,9 +345,19 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
                 label="Max uses"
                 aria-label="Maximum number of uses for invite link"
                 value={maxUses}
-                onChange={(e) =>
-                  setMaxUses(
-                    Math.max(1, Math.min(10000, Number(e.target.value) || 10)),
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  if (raw === "") {
+                    setMaxUses("");
+                    return;
+                  }
+                  const n = Number(raw);
+                  if (!Number.isFinite(n)) return;
+                  setMaxUses(Math.min(10000, Math.max(0, Math.floor(n))));
+                }}
+                onBlur={() =>
+                  setMaxUses((prev) =>
+                    typeof prev === "number" && prev >= 1 ? prev : 10,
                   )
                 }
                 min={1}
@@ -366,7 +380,7 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
 
       {/* Whitelist confirmation */}
       {lastWhitelistedEmail && (
-        <div className="bg-white border border-ima-border border-l-[3px] border-l-ima-success rounded-[14px] p-5">
+        <div className="bg-ima-success/5 border border-ima-border rounded-[14px] p-5 shadow-card">
           <div className="flex items-start gap-3">
             <div className="w-9 h-9 rounded-[8px] bg-ima-success/10 flex items-center justify-center shrink-0">
               <CheckCircle
@@ -392,7 +406,7 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
 
       {/* Copy URL display */}
       {lastUrl && activeTab === "magic" && (
-        <div className="bg-white border border-ima-border border-l-[3px] border-l-ima-primary rounded-[14px] p-5">
+        <div className="bg-ima-surface-accent border border-ima-border rounded-[14px] p-5 shadow-card">
           <p
             className="text-[11px] font-semibold tracking-[0.08em] uppercase text-ima-text-secondary"
           >
@@ -427,7 +441,7 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
           Invite History
         </h2>
         {localInvites.length === 0 ? (
-          <div className="mt-4 bg-white border border-ima-border rounded-[14px] p-6">
+          <div className="mt-4 bg-white border border-ima-border rounded-[14px] shadow-card p-6">
             <EmptyState
               icon={<UserPlus className="h-6 w-6" />}
               title="No invites sent yet"
@@ -447,7 +461,7 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
               return (
                 <li
                   key={invite.id}
-                  className="bg-white border border-ima-border rounded-[14px] p-4 flex flex-col sm:flex-row sm:items-center gap-3 min-h-[44px]"
+                  className="bg-white border border-ima-border rounded-[14px] shadow-card p-4 flex flex-col sm:flex-row sm:items-center gap-3 min-h-[44px]"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="text-[14px] font-semibold text-ima-text truncate leading-tight">
@@ -488,7 +502,7 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
           Invite Links
         </h2>
         {localMagicLinks.length === 0 ? (
-          <div className="mt-4 bg-white border border-ima-border rounded-[14px] p-6">
+          <div className="mt-4 bg-white border border-ima-border rounded-[14px] shadow-card p-6">
             <EmptyState
               icon={<Link2 className="h-6 w-6" />}
               title="No invite links created yet"
@@ -500,7 +514,7 @@ export function OwnerInvitesClient({ invites, magicLinks }: Props) {
             {localMagicLinks.map((link) => (
               <li
                 key={link.id}
-                className="bg-white border border-ima-border rounded-[14px] p-4 flex flex-col sm:flex-row sm:items-center gap-3 min-h-[44px]"
+                className="bg-white border border-ima-border rounded-[14px] shadow-card p-4 flex flex-col sm:flex-row sm:items-center gap-3 min-h-[44px]"
               >
                 <div className="min-w-0 flex-1">
                   <p

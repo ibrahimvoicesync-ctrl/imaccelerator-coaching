@@ -2,6 +2,7 @@ import { ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { ReportForm } from "@/components/student/ReportForm";
 import { DueSoonIndicator } from "@/components/student/DueSoonIndicator";
+import { LocalTime } from "@/components/shared/LocalTime";
 import { requireRole } from "@/lib/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { cn, formatHoursMinutes, getToday } from "@/lib/utils";
@@ -12,13 +13,6 @@ function formatHeroDate(dateStr: string): string {
     weekday: "long",
     month: "long",
     day: "numeric",
-  });
-}
-
-function formatSubmittedTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
   });
 }
 
@@ -58,7 +52,7 @@ export default async function DailyReportPage() {
     <div
       className={`-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg`}
     >
-      <div className="mx-auto max-w-3xl px-6 md:px-14 pt-10 md:pt-14 pb-20">
+      <div className="mx-auto max-w-[880px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
         {/* Masthead */}
         <header className="motion-safe:animate-fadeIn">
           <div className="flex items-center gap-3">
@@ -93,11 +87,16 @@ export default async function DailyReportPage() {
             {formatHeroDate(today)}
           </h1>
 
+          <div className="mt-4 h-[3px] w-10 rounded-full bg-ima-primary" aria-hidden="true" />
+
           <div className="mt-4 min-h-[24px]">
             {submitted && report?.submitted_at ? (
               <p className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-ima-success">
                 <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
-                Submitted at {formatSubmittedTime(report.submitted_at)} · you can still edit it.
+                <span>
+                  Submitted at <LocalTime iso={report.submitted_at} /> · you can
+                  still edit it.
+                </span>
               </p>
             ) : (
               <DueSoonIndicator />

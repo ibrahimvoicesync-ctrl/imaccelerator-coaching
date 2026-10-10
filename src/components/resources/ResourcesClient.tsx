@@ -198,7 +198,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
                   "relative inline-flex items-center gap-2 min-h-[52px] px-5 text-xs uppercase tracking-[0.08em] font-semibold border-b-2 motion-safe:transition-colors whitespace-nowrap",
                   active
                     ? "border-ima-primary text-ima-primary"
-                    : "border-transparent text-ima-text-muted hover:text-ima-text"
+                    : "border-transparent text-ima-text-secondary hover:text-ima-text"
                 )}
               >
                 {meta.label}
@@ -216,7 +216,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
               Resource links
             </p>
             {!loadingResources && resources.length > 0 && (
-              <p className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-muted tabular-nums">
+              <p className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-secondary tabular-nums">
                 {`${resources.length} saved`}
               </p>
             )}
@@ -247,7 +247,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
             className={cn(
               "p-8 md:p-10",
               coachEditorial
-                ? "rounded-[14px] border border-ima-border bg-white"
+                ? "rounded-[14px] border border-ima-border bg-white shadow-card"
                 : "rounded-2xl border border-ima-border bg-ima-bg/60"
             )}
           >
@@ -258,7 +258,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
               >
                 <LinkIcon className="h-6 w-6" strokeWidth={2.25} />
               </span>
-              <p className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted">
+              <p className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary">
                 Empty library
               </p>
               <h3 className="text-xl md:text-2xl font-semibold tracking-tight text-ima-text leading-tight">
@@ -307,7 +307,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
             <p className="text-xs uppercase tracking-[0.08em] font-semibold text-ima-text">
               Community
             </p>
-            <p className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-muted">
+            <p className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-secondary">
               Discord · live
             </p>
           </div>
@@ -319,7 +319,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
           className={cn(
             "p-3 md:p-4",
             coachEditorial
-              ? "rounded-[14px] border border-ima-border bg-white"
+              ? "rounded-[14px] border border-ima-border bg-white shadow-card"
               : "rounded-2xl border border-ima-border bg-ima-bg/60"
           )}
         >
@@ -335,7 +335,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
               Glossary
             </p>
             {!loadingGlossary && glossaryTerms.length > 0 && (
-              <p className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-muted tabular-nums">
+              <p className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-secondary tabular-nums">
                 {`${glossaryTerms.length} term${glossaryTerms.length !== 1 ? "s" : ""}`}
               </p>
             )}
@@ -369,7 +369,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
             className={cn(
               "p-8 md:p-10",
               coachEditorial
-                ? "rounded-[14px] border border-ima-border bg-white"
+                ? "rounded-[14px] border border-ima-border bg-white shadow-card"
                 : "rounded-2xl border border-ima-border bg-ima-bg/60"
             )}
           >
@@ -380,7 +380,7 @@ export function ResourcesClient({ role, coachEditorial = false }: ResourcesClien
               >
                 <BookOpen className="h-6 w-6" strokeWidth={2.25} />
               </span>
-              <p className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted">
+              <p className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary">
                 Coming soon
               </p>
               <h3 className="text-xl md:text-2xl font-semibold tracking-tight text-ima-text leading-tight">

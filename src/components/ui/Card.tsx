@@ -2,15 +2,18 @@ import type { HTMLAttributes } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-const cardVariants = cva("rounded-xl", {
+// 14px is the house card radius (docs/design/05-style-guide.md § Border Radius) —
+// it matches the ~145 hand-rolled `rounded-[14px]` shells this primitive shares
+// pages with. `rounded-xl` (12px) left the two systems visibly out of step.
+const cardVariants = cva("rounded-[14px]", {
   variants: {
     variant: {
-      default: "bg-ima-surface border border-ima-border shadow-sm",
-      warm: "bg-ima-surface-light border border-ima-border shadow-sm",
-      accent: "bg-ima-surface-accent border border-ima-border shadow-sm",
+      default: "bg-ima-surface border border-ima-border shadow-card",
+      warm: "bg-ima-surface-light border border-ima-border shadow-card",
+      accent: "bg-ima-surface-accent border border-ima-border shadow-card",
     },
     interactive: {
-      true: "hover:shadow-md hover:-translate-y-0.5 motion-safe:transition-all motion-safe:duration-200 cursor-pointer",
+      true: "hover:shadow-card-hover hover:-translate-y-0.5 motion-safe:transition-all motion-safe:duration-200 cursor-pointer",
       false: "",
     },
   },

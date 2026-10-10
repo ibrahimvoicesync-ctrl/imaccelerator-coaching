@@ -34,7 +34,7 @@ import type { CoachDealsTrendBucket } from "@/lib/rpc/coach-analytics-types";
 const chartColors = {
   primary: "#2563EB", // ima-primary
   border: "#E2E8F0", // ima-border
-  textSecondary: "#64748B", // ima-text-secondary
+  textSecondary: "#5F6E85", // ima-text-secondary
 } as const;
 
 function formatWeekLabel(weekStart: string): string {

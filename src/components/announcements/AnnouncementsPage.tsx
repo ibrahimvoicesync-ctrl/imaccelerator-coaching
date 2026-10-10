@@ -100,7 +100,7 @@ export async function AnnouncementsPage({ role }: AnnouncementsPageProps) {
       className="px-4 pt-16 md:pt-20 pb-24 max-w-[760px] mx-auto"
     >
       <header className="mb-6 md:mb-8">
-        <p className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted mb-5">
+        <p className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary mb-5">
           Announcements
         </p>
         <h1

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/Input";
@@ -31,6 +31,17 @@ export function OwnerStudentSearchClient({
   const [search, setSearch] = useState(initialSearch);
   const routerRef = useRef(useRouter());
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Clear any pending debounced navigation on unmount so a timer that fires
+  // after the user has clicked into a student card can't yank them back to the
+  // list.
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
 
   function handleSearch(value: string) {
     setSearch(value);

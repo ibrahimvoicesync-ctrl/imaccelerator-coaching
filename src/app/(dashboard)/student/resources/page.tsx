@@ -8,7 +8,7 @@ export default async function StudentResourcesPage() {
     <div
       className={`-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg`}
     >
-      <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
+      <div className="mx-auto max-w-[1200px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
         <header className="motion-safe:animate-fadeIn">
           <p
             className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
@@ -24,7 +24,7 @@ export default async function StudentResourcesPage() {
         </header>
 
         <div
-          className="mt-9 bg-white border border-ima-border rounded-[14px] p-6 md:p-8 motion-safe:animate-fadeIn"
+          className="mt-9 bg-white border border-ima-border rounded-[14px] shadow-card p-6 md:p-8 motion-safe:animate-fadeIn"
           style={{ animationDelay: "50ms" }}
         >
           <ResourcesClient role="student" coachEditorial />

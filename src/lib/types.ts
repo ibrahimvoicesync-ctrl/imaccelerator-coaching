@@ -68,6 +68,77 @@ export type Database = {
           },
         ]
       }
+      business_checkins: {
+        Row: {
+          biggest_win: string | null
+          brands: number
+          created_at: string
+          current_constraint: string
+          current_goal: string
+          employees: number
+          feeling: number
+          feeling_note: string | null
+          help_wanted: string | null
+          hours_per_week: number | null
+          id: string
+          influencers: number
+          liquid_capital_business: number
+          liquid_capital_personal: number
+          monthly_expenses: number | null
+          revenue_target_next_month: number
+          student_id: string
+          total_revenue: number
+        }
+        Insert: {
+          biggest_win?: string | null
+          brands: number
+          created_at?: string
+          current_constraint: string
+          current_goal: string
+          employees: number
+          feeling: number
+          feeling_note?: string | null
+          help_wanted?: string | null
+          hours_per_week?: number | null
+          id?: string
+          influencers: number
+          liquid_capital_business: number
+          liquid_capital_personal: number
+          monthly_expenses?: number | null
+          revenue_target_next_month: number
+          student_id: string
+          total_revenue: number
+        }
+        Update: {
+          biggest_win?: string | null
+          brands?: number
+          created_at?: string
+          current_constraint?: string
+          current_goal?: string
+          employees?: number
+          feeling?: number
+          feeling_note?: string | null
+          help_wanted?: string | null
+          hours_per_week?: number | null
+          id?: string
+          influencers?: number
+          liquid_capital_business?: number
+          liquid_capital_personal?: number
+          monthly_expenses?: number | null
+          revenue_target_next_month?: number
+          student_id?: string
+          total_revenue?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_checkins_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       announcements: {
         Row: {
           author_id: string
@@ -191,6 +262,8 @@ export type Database = {
           improvements: string | null
           influencers_contacted: number
           outreach_count: number
+          profit: number
+          revenue: number
           reviewed_at: string | null
           reviewed_by: string | null
           star_rating: number | null
@@ -208,6 +281,8 @@ export type Database = {
           improvements?: string | null
           influencers_contacted?: number
           outreach_count?: number
+          profit?: number
+          revenue?: number
           reviewed_at?: string | null
           reviewed_by?: string | null
           star_rating?: number | null
@@ -225,6 +300,8 @@ export type Database = {
           improvements?: string | null
           influencers_contacted?: number
           outreach_count?: number
+          profit?: number
+          revenue?: number
           reviewed_at?: string | null
           reviewed_by?: string | null
           star_rating?: number | null
@@ -874,6 +951,58 @@ export type Database = {
           },
         ]
       }
+      // HAND-EDIT: added in migration 00051_schedule_blocks.sql — reapply after regen.
+      schedule_blocks: {
+        Row: {
+          created_at: string
+          date: string
+          duration_minutes: number
+          id: string
+          session_id: string | null
+          start_minute: number
+          student_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          duration_minutes: number
+          id?: string
+          session_id?: string | null
+          start_minute: number
+          student_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          duration_minutes?: number
+          id?: string
+          session_id?: string | null
+          start_minute?: number
+          student_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "schedule_blocks_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "schedule_blocks_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "work_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       work_sessions: {
         Row: {
           completed_at: string | null
@@ -886,7 +1015,7 @@ export type Database = {
           session_minutes: number
           started_at: string
           // HAND-EDIT: narrow from DB CHECK constraint — reapply after regen.
-          status: "pending" | "in_progress" | "completed" | "abandoned" | "paused"
+          status: "in_progress" | "completed" | "abandoned" | "paused"
           student_id: string
         }
         Insert: {
@@ -899,7 +1028,7 @@ export type Database = {
           paused_at?: string | null
           session_minutes: number
           started_at: string
-          status?: "pending" | "in_progress" | "completed" | "abandoned" | "paused"
+          status?: "in_progress" | "completed" | "abandoned" | "paused"
           student_id: string
         }
         Update: {
@@ -912,7 +1041,7 @@ export type Database = {
           paused_at?: string | null
           session_minutes?: number
           started_at?: string
-          status?: "pending" | "in_progress" | "completed" | "abandoned" | "paused"
+          status?: "in_progress" | "completed" | "abandoned" | "paused"
           student_id?: string
         }
         Relationships: [
@@ -962,6 +1091,7 @@ export type Database = {
       }
       get_owner_analytics: { Args: never; Returns: Json }
       get_owner_dashboard_stats: { Args: never; Returns: Json }
+      get_owner_platform_metrics: { Args: never; Returns: Json }
       get_platform_stats: { Args: never; Returns: Json }
       get_sidebar_badges:
         | { Args: { p_role: string; p_user_id: string }; Returns: Json }

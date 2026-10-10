@@ -179,7 +179,7 @@ export function CoachAssignmentsClient({ students, coaches }: CoachAssignmentsCl
 
       {/* Student Assignment Rows */}
       {filteredStudents.length === 0 ? (
-        <div className="bg-white border border-ima-border rounded-[14px] p-6">
+        <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-6">
           <EmptyState
             variant="compact"
             icon={<Users className="h-5 w-5" aria-hidden="true" />}
@@ -252,7 +252,7 @@ export function CoachAssignmentsClient({ students, coaches }: CoachAssignmentsCl
                   </select>
                   {isSaving && (
                     <span
-                      className="text-[10px] font-semibold tracking-widest text-ima-text-secondary uppercase"
+                      className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
                     >
                       Saving…
                     </span>

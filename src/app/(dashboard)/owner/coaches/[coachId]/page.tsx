@@ -11,11 +11,40 @@ import { buttonVariants } from "@/components/ui";
 import {
   ChevronLeft,
   Users,
-  Star,
   FileText,
   AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
+
+type AdminClient = ReturnType<typeof createAdminClient>;
+
+/**
+ * roadmap_progress carries 16 rows per student, so a full roster (≥63 students)
+ * overflows PostgREST's 1000-row cap (config.toml max_rows) and silently
+ * truncates — corrupting per-student step counts. Fetch every student's rows by
+ * paging over student-id batches (≤50 → ≤800 rows/request) and merge, so no
+ * step is dropped.
+ */
+async function fetchRoadmapProgress(admin: AdminClient, ids: string[]) {
+  const BATCH = 50;
+  const batches: string[][] = [];
+  for (let i = 0; i < ids.length; i += BATCH) {
+    batches.push(ids.slice(i, i + BATCH));
+  }
+  const results = await Promise.all(
+    batches.map((batch) =>
+      admin
+        .from("roadmap_progress")
+        .select("student_id, step_number, status")
+        .in("student_id", batch)
+        .order("step_number", { ascending: true }),
+    ),
+  );
+  return {
+    data: results.flatMap((r) => r.data ?? []),
+    error: results.find((r) => r.error)?.error ?? null,
+  };
+}
 
 type EnrichedStudent = {
   id: string;
@@ -68,29 +97,49 @@ export default async function CoachDetailPage({
   const studentList = students ?? [];
   const studentIds = studentList.map((s) => s.id);
 
+  const today = getToday();
+
+  // Activity maps only need recent state (today / last-active / last-7-days), so
+  // bound them to a recent window (keeps rows well under the 1000-row cap for
+  // realistic rosters) and order by date DESC so any residual truncation drops
+  // the OLDEST rows rather than arbitrary ones. roadmap_progress needs all rows
+  // per student, so it's paged over student-id batches.
+  const ROSTER_LOOKBACK_DAYS = 30;
+  const rosterSince = new Date(
+    new Date(today + "T00:00:00Z").getTime() -
+      ROSTER_LOOKBACK_DAYS * 24 * 60 * 60 * 1000,
+  )
+    .toISOString()
+    .split("T")[0];
+
   // Parallel enrichment fetch
-  const [sessionsResult, reportsResult, roadmapResult] =
+  const roadmapPromise =
+    studentIds.length > 0
+      ? fetchRoadmapProgress(admin, studentIds)
+      : Promise.resolve({ data: null, error: null });
+
+  const [sessionsResult, reportsResult] =
     studentIds.length > 0
       ? await Promise.all([
           admin
             .from("work_sessions")
             .select("student_id, date")
             .in("student_id", studentIds)
+            .gte("date", rosterSince)
             .order("date", { ascending: false }),
           admin
             .from("daily_reports")
             .select("student_id, date, star_rating, reviewed_by, submitted_at")
-            .in("student_id", studentIds),
-          admin
-            .from("roadmap_progress")
-            .select("student_id, step_number, status")
-            .in("student_id", studentIds),
+            .in("student_id", studentIds)
+            .gte("date", rosterSince)
+            .order("date", { ascending: false }),
         ])
       : ([
           { data: null, error: null },
           { data: null, error: null },
-          { data: null, error: null },
         ] as const);
+
+  const roadmapResult = await roadmapPromise;
 
   if (sessionsResult.error) {
     console.error(
@@ -119,7 +168,6 @@ export default async function CoachDetailPage({
     }
   }
 
-  const today = getToday();
   const nowMs = new Date(today + "T23:59:59Z").getTime();
   const sevenDaysAgo = new Date(
     nowMs - COACH_CONFIG.reportInboxDays * 24 * 60 * 60 * 1000
@@ -136,7 +184,8 @@ export default async function CoachDetailPage({
     ) {
       latestReportMap.set(r.student_id, r.date);
     }
-    if (r.date === today) {
+    // Drafts (quick-logged emails, submitted_at NULL) aren't a submitted report.
+    if (r.date === today && r.submitted_at !== null) {
       todayReportMap.set(r.student_id, true);
     }
   }
@@ -161,14 +210,7 @@ export default async function CoachDetailPage({
     }
   }
 
-  // Compute 4 coach-level stat cards
-  // Avg student rating (7-day)
-  const allRatings = [...recentRatings.values()].flat();
-  const avgRatingStr =
-    allRatings.length > 0
-      ? (allRatings.reduce((a, b) => a + b, 0) / allRatings.length).toFixed(1)
-      : "—";
-
+  // Compute coach-level stat cards
   // Report review rate
   let submittedCount = 0;
   let reviewedCount = 0;
@@ -282,8 +324,8 @@ export default async function CoachDetailPage({
         </div>
       </div>
 
-      {/* 4 Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+      {/* Stat Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
         {/* Student Count */}
         <Card>
           <CardContent className="p-4 flex items-center gap-4">
@@ -298,22 +340,6 @@ export default async function CoachDetailPage({
                 {studentList.length}
               </p>
               <p className="text-xs text-ima-text-secondary">Students</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Avg Rating */}
-        <Card>
-          <CardContent className="p-4 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-lg bg-ima-primary/10 flex items-center justify-center shrink-0">
-              <Star
-                className="h-5 w-5 text-ima-primary"
-                aria-hidden="true"
-              />
-            </div>
-            <div>
-              <p className="text-2xl font-bold tabular-nums slashed-zero tracking-tight text-ima-text">{avgRatingStr}</p>
-              <p className="text-xs text-ima-text-secondary">Avg Rating</p>
             </div>
           </CardContent>
         </Card>

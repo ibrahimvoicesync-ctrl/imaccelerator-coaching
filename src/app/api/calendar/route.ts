@@ -85,6 +85,7 @@ export async function GET(request: NextRequest) {
           "id, date, hours_worked, star_rating, brands_contacted, influencers_contacted, calls_joined, wins, improvements, reviewed_by",
         )
         .eq("student_id", studentId)
+        .not("submitted_at", "is", null)
         .gte("date", firstDay)
         .lte("date", lastDay)
         .order("date"),

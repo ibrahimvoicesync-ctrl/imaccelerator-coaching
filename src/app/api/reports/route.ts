@@ -1,17 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { VALIDATION } from "@/lib/config";
 import { isValidDateString } from "@/lib/utils";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { verifyOrigin } from "@/lib/csrf";
-import { studentAnalyticsTag } from "@/lib/rpc/student-analytics";
-import { coachDashboardTag } from "@/lib/rpc/coach-dashboard-types";
-import { coachAnalyticsTag } from "@/lib/rpc/coach-analytics-types";
-import { coachMilestonesTag } from "@/lib/rpc/coach-milestones-types";
-import { ownerAnalyticsTag } from "@/lib/rpc/owner-analytics-types";
+import { invalidateReportCaches } from "@/lib/report-cache";
 
 const postSchema = z.object({
   date: z.string().refine(isValidDateString, "Invalid date format (YYYY-MM-DD)"),
@@ -22,6 +17,8 @@ const postSchema = z.object({
   calls_joined: z.number().int().min(VALIDATION.callsJoined.min).max(VALIDATION.callsJoined.max),
   wins: z.string().max(VALIDATION.reportWins.max).optional(),
   improvements: z.string().max(VALIDATION.reportImprovements.max).optional(),
+  revenue: z.number().min(VALIDATION.deals.revenueMin).max(VALIDATION.deals.revenueMax).optional(),
+  profit: z.number().min(VALIDATION.deals.profitMin).max(VALIDATION.deals.profitMax).optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -73,17 +70,26 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Validation failed" }, { status: 400 });
   }
 
-  const { date, hours_worked, star_rating, brands_contacted, influencers_contacted, calls_joined, wins, improvements } = parsed.data;
+  const { date, hours_worked, star_rating, brands_contacted, influencers_contacted, calls_joined, wins, improvements, revenue, profit } = parsed.data;
 
   const now = new Date().toISOString();
 
   // Check for existing report
   const { data: existing } = await admin
     .from("daily_reports")
-    .select("id")
+    .select("id, brands_contacted, influencers_contacted, outreach_count")
     .eq("student_id", profile.id)
     .eq("date", date)
     .maybeSingle();
+
+  // Emails quick-logged as a total without a split (Work Tracker) only live in
+  // outreach_count — keep that unsplit portion on top of the report's split.
+  const unsplitEmails = existing
+    ? Math.max(
+        0,
+        existing.outreach_count - existing.brands_contacted - existing.influencers_contacted,
+      )
+    : 0;
 
   if (existing) {
     // Update existing report
@@ -95,9 +101,11 @@ export async function POST(request: NextRequest) {
         brands_contacted,
         influencers_contacted,
         calls_joined,
-        outreach_count: brands_contacted + influencers_contacted, // backward compat
+        outreach_count: brands_contacted + influencers_contacted + unsplitEmails,
         wins: wins || null,
         improvements: improvements || null,
+        revenue: revenue ?? 0,
+        profit: profit ?? 0,
         submitted_at: now,
       })
       .eq("id", existing.id)
@@ -108,34 +116,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: updateError.message }, { status: 500 });
     }
 
-    revalidateTag("badges", "default");
-    try {
-      revalidateTag(studentAnalyticsTag(profile.id), "default");
-    } catch (e) {
-      console.error("[revalidate-tag]", e);
-    }
-    // Phase 64: invalidate owner analytics (closes v1.6 audit defer — global
-    // tag, invalidates regardless of coach assignment).
-    try {
-      revalidateTag(ownerAnalyticsTag(), "default");
-    } catch (e) {
-      console.error("[revalidate-tag owner-analytics]", e);
-    }
-    // Phase 47: invalidate the coach's dashboard cache, if the student has a coach.
-    try {
-      const { data: studentRow } = await admin
-        .from("users")
-        .select("coach_id")
-        .eq("id", profile.id)
-        .maybeSingle();
-      if (studentRow?.coach_id) {
-        revalidateTag(coachDashboardTag(studentRow.coach_id), "default");
-        revalidateTag(coachAnalyticsTag(studentRow.coach_id), "default");
-        revalidateTag(coachMilestonesTag(studentRow.coach_id), "default");
-      }
-    } catch (err) {
-      console.error("[reports] failed to invalidate coach-dashboard tag:", err);
-    }
+    await invalidateReportCaches(profile.id);
     return NextResponse.json({ data: updated });
   }
 
@@ -153,6 +134,8 @@ export async function POST(request: NextRequest) {
       outreach_count: brands_contacted + influencers_contacted, // backward compat
       wins: wins || null,
       improvements: improvements || null,
+      revenue: revenue ?? 0,
+      profit: profit ?? 0,
       submitted_at: now,
     })
     .select()
@@ -162,33 +145,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: insertError.message }, { status: 500 });
   }
 
-  revalidateTag("badges", "default");
-  try {
-    revalidateTag(studentAnalyticsTag(profile.id), "default");
-  } catch (e) {
-    console.error("[revalidate-tag]", e);
-  }
-  // Phase 64: invalidate owner analytics (closes v1.6 audit defer — global
-  // tag, invalidates regardless of coach assignment).
-  try {
-    revalidateTag(ownerAnalyticsTag(), "default");
-  } catch (e) {
-    console.error("[revalidate-tag owner-analytics]", e);
-  }
-  // Phase 47: invalidate the coach's dashboard cache, if the student has a coach.
-  try {
-    const { data: studentRow } = await admin
-      .from("users")
-      .select("coach_id")
-      .eq("id", profile.id)
-      .maybeSingle();
-    if (studentRow?.coach_id) {
-      revalidateTag(coachDashboardTag(studentRow.coach_id), "default");
-      revalidateTag(coachAnalyticsTag(studentRow.coach_id), "default");
-      revalidateTag(coachMilestonesTag(studentRow.coach_id), "default");
-    }
-  } catch (err) {
-    console.error("[reports] failed to invalidate coach-dashboard tag:", err);
-  }
+  await invalidateReportCaches(profile.id);
   return NextResponse.json({ data: report }, { status: 201 });
 }

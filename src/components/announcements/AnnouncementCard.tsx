@@ -79,7 +79,7 @@ export function AnnouncementCard({
             </span>
           </div>
           <div className="flex items-center gap-1 shrink-0">
-            <span className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-muted tabular-nums flex items-center gap-1.5">
+            <span className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-secondary tabular-nums flex items-center gap-1.5">
               <time dateTime={announcement.created_at}>
                 {formatRelativeTime(new Date(announcement.created_at))}
               </time>
@@ -96,7 +96,7 @@ export function AnnouncementCard({
                   type="button"
                   aria-label="Edit announcement"
                   onClick={() => setEditing(true)}
-                  className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg text-ima-text-muted hover:text-ima-primary hover:bg-ima-surface-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2 motion-safe:transition-colors"
+                  className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg text-ima-text-secondary hover:text-ima-primary hover:bg-ima-surface-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2 motion-safe:transition-colors"
                 >
                   <Pencil className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
                 </button>
@@ -104,7 +104,7 @@ export function AnnouncementCard({
                   type="button"
                   aria-label="Delete announcement"
                   onClick={() => setDeleteOpen(true)}
-                  className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg text-ima-text-muted hover:text-ima-error hover:bg-ima-error/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-error focus-visible:ring-offset-2 motion-safe:transition-colors"
+                  className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg text-ima-text-secondary hover:text-ima-error hover:bg-ima-error/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-error focus-visible:ring-offset-2 motion-safe:transition-colors"
                 >
                   <Trash2 className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
                 </button>

@@ -1,7 +1,7 @@
 export default function Loading() {
   return (
     <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg">
-      <div className="mx-auto max-w-3xl px-6 md:px-14 pt-10 md:pt-14 pb-20">
+      <div className="mx-auto max-w-[880px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
         {/* Kicker row */}
         <div className="motion-safe:animate-pulse flex items-center gap-3">
           <div className="h-[11px] w-24 rounded bg-ima-surface-light" />
@@ -14,7 +14,7 @@ export default function Loading() {
         <div className="mt-4 h-4 w-56 rounded bg-ima-surface-light motion-safe:animate-pulse" />
 
         {/* Form card */}
-        <div className="mt-10 rounded-[14px] border border-ima-border bg-white divide-y divide-ima-border motion-safe:animate-pulse">
+        <div className="mt-10 rounded-[14px] border border-ima-border bg-white shadow-card divide-y divide-ima-border motion-safe:animate-pulse">
           <div className="p-5 md:p-6 space-y-4">
             <div className="h-3 w-32 rounded bg-ima-surface-light" />
             <div className="flex items-center justify-between gap-4">

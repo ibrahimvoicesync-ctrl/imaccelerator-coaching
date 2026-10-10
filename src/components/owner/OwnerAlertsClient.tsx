@@ -181,7 +181,7 @@ export function OwnerAlertsClient({ initialAlerts }: OwnerAlertsClientProps) {
 
       {/* Alerts list */}
       {filteredAlerts.length === 0 ? (
-        <div className="mt-6 bg-white border border-ima-border rounded-[14px] p-6">
+        <div className="mt-6 bg-white border border-ima-border rounded-[14px] shadow-card p-6">
           <EmptyState
             icon={<Bell className="h-6 w-6" />}
             title={EMPTY_MESSAGES[filter]}
@@ -204,10 +204,10 @@ export function OwnerAlertsClient({ initialAlerts }: OwnerAlertsClientProps) {
               <li
                 key={alert.key}
                 className={cn(
-                  "rounded-[14px] border bg-white p-5",
+                  "rounded-[14px] border border-ima-border p-5",
                   isLive
-                    ? "border-ima-border border-l-[3px] border-l-ima-success"
-                    : "border-ima-border bg-ima-bg"
+                    ? "bg-white shadow-card"
+                    : "bg-ima-surface-light"
                 )}
               >
                 <div

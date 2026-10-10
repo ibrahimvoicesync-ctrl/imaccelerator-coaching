@@ -36,11 +36,21 @@ const EXPORT_HARD_CAP = 5000;
 
 // RFC 4180: wrap fields containing comma/quote/newline in double quotes,
 // double internal quotes. Always quote the name field defensively.
+//
+// CSV/formula injection: spreadsheet apps (Excel/Sheets) evaluate a cell as a
+// formula when its value begins with = + - @ (or a leading tab/CR). Since some
+// fields (e.g. the student name from their Google display name) are
+// attacker-controlled, prefix such values with a single quote so they render
+// as literal text instead of executing.
 function csvEscape(value: string): string {
-  if (/[",\n\r]/.test(value)) {
-    return `"${value.replace(/"/g, '""')}"`;
+  let safe = value;
+  if (/^[=+\-@\t\r]/.test(safe)) {
+    safe = `'${safe}`;
   }
-  return value;
+  if (/[",\n\r]/.test(safe)) {
+    return `"${safe.replace(/"/g, '""')}"`;
+  }
+  return safe;
 }
 
 function rowToCsv(row: CoachStudentRow): string {

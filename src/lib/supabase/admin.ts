@@ -12,11 +12,15 @@ let _adminClient: ReturnType<typeof createClient<Database>> | null = null;
  * Module-level singleton: instantiated once per process, not once per request.
  * Safe for service_role (stateless — no cookies, no session).
  * Do NOT apply this pattern to createServerClient() (request-scoped cookies).
+ *
+ * Talks to Supabase over SUPABASE_INTERNAL_URL (the local gateway on this box)
+ * when set, so the service key never travels through the public edge — the
+ * edge (Traefik) rejects service keys from outside this machine.
  */
 export function createAdminClient() {
   if (!_adminClient) {
     _adminClient = createClient<Database>(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_INTERNAL_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
       {
         auth: {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useToast } from "@/components/ui/Toast";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
@@ -13,6 +13,15 @@ type CommentFormProps = {
 export function CommentForm({ reportId, initialComment }: CommentFormProps) {
   const [value, setValue] = useState(initialComment ?? "");
   const [isSaving, setIsSaving] = useState(false);
+
+  // Resync the editable draft when the target report changes so a form reused
+  // across reports (e.g. switching calendar days) never carries a stale draft
+  // into the wrong report. Keyed on reportId only — resyncing on initialComment
+  // would clobber an in-progress edit after a refresh of the same report.
+  useEffect(() => {
+    setValue(initialComment ?? "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reportId]);
 
   const { toast } = useToast();
   const toastRef = useRef(toast);
@@ -51,7 +60,7 @@ export function CommentForm({ reportId, initialComment }: CommentFormProps) {
         rows={3}
         placeholder="Leave feedback for this student..."
       />
-      <p className="text-xs text-ima-text-muted text-right">{value.length}/1000</p>
+      <p className="text-xs text-ima-text-secondary text-right">{value.length}/1000</p>
       <Button
         variant="primary"
         size="sm"

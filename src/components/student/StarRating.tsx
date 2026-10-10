@@ -62,7 +62,7 @@ export function StarRating({ value, onChange, max = 5, disabled = false }: StarR
               "motion-safe:transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2",
               filled && !isPreview && "bg-ima-primary border-ima-primary text-white",
               isPreview && "bg-ima-primary/15 border-ima-primary/40 text-ima-primary",
-              !filled && "bg-ima-surface border-ima-border text-ima-text-muted hover:border-ima-primary/40 hover:text-ima-text",
+              !filled && "bg-ima-surface border-ima-border text-ima-text-secondary hover:border-ima-primary/40 hover:text-ima-text",
               disabled && "opacity-50 cursor-not-allowed"
             )}
             onClick={() => !disabled && onChange(ratingValue)}

@@ -25,7 +25,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           aria-invalid={!!error}
           aria-describedby={errorId}
           className={cn(
-            "w-full h-11 px-3 bg-ima-surface border border-ima-border rounded-lg text-ima-text placeholder:text-ima-text-muted focus:outline-none focus:ring-2 focus:ring-ima-primary focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed",
+            "w-full h-11 px-3 bg-ima-surface border border-ima-border rounded-lg text-ima-text placeholder:text-ima-text-secondary focus:outline-none focus:ring-2 focus:ring-ima-primary focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed",
             error && "border-ima-error focus:ring-ima-error",
             className
           )}

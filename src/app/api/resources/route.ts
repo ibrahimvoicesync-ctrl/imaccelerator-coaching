@@ -11,7 +11,13 @@ import { verifyOrigin } from "@/lib/csrf";
 
 const addResourceSchema = z.object({
   title: z.string().min(1).max(255),
-  url: z.string().url().max(2048),
+  // Restrict to http(s) — z.string().url() alone accepts javascript:/data:/etc.,
+  // which would render as a script-scheme link on the client (RES-XSS).
+  url: z
+    .string()
+    .url()
+    .max(2048)
+    .refine((v) => /^https?:\/\//i.test(v), "URL must start with http:// or https://"),
   comment: z.string().max(1000).optional(),
   is_pinned: z.boolean().optional(),
 });

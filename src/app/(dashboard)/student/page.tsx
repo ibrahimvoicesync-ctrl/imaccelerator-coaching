@@ -1,22 +1,19 @@
-import Link from "next/link";
-import {
-  ArrowRight,
-  CheckCircle2,
-  FileText,
-  Map as MapIcon,
-} from "lucide-react";
+import { FileText, Flame, Map as MapIcon } from "lucide-react";
 import { requireRole } from "@/lib/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getStreakInfo } from "@/lib/streak";
-import { getWeeklyWorkLeaderboard } from "@/lib/leaderboard";
+import { getWeeklyEmailMomentum } from "@/lib/leaderboard";
 import { getWeeklyHoursByDay } from "@/lib/weekly-hours";
+import { getWeeklyEmailsByDay } from "@/lib/weekly-emails";
+import { emailCountsFromReport } from "@/lib/emails";
 import { getLatestCoachComment } from "@/lib/coach-comment";
-import { StreakCard } from "@/components/student/StreakCard";
-import { WeeklyWorkLeaderboard } from "@/components/student/WeeklyWorkLeaderboard";
-import { WeeklyHoursChart } from "@/components/student/WeeklyHoursChart";
+import { AtAGlance } from "@/components/student/AtAGlance";
+import { WeeklyMomentum } from "@/components/student/WeeklyMomentum";
 import { CoachNoteCard } from "@/components/student/CoachNoteCard";
+import { DashboardMetricView } from "@/components/student/DashboardMetricView";
+import { NextActionButton } from "@/components/student/NextActionButton";
 import { ROADMAP_STEPS, WORK_TRACKER } from "@/lib/config";
-import { cn, formatHoursMinutes, getToday } from "@/lib/utils";
+import { getToday } from "@/lib/utils";
 import type { Database } from "@/lib/types";
 
 type WorkSession = Database["public"]["Tables"]["work_sessions"]["Row"];
@@ -28,16 +25,16 @@ function getNextAction(
   pausedSession: WorkSession | undefined,
   reportSubmitted: boolean,
 ): { label: string; href: string } {
-  if (activeSession) return { label: "Continue session", href: "/student/work" };
-  if (pausedSession) return { label: "Resume session", href: "/student/work" };
+  if (activeSession) return { label: "Go back to your timer", href: "/student/work" };
+  if (pausedSession) return { label: "Carry on where you stopped", href: "/student/work" };
   if (totalMinutesWorked < WORK_TRACKER.dailyGoalHours * 60) {
     return {
-      label: `Begin session ${String(completedCount + 1).padStart(2, "0")}`,
+      label: completedCount === 0 ? "Start working" : "Keep working",
       href: "/student/work",
     };
   }
   return {
-    label: reportSubmitted ? "Update daily report" : "Submit daily report",
+    label: reportSubmitted ? "Change your daily report" : "Send your daily report",
     href: "/student/report",
   };
 }
@@ -52,8 +49,9 @@ export default async function StudentDashboard() {
     { data: roadmapRows, error: roadmapError },
     reportResult,
     streakInfo,
-    leaderboard,
+    momentum,
     weeklyHours,
+    weeklyEmails,
     coachNote,
   ] = await Promise.all([
     admin
@@ -69,13 +67,14 @@ export default async function StudentDashboard() {
       .order("step_number", { ascending: true }),
     admin
       .from("daily_reports")
-      .select("submitted_at")
+      .select("submitted_at, brands_contacted, influencers_contacted, outreach_count")
       .eq("student_id", user.id)
       .eq("date", today)
       .maybeSingle(),
     getStreakInfo(user.id),
-    getWeeklyWorkLeaderboard(5),
+    getWeeklyEmailMomentum(user.id),
     getWeeklyHoursByDay(user.id),
+    getWeeklyEmailsByDay(user.id),
     getLatestCoachComment(user.id),
   ]);
 
@@ -85,6 +84,7 @@ export default async function StudentDashboard() {
 
   const todayReport = reportResult.data;
   const reportSubmitted = Boolean(todayReport?.submitted_at);
+  const todayEmails = emailCountsFromReport(todayReport);
 
   const todaySessions = (sessions ?? []) as WorkSession[];
   const completedCount = todaySessions.filter((s) => s.status === "completed").length;
@@ -96,7 +96,6 @@ export default async function StudentDashboard() {
   const dailyGoalMinutes = WORK_TRACKER.dailyGoalHours * 60;
   const rawPercent =
     dailyGoalMinutes > 0 ? Math.round((totalMinutesWorked / dailyGoalMinutes) * 100) : 0;
-  const progressBarWidth = Math.min(100, rawPercent);
   const goalMet = rawPercent >= 100;
   const firstName = user.name.split(" ")[0];
 
@@ -114,263 +113,102 @@ export default async function StudentDashboard() {
     roadmapCompleted === ROADMAP_STEPS.length &&
     roadmapRows != null &&
     roadmapRows.length > 0;
-  const roadmapPercent =
-    roadmapRows && roadmapRows.length > 0
-      ? Math.round((roadmapCompleted / ROADMAP_STEPS.length) * 100)
-      : 0;
+  const activeStepConfig = activeRoadmapStep
+    ? ROADMAP_STEPS.find((s) => s.step === activeRoadmapStep.step_number)
+    : undefined;
 
   return (
     <div
       className={`-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg`}
     >
-      <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
+      <div className="mx-auto max-w-[880px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
         {/* Masthead */}
-        <header className="motion-safe:animate-fadeIn">
+        <header className="motion-safe:animate-riseIn">
           <p
             className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
           >
-            Dashboard
+            Home
           </p>
           <h1 className="mt-3 text-[32px] md:text-[36px] font-semibold leading-[1.05] text-ima-text tracking-[-0.02em]">
-            Assalamu3leikum, {firstName}.
+            Assalamu &apos;alaykum, {firstName}.
           </h1>
-          <p className="mt-2 max-w-[58ch] text-[15px] text-ima-text-secondary leading-[1.55]">
-            Here&apos;s how today is tracking.
+          <div className="mt-3 h-[3px] w-10 rounded-full bg-ima-primary" aria-hidden="true" />
+          <p className="mt-3 max-w-[58ch] text-[15px] text-ima-text-secondary leading-[1.55]">
+            Here&apos;s your day. Start with the big blue button.
           </p>
         </header>
 
-        {/* Hero — Today's Work (left) + Consistency (right) */}
-        <section
-          className="mt-9 grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-[14px] items-start motion-safe:animate-fadeIn"
-          style={{ animationDelay: "100ms" }}
-        >
-          {/* Left column — Today's Work + next-action CTA */}
-          <div className="flex flex-col gap-5">
-          <div className="bg-white border border-ima-border rounded-[14px] p-6 md:p-8">
-            <div className="flex items-center justify-between gap-3">
-              <p
-                id="todays-work-label"
-                className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
-              >
-                Today&apos;s Work
-              </p>
-              {goalMet ? (
-                <span className="inline-flex items-center gap-1.5 px-2 py-[3px] rounded-full bg-ima-success/10 border border-ima-success/10 text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-success">
-                  <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
-                  Goal Reached
-                </span>
-              ) : (
-                <span
-                  className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase tabular-nums"
-                >
-                  {completedCount} Session{completedCount !== 1 ? "s" : ""}
-                </span>
-              )}
-            </div>
-
-            <div className="mt-6 flex items-end gap-3 flex-wrap">
-              <span
-                className={cn(
-                  "text-6xl md:text-7xl font-semibold tabular-nums tracking-tight leading-[0.95]",
-                  goalMet ? "text-ima-success" : "text-ima-primary",
-                )}
-              >
-                {formatHoursMinutes(totalMinutesWorked)}
-              </span>
-              <span className="pb-2 text-[15px] font-medium text-ima-text-secondary tabular-nums">
-                / {WORK_TRACKER.dailyGoalHours}h
-              </span>
-            </div>
-
-            <div
-              className="mt-5 h-[6px] rounded-full bg-ima-surface-light overflow-hidden"
-              role="progressbar"
-              aria-valuenow={totalMinutesWorked}
-              aria-valuemin={0}
-              aria-valuemax={dailyGoalMinutes}
-              aria-label={`Daily hours progress: ${formatHoursMinutes(totalMinutesWorked)} of ${WORK_TRACKER.dailyGoalHours}h`}
-            >
+        <DashboardMetricView
+          emails={todayEmails}
+          weeklyEmails={weeklyEmails}
+          totalMinutes={totalMinutesWorked}
+          hoursGoalMet={goalMet}
+          completedSessions={completedCount}
+          weeklyHours={weeklyHours}
+          logEmailsHref="/student/work#log-emails"
+          nextAction={<NextActionButton href={nextAction.href} label={nextAction.label} />}
+          coachNote={
+            coachNote && (
               <div
-                className={cn(
-                  "h-full rounded-full motion-safe:transition-[width] duration-700 ease-out",
-                  goalMet ? "bg-ima-success" : "bg-ima-primary",
-                )}
-                style={{ width: `${progressBarWidth}%` }}
-              />
-            </div>
-          </div>
+                className="mt-[14px] motion-safe:animate-riseIn"
+                style={{ animationDelay: "120ms" }}
+              >
+                <CoachNoteCard note={coachNote} basePath="/student" />
+              </div>
+            )
+          }
+        />
 
-          <Link
-            href={nextAction.href}
-            className="group inline-flex items-center justify-center gap-3 w-full rounded-[14px] bg-ima-primary text-white text-[15px] md:text-[17px] font-bold tracking-tight min-h-[60px] md:min-h-[64px] px-6 motion-safe:transition-all motion-safe:duration-200 ease-out hover:bg-ima-primary-hover hover:shadow-[0_14px_32px_-14px_rgba(37,99,235,0.65)] hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2"
-          >
-            {nextAction.label}
-            <ArrowRight
-              className="h-5 w-5 motion-safe:transition-transform duration-200 ease-out group-hover:translate-x-1"
-              aria-hidden="true"
-            />
-          </Link>
-          </div>
-
-          {/* Right column — Consistency */}
-          <StreakCard info={streakInfo} />
-        </section>
-
-        {coachNote && (
-          <div
-            className="mt-[14px] motion-safe:animate-fadeIn"
-            style={{ animationDelay: "120ms" }}
-          >
-            <CoachNoteCard note={coachNote} basePath="/student" />
-          </div>
-        )}
-
-        {/* Hours this week — visual */}
+        {/* Everything else, one line each */}
         <div
-          className="mt-[14px] motion-safe:animate-fadeIn"
-          style={{ animationDelay: "175ms" }}
-        >
-          <WeeklyHoursChart data={weeklyHours} />
-        </div>
-
-        {/* Roadmap + Daily Report */}
-        <section
-          aria-label="Roadmap and daily report"
-          className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-[14px] motion-safe:animate-fadeIn"
+          className="mt-[14px] motion-safe:animate-riseIn"
           style={{ animationDelay: "200ms" }}
         >
-          {/* Roadmap */}
-          <div className="bg-white border border-ima-border rounded-[14px] p-6 flex flex-col">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 rounded-[8px] bg-ima-surface-accent flex items-center justify-center shrink-0">
-                  <MapIcon className="h-[18px] w-[18px] text-ima-primary" aria-hidden="true" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[15px] font-semibold text-ima-text leading-tight">
-                    Roadmap
-                  </p>
-                  <p className="mt-[3px] text-[12px] text-ima-text-secondary">
-                    {allRoadmapDone
-                      ? "All steps completed"
-                      : activeRoadmapStep
-                        ? `Currently on step ${activeRoadmapStep.step_number}`
-                        : "Start your journey"}
-                  </p>
-                </div>
-              </div>
-              <span
-                className="text-[12px] font-semibold tabular-nums text-ima-text shrink-0"
-              >
-                {roadmapCompleted}/{ROADMAP_STEPS.length}
-              </span>
-            </div>
-
-            <div
-              className="mt-5 h-[6px] rounded-full bg-ima-surface-light overflow-hidden"
-              role="progressbar"
-              aria-valuenow={roadmapCompleted}
-              aria-valuemin={0}
-              aria-valuemax={ROADMAP_STEPS.length}
-              aria-label={`Roadmap progress: ${roadmapCompleted} of ${ROADMAP_STEPS.length}`}
-            >
-              <div
-                className={cn(
-                  "h-full rounded-full motion-safe:transition-[width] duration-700 ease-out",
-                  allRoadmapDone ? "bg-ima-success" : "bg-ima-primary",
-                )}
-                style={{ width: `${roadmapPercent}%` }}
-              />
-            </div>
-
-            <Link
-              href="/student/roadmap"
-              aria-label={
-                allRoadmapDone
-                  ? "View roadmap"
-                  : activeRoadmapStep
-                    ? `Continue step ${activeRoadmapStep.step_number}`
-                    : "View roadmap"
-              }
-              className="group mt-auto pt-5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-ima-primary hover:text-ima-primary-hover min-h-[44px] focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 rounded-md"
-            >
-              {allRoadmapDone
-                ? "View roadmap"
-                : activeRoadmapStep
-                  ? `Continue step ${activeRoadmapStep.step_number}`
-                  : "View roadmap"}
-              <ArrowRight
-                className="h-3.5 w-3.5 motion-safe:transition-transform group-hover:translate-x-0.5"
-                aria-hidden="true"
-              />
-            </Link>
-          </div>
-
-          {/* Daily Report */}
-          <div className="bg-white border border-ima-border rounded-[14px] p-6 flex flex-col">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 rounded-[8px] bg-ima-surface-light flex items-center justify-center shrink-0">
-                  <FileText className="h-[18px] w-[18px] text-ima-text-secondary" aria-hidden="true" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[15px] font-semibold text-ima-text leading-tight">
-                    Daily Report
-                  </p>
-                  <p className="mt-[3px] text-[12px] text-ima-text-secondary">
-                    {reportSubmitted
-                      ? "Submitted — you can still update it."
-                      : "Close today's loop before 11 PM."}
-                  </p>
-                </div>
-              </div>
-              {reportSubmitted ? (
-                <span className="inline-flex items-center gap-1 px-2 py-[3px] rounded-full bg-ima-success/10 border border-ima-success/10 text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-success shrink-0">
-                  <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
-                  Submitted
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1.5 px-2 py-[3px] rounded-full bg-ima-warning/10 border border-ima-warning/10 text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-warning shrink-0">
-                  <span
-                    className="inline-block h-[6px] w-[6px] rounded-full bg-ima-warning"
-                    aria-hidden="true"
-                  />
-                  Pending
-                </span>
-              )}
-            </div>
-
-            <div className="mt-5 flex items-center gap-3">
-              <span
-                className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
-              >
-                Due
-              </span>
-              <span className="text-[13px] font-semibold tabular-nums text-ima-text">
-                11:00 PM
-              </span>
-            </div>
-
-            <Link
-              href="/student/report"
-              aria-label={reportSubmitted ? "Update report" : "Submit report"}
-              className="group mt-auto pt-5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-ima-primary hover:text-ima-primary-hover min-h-[44px] focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 rounded-md"
-            >
-              {reportSubmitted ? "Update report" : "Submit report"}
-              <ArrowRight
-                className="h-3.5 w-3.5 motion-safe:transition-transform group-hover:translate-x-0.5"
-                aria-hidden="true"
-              />
-            </Link>
-          </div>
-        </section>
+          <AtAGlance
+            rows={[
+              {
+                icon: FileText,
+                label: "Daily report",
+                detail: reportSubmitted
+                  ? "Sent — you can still change it"
+                  : "Takes about 2 minutes · due by 11 PM",
+                status: reportSubmitted
+                  ? { text: "Sent", tone: "done" }
+                  : { text: "Not yet", tone: "todo" },
+                href: "/student/report",
+              },
+              {
+                icon: MapIcon,
+                label: "My steps",
+                detail: allRoadmapDone
+                  ? "All steps done"
+                  : activeStepConfig
+                    ? `Step ${activeStepConfig.step}: ${activeStepConfig.title}`
+                    : "Your first step is ready",
+                status: { text: `${roadmapCompleted}/${ROADMAP_STEPS.length}`, tone: allRoadmapDone ? "done" : "neutral" },
+                href: "/student/roadmap",
+              },
+              {
+                icon: Flame,
+                label: "Streak",
+                detail:
+                  streakInfo.current > 0
+                    ? `${streakInfo.current} day${streakInfo.current === 1 ? "" : "s"} in a row${
+                        streakInfo.activeToday ? " — today counts" : " — work today to keep it"
+                      }`
+                    : "Work today to start one",
+                status: streakInfo.activeToday ? { text: "Today ✓", tone: "done" } : undefined,
+              },
+            ]}
+          />
+        </div>
 
         {/* Weekly leaderboard — community motivation */}
         <div
-          className="mt-[14px] motion-safe:animate-fadeIn"
+          className="mt-[14px] motion-safe:animate-riseIn"
           style={{ animationDelay: "300ms" }}
         >
-          <WeeklyWorkLeaderboard rows={leaderboard} currentStudentId={user.id} />
+          <WeeklyMomentum metric="emails" data={momentum} />
         </div>
 
       </div>

@@ -105,37 +105,39 @@ export function DealsTab({
         updated_at: new Date().toISOString(),
       };
 
-      startTransition(() => {
-        dispatchOptimistic({ type: "add", deal: tempDeal });
-      });
-
       setModalOpen(false);
 
-      try {
-        const res = await fetch("/api/deals", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...payload, student_id: studentId }),
-        });
-
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({ error: null }));
-          toastRef.current({
-            type: "error",
-            title: (err as { error?: string }).error || "Failed to add deal",
+      // Keep the optimistic dispatch AND the awaited fetch inside the same
+      // transition so React 19 holds the optimistic state across the network
+      // round-trip; it only settles once router.refresh() lands the real data.
+      startTransition(async () => {
+        dispatchOptimistic({ type: "add", deal: tempDeal });
+        try {
+          const res = await fetch("/api/deals", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...payload, student_id: studentId }),
           });
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({ error: null }));
+            toastRef.current({
+              type: "error",
+              title: (err as { error?: string }).error || "Failed to add deal",
+            });
+            routerRef.current.refresh();
+          } else {
+            toastRef.current({ type: "success", title: "Deal added" });
+            routerRef.current.refresh();
+          }
+        } catch (err) {
+          console.error("Failed to add deal:", err);
+          toastRef.current({ type: "error", title: "Failed to add deal" });
           routerRef.current.refresh();
-        } else {
-          toastRef.current({ type: "success", title: "Deal added" });
-          routerRef.current.refresh();
+        } finally {
+          setSubmitting(false);
         }
-      } catch (err) {
-        console.error("Failed to add deal:", err);
-        toastRef.current({ type: "error", title: "Failed to add deal" });
-        routerRef.current.refresh();
-      } finally {
-        setSubmitting(false);
-      }
+      });
     },
     [optimisticDeals.length, dispatchOptimistic, studentId, viewerId],
   );
@@ -150,7 +152,7 @@ export function DealsTab({
       {/* Revenue hero card */}
       <section
         aria-label="Deals summary"
-        className="bg-white border border-ima-border rounded-[14px] p-5 md:p-6"
+        className="bg-white border border-ima-border rounded-[14px] shadow-card p-5 md:p-6"
       >
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5">
           <div className="min-w-0">
@@ -163,7 +165,7 @@ export function DealsTab({
               {currencyCompact.format(totalRevenue)}
             </p>
             <p
-              className="mt-3 text-xs font-semibold tracking-widest uppercase text-ima-text-secondary"
+              className="mt-3 text-xs font-semibold tracking-[0.08em] uppercase text-ima-text-secondary"
             >
               <span className="text-sm tabular-nums text-ima-text normal-case tracking-normal mr-[6px]">
                 {dealCount}
@@ -220,7 +222,7 @@ export function DealsTab({
 
       {/* Deals ledger */}
       {dealCount === 0 ? (
-        <div className="bg-white border border-ima-border rounded-[14px] p-6">
+        <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-6">
           <EmptyState
             variant="compact"
             icon={<DollarSign className="h-6 w-6" aria-hidden="true" />}
@@ -243,7 +245,7 @@ export function DealsTab({
             </span>
           </div>
 
-          <div className="mt-3 bg-white border border-ima-border rounded-[14px] overflow-hidden">
+          <div className="mt-3 bg-white border border-ima-border rounded-[14px] shadow-card overflow-hidden">
             {/* Column headers — hidden on mobile */}
             <div
               className="hidden sm:grid grid-cols-[110px_1fr_1fr_90px_130px_110px] items-center gap-4 px-5 py-3 border-b border-ima-border text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-text-secondary"

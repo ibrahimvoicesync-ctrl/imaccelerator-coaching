@@ -10,7 +10,7 @@ export function AskIframe() {
   if (!AI_CONFIG.iframeUrl) {
     return (
       <div className="w-full h-[calc(100vh-14rem)] flex items-center justify-center bg-ima-surface-light rounded-xl">
-        <p className="text-ima-text-muted">AI assistant is not configured yet.</p>
+        <p className="text-ima-text-secondary">AI assistant is not configured yet.</p>
       </div>
     );
   }

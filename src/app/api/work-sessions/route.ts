@@ -6,8 +6,6 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { WORK_TRACKER } from "@/lib/config";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { verifyOrigin } from "@/lib/csrf";
-import { getTodayUTC } from "@/lib/utils";
-import { planJsonSchema } from "@/lib/schemas/daily-plan";
 import { studentAnalyticsTag } from "@/lib/rpc/student-analytics";
 import { coachDashboardTag } from "@/lib/rpc/coach-dashboard-types";
 import { coachAnalyticsTag } from "@/lib/rpc/coach-analytics-types";
@@ -88,79 +86,30 @@ export async function POST(request: Request) {
     );
   }
 
-  // ── Plan-aware cap enforcement (D-01 through D-05) ──────────────────
-  const today = getTodayUTC();
-
-  // Step 1: Fetch today's plan
-  const { data: todayPlan, error: dailyPlanError } = await admin
-    .from("daily_plans")
-    .select()
-    .eq("student_id", profile.id)
-    .eq("date", today)
-    .maybeSingle();
-
-  if (dailyPlanError) {
-    console.error("[work-sessions POST] daily_plans query failed:", dailyPlanError);
-    return NextResponse.json(
-      { error: "Failed to check daily plan. Please try again." },
-      { status: 500 }
-    );
-  }
-
-  // D-01: No plan today → block session creation
-  if (!todayPlan) {
-    return NextResponse.json(
-      { error: "You must create a daily plan before starting a work session." },
-      { status: 400 }
-    );
-  }
-
-  // D-07: Parse plan_json safely — never TypeScript cast
-  const planParseResult = planJsonSchema.safeParse(todayPlan.plan_json);
-
-  if (!planParseResult.success) {
-    // D-07 + D-01: Treat parse failure as "no plan today" → block
-    // This surfaces data corruption immediately rather than silently bypassing the cap
-    console.error("[work-sessions POST] plan_json parse failed for student:", profile.id, planParseResult.error);
-    return NextResponse.json(
-      { error: "Your daily plan data is invalid. Please contact support." },
-      { status: 400 }
-    );
-  }
-
-  const planData = planParseResult.data;
-  const plannedSessionCount = planData.sessions.length;
-
-  // Step 2: Fetch today's completed sessions (one query for both count and sum per Pitfall 4)
+  // ── Sanity ceiling ───────────────────────────────────────────────────
+  // No daily plan is required to start a session — a student just taps start.
+  // The only guard is a generous safety ceiling so a runaway or buggy client
+  // can't inflate a day to absurd totals. Mirrors /api/work-sessions/manual.
+  const DAILY_CEILING_MINUTES = 16 * 60;
   const { data: completedSessions } = await admin
     .from("work_sessions")
     .select("session_minutes")
     .eq("student_id", profile.id)
-    .eq("date", today)
+    .eq("date", date)
     .eq("status", "completed");
 
-  const completedCount = completedSessions?.length ?? 0;
   const completedMinutes = (completedSessions ?? []).reduce(
-    (sum, s) => sum + s.session_minutes, 0
+    (sum, s) => sum + s.session_minutes,
+    0,
   );
 
-  // D-04: Plan fulfilled when completed sessions >= planned sessions
-  const planFulfilled = completedCount >= plannedSessionCount;
-
-  // D-02: If plan exists and not fulfilled, enforce cap
-  if (!planFulfilled) {
-    const capMinutes = planData.total_work_minutes;
-    if (completedMinutes + session_minutes > capMinutes) {
-      return NextResponse.json(
-        {
-          error: `Daily work cap of ${capMinutes} minutes reached. Already completed: ${completedMinutes} min, requested: ${session_minutes} min.`,
-        },
-        { status: 400 }
-      );
-    }
+  if (completedMinutes + session_minutes > DAILY_CEILING_MINUTES) {
+    return NextResponse.json(
+      { error: "You've already logged a full day of work. Get some rest." },
+      { status: 400 },
+    );
   }
-  // D-03: If plan fulfilled, cap lifted — fall through to insert
-  // ── End plan-aware cap enforcement ───────────────────────────────────
+  // ── End sanity ceiling ───────────────────────────────────────────────
 
   // Insert new session
   const { data: session, error: insertError } = await admin

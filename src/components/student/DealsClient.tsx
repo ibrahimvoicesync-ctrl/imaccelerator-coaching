@@ -129,38 +129,40 @@ export function DealsClient({
         updated_at: new Date().toISOString(),
       };
 
-      startTransition(() => {
-        dispatchOptimistic({ type: "add", deal: tempDeal });
-      });
-
       setModalOpen(false);
       setEditingDeal(null);
 
-      try {
-        const res = await fetch("/api/deals", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({ error: null }));
-          toastRef.current({
-            type: "error",
-            title: (err as { error?: string }).error || "Failed to add deal",
+      // Keep the optimistic dispatch AND the awaited fetch inside the same
+      // transition so React 19 holds the optimistic state across the network
+      // round-trip; it only settles once router.refresh() lands the real data.
+      startTransition(async () => {
+        dispatchOptimistic({ type: "add", deal: tempDeal });
+        try {
+          const res = await fetch("/api/deals", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
           });
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({ error: null }));
+            toastRef.current({
+              type: "error",
+              title: (err as { error?: string }).error || "Failed to add deal",
+            });
+            routerRef.current.refresh();
+          } else {
+            toastRef.current({ type: "success", title: "Deal added" });
+            routerRef.current.refresh();
+          }
+        } catch (err) {
+          console.error("Failed to add deal:", err);
+          toastRef.current({ type: "error", title: "Failed to add deal" });
           routerRef.current.refresh();
-        } else {
-          toastRef.current({ type: "success", title: "Deal added" });
-          routerRef.current.refresh();
+        } finally {
+          setSubmitting(false);
         }
-      } catch (err) {
-        console.error("Failed to add deal:", err);
-        toastRef.current({ type: "error", title: "Failed to add deal" });
-        routerRef.current.refresh();
-      } finally {
-        setSubmitting(false);
-      }
+      });
     },
     [optimisticDeals.length, dispatchOptimistic, viewerId],
   );
@@ -176,38 +178,39 @@ export function DealsClient({
         updated_at: new Date().toISOString(),
       };
 
-      startTransition(() => {
-        dispatchOptimistic({ type: "edit", deal: updatedDeal });
-      });
-
       setModalOpen(false);
       setEditingDeal(null);
 
-      try {
-        const res = await fetch(`/api/deals/${deal.id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({ error: null }));
-          toastRef.current({
-            type: "error",
-            title: (err as { error?: string }).error || "Failed to update deal",
+      // Optimistic dispatch and awaited fetch share one transition so the edit
+      // stays applied until router.refresh() lands the authoritative row.
+      startTransition(async () => {
+        dispatchOptimistic({ type: "edit", deal: updatedDeal });
+        try {
+          const res = await fetch(`/api/deals/${deal.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
           });
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({ error: null }));
+            toastRef.current({
+              type: "error",
+              title: (err as { error?: string }).error || "Failed to update deal",
+            });
+            routerRef.current.refresh();
+          } else {
+            toastRef.current({ type: "success", title: "Deal updated" });
+            routerRef.current.refresh();
+          }
+        } catch (err) {
+          console.error("Failed to update deal:", err);
+          toastRef.current({ type: "error", title: "Failed to update deal" });
           routerRef.current.refresh();
-        } else {
-          toastRef.current({ type: "success", title: "Deal updated" });
-          routerRef.current.refresh();
+        } finally {
+          setSubmitting(false);
         }
-      } catch (err) {
-        console.error("Failed to update deal:", err);
-        toastRef.current({ type: "error", title: "Failed to update deal" });
-        routerRef.current.refresh();
-      } finally {
-        setSubmitting(false);
-      }
+      });
     },
     [dispatchOptimistic],
   );
@@ -217,31 +220,33 @@ export function DealsClient({
       setDeletingId(id);
       setConfirmDeleteId(null);
 
-      startTransition(() => {
+      // Optimistic removal and awaited fetch share one transition so the row
+      // stays hidden until router.refresh() confirms the delete server-side —
+      // preventing the row from flashing back mid-delete.
+      startTransition(async () => {
         dispatchOptimistic({ type: "delete", id });
-      });
+        try {
+          const res = await fetch(`/api/deals/${id}`, { method: "DELETE" });
 
-      try {
-        const res = await fetch(`/api/deals/${id}`, { method: "DELETE" });
-
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({ error: null }));
-          toastRef.current({
-            type: "error",
-            title: (err as { error?: string }).error || "Failed to delete deal",
-          });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({ error: null }));
+            toastRef.current({
+              type: "error",
+              title: (err as { error?: string }).error || "Failed to delete deal",
+            });
+            routerRef.current.refresh();
+          } else {
+            toastRef.current({ type: "success", title: "Deal deleted" });
+            routerRef.current.refresh();
+          }
+        } catch (err) {
+          console.error("Failed to delete deal:", err);
+          toastRef.current({ type: "error", title: "Failed to delete deal" });
           routerRef.current.refresh();
-        } else {
-          toastRef.current({ type: "success", title: "Deal deleted" });
-          routerRef.current.refresh();
+        } finally {
+          setDeletingId(null);
         }
-      } catch (err) {
-        console.error("Failed to delete deal:", err);
-        toastRef.current({ type: "error", title: "Failed to delete deal" });
-        routerRef.current.refresh();
-      } finally {
-        setDeletingId(null);
-      }
+      });
     },
     [dispatchOptimistic],
   );
@@ -258,7 +263,7 @@ export function DealsClient({
       {/* Empty state — no hero; lead the user straight to the CTA. */}
       {!hasDeals && (
         <div
-          className="bg-white border border-ima-border rounded-[14px] p-6 md:p-10 motion-safe:animate-fadeIn"
+          className="bg-white border border-ima-border rounded-[14px] shadow-card p-6 md:p-10 motion-safe:animate-fadeIn"
           style={{ animationDelay: "50ms" }}
         >
           <EmptyState
@@ -286,7 +291,7 @@ export function DealsClient({
             className="motion-safe:animate-fadeIn"
             style={{ animationDelay: "50ms" }}
           >
-            <div className="bg-white border border-ima-border rounded-[14px] p-6 md:p-8">
+            <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-6 md:p-8">
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <p
                   id="deals-hero-label"
@@ -367,7 +372,7 @@ export function DealsClient({
               <div
                 role="table"
                 aria-label="Deals"
-                className="w-full overflow-hidden rounded-[14px] border border-ima-border bg-white"
+                className="w-full overflow-hidden rounded-[14px] border border-ima-border bg-white shadow-card"
               >
                 <div
                   role="row"
@@ -523,7 +528,7 @@ export function DealsClient({
                 return (
                   <li
                     key={deal.id}
-                    className="rounded-[14px] border border-ima-border bg-white overflow-hidden"
+                    className="rounded-[14px] border border-ima-border bg-white shadow-card overflow-hidden"
                   >
                     <div className="px-5 py-5 space-y-5">
                       <div className="flex items-start justify-between gap-3">

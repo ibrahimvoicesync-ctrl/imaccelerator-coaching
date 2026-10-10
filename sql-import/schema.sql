@@ -44,7 +44,12 @@ CREATE TABLE IF NOT EXISTS public.users (
   streak_count integer NOT NULL DEFAULT 0,
   last_active_at timestamptz,
   referral_code varchar(12),
-  referral_short_url text
+  referral_short_url text,
+  -- Per-student daily-reminder time (migration 00046). Student picks a LOCAL
+  -- hour; reminder_offset_min is the browser UTC offset (Date.getTimezoneOffset)
+  -- captured when set. Defaults reproduce the old fixed 17:00 UTC behaviour.
+  reminder_hour smallint NOT NULL DEFAULT 17 CHECK (reminder_hour BETWEEN 0 AND 23),
+  reminder_offset_min integer NOT NULL DEFAULT 0 CHECK (reminder_offset_min BETWEEN -840 AND 840)
 );
 
 -- 2. invites
@@ -82,11 +87,13 @@ CREATE TABLE IF NOT EXISTS public.work_sessions (
   cycle_number integer NOT NULL,
   started_at timestamptz NOT NULL,
   completed_at timestamptz,
-  duration_minutes integer NOT NULL DEFAULT 0,
+  -- Bounded for the same reason as the daily_reports counters: student-writable
+  -- over PostgREST, and summed into int4 in the coach/owner analytics RPCs.
+  duration_minutes integer NOT NULL DEFAULT 0 CHECK (duration_minutes BETWEEN 0 AND 100000),
   status varchar(20) NOT NULL DEFAULT 'in_progress' CHECK (status IN ('in_progress', 'completed', 'abandoned', 'paused')),
   created_at timestamptz NOT NULL DEFAULT now(),
   paused_at timestamptz,
-  session_minutes integer NOT NULL
+  session_minutes integer NOT NULL CHECK (session_minutes BETWEEN 0 AND 100000)
 );
 
 -- 5. roadmap_progress
@@ -108,16 +115,23 @@ CREATE TABLE IF NOT EXISTS public.daily_reports (
   date date NOT NULL,
   hours_worked decimal(4,2) NOT NULL DEFAULT 0,
   star_rating integer CHECK (star_rating BETWEEN 1 AND 5),
-  outreach_count integer NOT NULL DEFAULT 0,
+  -- Counter bounds are load-bearing, not cosmetic: students write these columns
+  -- directly over PostgREST (RLS lets them update their own report), and the
+  -- app's Zod max of 500 is not enforced at the database. Unbounded, a single
+  -- row set to INT_MAX overflowed the int4 additions in the analytics RPCs and
+  -- broke /owner/analytics platform-wide and /coach for that student's coach.
+  outreach_count integer NOT NULL DEFAULT 0 CHECK (outreach_count BETWEEN 0 AND 1000000),
   wins text,
   improvements text,
   submitted_at timestamptz,
   reviewed_by uuid REFERENCES public.users(id) ON DELETE SET NULL,
   reviewed_at timestamptz,
   created_at timestamptz NOT NULL DEFAULT now(),
-  brands_contacted integer NOT NULL DEFAULT 0,
-  influencers_contacted integer NOT NULL DEFAULT 0,
-  calls_joined integer NOT NULL DEFAULT 0
+  brands_contacted integer NOT NULL DEFAULT 0 CHECK (brands_contacted BETWEEN 0 AND 100000),
+  influencers_contacted integer NOT NULL DEFAULT 0 CHECK (influencers_contacted BETWEEN 0 AND 100000),
+  calls_joined integer NOT NULL DEFAULT 0 CHECK (calls_joined BETWEEN 0 AND 10000),
+  revenue numeric(12,2) NOT NULL DEFAULT 0 CHECK (revenue >= 0),
+  profit numeric(12,2) NOT NULL DEFAULT 0 CHECK (profit >= 0)
 );
 
 -- 7. alert_dismissals
@@ -261,6 +275,65 @@ CREATE TABLE IF NOT EXISTS public.notifications (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
+-- 20. push_subscriptions (migration 00045)
+-- One row per browser/device Web Push subscription. A student may have several
+-- (phone + laptop). `endpoint` is globally unique per the Web Push spec and is
+-- how we de-duplicate and target a subscription. p256dh + auth are the client
+-- keys required to encrypt the push payload (RFC 8291).
+CREATE TABLE IF NOT EXISTS public.push_subscriptions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_id uuid NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  endpoint text NOT NULL UNIQUE,
+  p256dh text NOT NULL,
+  auth text NOT NULL,
+  user_agent text,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+-- 21. schedule_blocks (migration 00051)
+-- Day-planner blocks on the Work Tracker (the in-app Google Calendar day view).
+-- Times are minutes after local midnight on a local calendar date. session_id
+-- links a block to the work session started from it.
+CREATE TABLE IF NOT EXISTS public.schedule_blocks (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_id uuid NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  date date NOT NULL,
+  title text NOT NULL CHECK (char_length(title) BETWEEN 1 AND 80),
+  start_minute integer NOT NULL CHECK (start_minute >= 0 AND start_minute < 1440),
+  duration_minutes integer NOT NULL CHECK (duration_minutes BETWEEN 5 AND 240),
+  session_id uuid REFERENCES public.work_sessions(id) ON DELETE SET NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  CHECK (start_minute + duration_minutes <= 1440)
+);
+
+-- 22. business_checkins (migration 00052)
+-- 30-day business snapshot that keeps the "Ask Abu Lahya" AI unlocked. One row
+-- per submission (history kept); the gate reads the latest.
+CREATE TABLE IF NOT EXISTS public.business_checkins (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_id uuid NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  -- Money
+  total_revenue numeric(14,2) NOT NULL CHECK (total_revenue BETWEEN 0 AND 999999999999),
+  revenue_target_next_month numeric(14,2) NOT NULL CHECK (revenue_target_next_month BETWEEN 0 AND 999999999999),
+  liquid_capital_business numeric(14,2) NOT NULL CHECK (liquid_capital_business BETWEEN 0 AND 999999999999),
+  liquid_capital_personal numeric(14,2) NOT NULL CHECK (liquid_capital_personal BETWEEN 0 AND 999999999999),
+  monthly_expenses numeric(14,2) CHECK (monthly_expenses BETWEEN 0 AND 999999999999),
+  -- Business
+  current_goal text NOT NULL CHECK (char_length(current_goal) BETWEEN 1 AND 500),
+  current_constraint text NOT NULL CHECK (char_length(current_constraint) BETWEEN 1 AND 500),
+  employees integer NOT NULL CHECK (employees BETWEEN 0 AND 10000),
+  influencers integer NOT NULL CHECK (influencers BETWEEN 0 AND 100000),
+  brands integer NOT NULL CHECK (brands BETWEEN 0 AND 100000),
+  hours_per_week integer CHECK (hours_per_week BETWEEN 0 AND 168),
+  -- You
+  feeling smallint NOT NULL CHECK (feeling BETWEEN 1 AND 5),
+  feeling_note text CHECK (char_length(feeling_note) <= 500),
+  biggest_win text CHECK (char_length(biggest_win) <= 500),
+  help_wanted text CHECK (char_length(help_wanted) <= 500),
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
 -- ============================================================================
 -- SECTION 3: INDEXES
 -- ============================================================================
@@ -337,6 +410,16 @@ CREATE INDEX IF NOT EXISTS idx_call_schedule_date ON public.call_schedule(schedu
 -- notifications indexes
 CREATE INDEX IF NOT EXISTS idx_notifications_user ON public.notifications(user_id);
 CREATE INDEX IF NOT EXISTS idx_notifications_user_read ON public.notifications(user_id, read);
+
+-- push_subscriptions indexes (migration 00045)
+CREATE INDEX IF NOT EXISTS idx_push_subscriptions_student ON public.push_subscriptions(student_id);
+
+-- schedule_blocks indexes (migration 00051)
+CREATE INDEX IF NOT EXISTS idx_schedule_blocks_student_date ON public.schedule_blocks(student_id, date);
+
+-- business_checkins indexes (migration 00052)
+CREATE INDEX IF NOT EXISTS idx_business_checkins_student_created
+  ON public.business_checkins(student_id, created_at DESC);
 
 -- ============================================================================
 -- SECTION 4: RLS HELPER FUNCTIONS
@@ -596,6 +679,9 @@ ALTER TABLE public.influencers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.announcements ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.call_schedule ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.push_subscriptions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.schedule_blocks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.business_checkins ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================================
 -- SECTION 9: RLS POLICIES
@@ -1091,40 +1177,34 @@ CREATE POLICY "announcements_select_authenticated" ON public.announcements
   FOR SELECT
   USING ((SELECT auth.uid()) IS NOT NULL);
 
+-- NOTE (migration 00049): author_id references users.id, which equals
+-- get_user_id() — NOT auth.uid() (that is users.auth_id). The prior policies
+-- compared author_id to auth.uid(), so they never matched and failed closed.
+-- Rewritten to the get_user_id()/get_user_role() helper pattern used by every
+-- other table. Writes still normally go through the service-role admin client;
+-- this makes the RLS backstop actually correct for owner/coach authors.
 CREATE POLICY "announcements_insert_owner_coach" ON public.announcements
   FOR INSERT
   WITH CHECK (
-    author_id = (SELECT auth.uid())
-    AND EXISTS (
-      SELECT 1 FROM public.users u
-      WHERE u.id = (SELECT auth.uid())
-        AND u.role IN ('owner', 'coach')
-    )
+    author_id = (SELECT get_user_id())
+    AND (SELECT get_user_role()) IN ('owner', 'coach')
   );
 
 CREATE POLICY "announcements_update_own" ON public.announcements
   FOR UPDATE
   USING (
-    author_id = (SELECT auth.uid())
-    AND EXISTS (
-      SELECT 1 FROM public.users u
-      WHERE u.id = (SELECT auth.uid())
-        AND u.role IN ('owner', 'coach')
-    )
+    author_id = (SELECT get_user_id())
+    AND (SELECT get_user_role()) IN ('owner', 'coach')
   )
   WITH CHECK (
-    author_id = (SELECT auth.uid())
+    author_id = (SELECT get_user_id())
   );
 
 CREATE POLICY "announcements_delete_own" ON public.announcements
   FOR DELETE
   USING (
-    author_id = (SELECT auth.uid())
-    AND EXISTS (
-      SELECT 1 FROM public.users u
-      WHERE u.id = (SELECT auth.uid())
-        AND u.role IN ('owner', 'coach')
-    )
+    author_id = (SELECT get_user_id())
+    AND (SELECT get_user_role()) IN ('owner', 'coach')
   );
 
 -- ===== call_schedule =====
@@ -1174,6 +1254,63 @@ CREATE POLICY "user_update_notifications" ON public.notifications
   USING (user_id = (select get_user_id()))
   WITH CHECK (user_id = (select get_user_id()));
 
+-- ===== push_subscriptions ===== (migration 00045)
+-- All reads/writes go through the service-role admin client; RLS is
+-- defense-in-depth. Students manage only their own rows; owners may read all.
+
+CREATE POLICY push_subscriptions_self_all
+  ON public.push_subscriptions
+  FOR ALL
+  USING (student_id = (select get_user_id()))
+  WITH CHECK (student_id = (select get_user_id()));
+
+CREATE POLICY push_subscriptions_owner_select
+  ON public.push_subscriptions
+  FOR SELECT
+  USING ((select get_user_role()) = 'owner');
+
+-- ===== schedule_blocks ===== (migration 00051)
+-- All reads/writes go through the service-role admin client; RLS is
+-- defense-in-depth. Students manage only their own blocks; owners may read all.
+
+CREATE POLICY schedule_blocks_self_all
+  ON public.schedule_blocks
+  FOR ALL
+  USING (student_id = (select get_user_id()))
+  WITH CHECK (student_id = (select get_user_id()));
+
+CREATE POLICY schedule_blocks_owner_select
+  ON public.schedule_blocks
+  FOR SELECT
+  USING ((select get_user_role()) = 'owner');
+
+-- ===== business_checkins ===== (migration 00052)
+-- Admin-client reads/writes; RLS is defense-in-depth. Students read/insert
+-- their own; coaches read their students'; owners read all.
+
+CREATE POLICY business_checkins_self_select
+  ON public.business_checkins
+  FOR SELECT
+  USING (student_id = (select get_user_id()));
+
+CREATE POLICY business_checkins_self_insert
+  ON public.business_checkins
+  FOR INSERT
+  WITH CHECK (student_id = (select get_user_id()));
+
+CREATE POLICY business_checkins_coach_select
+  ON public.business_checkins
+  FOR SELECT
+  USING (
+    (select get_user_role()) = 'coach'
+    AND student_id IN (SELECT id FROM public.users WHERE coach_id = (select get_user_id()))
+  );
+
+CREATE POLICY business_checkins_owner_select
+  ON public.business_checkins
+  FOR SELECT
+  USING ((select get_user_role()) = 'owner');
+
 -- ============================================================================
 -- SECTION 10: RPC FUNCTIONS
 -- ============================================================================
@@ -1192,6 +1329,13 @@ DECLARE
   v_today date := CURRENT_DATE;
   v_result jsonb;
 BEGIN
+  -- Hardened (migration 00049): SECURITY DEFINER function returning
+  -- platform-wide owner stats. Only the service-role admin client may run it.
+  -- (Primary defense is the EXECUTE grant lockdown; this is defense-in-depth.)
+  IF coalesce(auth.role(), '') <> 'service_role' THEN
+    RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
+  END IF;
+
   SELECT jsonb_build_object(
     'total_students',     (SELECT count(*) FROM users WHERE role IN ('student','student_diy') AND status = 'active'),
     'total_coaches',      (SELECT count(*) FROM users WHERE role = 'coach' AND status = 'active'),
@@ -1222,6 +1366,10 @@ DECLARE
   v_deal_count       integer := 0;
   v_dismissed_count  integer := 0;
 BEGIN
+  IF coalesce(auth.role(), '') <> 'service_role' THEN
+    RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
+  END IF;
+
   IF p_role = 'coach' THEN
     SELECT count(*)
       INTO v_unreviewed_count
@@ -1322,6 +1470,15 @@ DECLARE
   v_student_counts jsonb := NULL;
   v_result         jsonb;
 BEGIN
+  -- Hardened (migration 00049): this SECURITY DEFINER function bypasses RLS and
+  -- returns ANY student's full daily-report free-text, work sessions and
+  -- roadmap for an arbitrary p_student_id. It previously had NO caller guard,
+  -- so an anonymous PostgREST caller could read it. Only the service-role admin
+  -- client may execute it. (Primary defense is the EXECUTE grant lockdown.)
+  IF coalesce(auth.role(), '') <> 'service_role' THEN
+    RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
+  END IF;
+
   SELECT COALESCE(jsonb_agg(
     jsonb_build_object(
       'id',               id,
@@ -1478,6 +1635,14 @@ DECLARE
   v_sid          uuid;
   v_skip_count   integer;
 BEGIN
+  IF coalesce(auth.role(), '') <> 'service_role' THEN
+    RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
+  END IF;
+
+  IF p_student_ids IS NULL OR array_length(p_student_ids, 1) > 500 THEN
+    RAISE EXCEPTION 'too_many_students' USING ERRCODE = '22023';
+  END IF;
+
   IF p_current_hour >= 23 THEN
     v_count_through := p_today;
   ELSE
@@ -1539,6 +1704,17 @@ DECLARE
   v_check_date            date;
   v_streak_date           date;
 BEGIN
+  -- Hardened (migration 00049): DoS guard. This VOLATILE function loops over
+  -- every active student. Block the PostgREST-facing anon/authenticated roles.
+  -- NOTE: we intentionally do NOT require service_role here — the nightly
+  -- pg_cron job runs this as the `postgres` role (no JWT, so auth.role() IS
+  -- NULL); a strict service_role check would break that job. The primary
+  -- defense is the EXECUTE grant lockdown (anon/authenticated no longer hold
+  -- EXECUTE at all); this blocklist is defense-in-depth.
+  IF coalesce(auth.role(), '') IN ('anon', 'authenticated') THEN
+    RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
+  END IF;
+
   IF NOT pg_try_advisory_lock(v_lock_key) THEN
     RAISE NOTICE 'refresh_student_kpi_summaries: already running, skipping';
     RETURN;
@@ -1687,7 +1863,7 @@ DECLARE
   v_total_deal_count int;
   v_offset           int;
 BEGIN
-  IF v_caller IS NOT NULL AND v_caller IS DISTINCT FROM p_student_id THEN
+  IF coalesce(auth.role(), '') <> 'service_role' THEN
     RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
   END IF;
 
@@ -1954,7 +2130,7 @@ DECLARE
   v_active_count    int := 0;
   v_inactive_count  int := 0;
 BEGIN
-  IF v_caller IS NOT NULL AND v_caller IS DISTINCT FROM p_coach_id THEN
+  IF coalesce(auth.role(), '') <> 'service_role' THEN
     RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
   END IF;
 
@@ -2057,7 +2233,7 @@ BEGIN
       SELECT COALESCE(ROUND(AVG(per_student_emails)::numeric, 0), 0)::numeric
       FROM (
         SELECT
-          COALESCE(SUM(COALESCE(brands_contacted, 0) + COALESCE(influencers_contacted, 0)), 0)::int AS per_student_emails
+          COALESCE(SUM(COALESCE(brands_contacted,0)::bigint + COALESCE(influencers_contacted,0)::bigint), 0)::int AS per_student_emails
         FROM daily_reports
         WHERE student_id = ANY(v_student_ids)
           AND submitted_at IS NOT NULL
@@ -2077,7 +2253,7 @@ BEGIN
         SELECT
           r.student_id,
           u.name AS student_name,
-          SUM(COALESCE(r.brands_contacted, 0) + COALESCE(r.influencers_contacted, 0))::int AS cnt
+          SUM(COALESCE(r.brands_contacted,0)::bigint + COALESCE(r.influencers_contacted,0)::bigint)::int AS cnt
         FROM daily_reports r
         JOIN users u ON u.id = r.student_id
         WHERE r.student_id = ANY(v_student_ids)
@@ -2123,7 +2299,7 @@ BEGIN
     SELECT
       r.student_id,
       u.name AS student_name,
-      SUM(COALESCE(r.brands_contacted, 0) + COALESCE(r.influencers_contacted, 0))::int AS emails
+      SUM(COALESCE(r.brands_contacted,0)::bigint + COALESCE(r.influencers_contacted,0)::bigint)::int AS emails
     FROM daily_reports r
     JOIN users u ON u.id = r.student_id
     WHERE r.student_id = ANY(v_student_ids)
@@ -2131,7 +2307,7 @@ BEGIN
       AND r.date >= v_week_start
       AND r.date <= p_today
     GROUP BY r.student_id, u.name
-    HAVING SUM(COALESCE(r.brands_contacted, 0) + COALESCE(r.influencers_contacted, 0)) > 0
+    HAVING SUM(COALESCE(r.brands_contacted,0)::bigint + COALESCE(r.influencers_contacted,0)::bigint) > 0
   ),
   emails_ranked AS (
     SELECT
@@ -2213,7 +2389,7 @@ BEGIN
       u.id   AS student_id,
       u.name AS name,
       COALESCE((SELECT SUM(ws.duration_minutes)::int FROM work_sessions ws WHERE ws.student_id = u.id AND ws.status = 'completed' AND ws.date >= v_week_start AND ws.date <= p_today), 0)::int AS hours_this_week_minutes,
-      COALESCE((SELECT SUM(COALESCE(r.brands_contacted, 0) + COALESCE(r.influencers_contacted, 0))::int FROM daily_reports r WHERE r.student_id = u.id AND r.submitted_at IS NOT NULL AND r.date >= v_week_start AND r.date <= p_today), 0)::int AS emails_this_week,
+      COALESCE((SELECT SUM(COALESCE(r.brands_contacted,0)::bigint + COALESCE(r.influencers_contacted,0)::bigint)::int FROM daily_reports r WHERE r.student_id = u.id AND r.submitted_at IS NOT NULL AND r.date >= v_week_start AND r.date <= p_today), 0)::int AS emails_this_week,
       COALESCE((SELECT COUNT(*)::int FROM deals d WHERE d.student_id = u.id), 0)::int AS deals_alltime,
       COALESCE((SELECT MAX(rp.step_number) FROM roadmap_progress rp WHERE rp.student_id = u.id AND rp.status IN ('completed', 'active')), 0)::int AS roadmap_step,
       (SELECT GREATEST((SELECT MAX(ws.date) FROM work_sessions ws WHERE ws.student_id = u.id AND ws.status = 'completed'), (SELECT MAX(r.date) FROM daily_reports r WHERE r.student_id = u.id AND r.submitted_at IS NOT NULL))) AS last_active_date,
@@ -2229,7 +2405,7 @@ BEGIN
       u.id   AS student_id,
       u.name AS name,
       COALESCE((SELECT SUM(ws.duration_minutes)::int FROM work_sessions ws WHERE ws.student_id = u.id AND ws.status = 'completed' AND ws.date >= v_week_start AND ws.date <= p_today), 0)::int AS hours_this_week_minutes,
-      COALESCE((SELECT SUM(COALESCE(r.brands_contacted, 0) + COALESCE(r.influencers_contacted, 0))::int FROM daily_reports r WHERE r.student_id = u.id AND r.submitted_at IS NOT NULL AND r.date >= v_week_start AND r.date <= p_today), 0)::int AS emails_this_week,
+      COALESCE((SELECT SUM(COALESCE(r.brands_contacted,0)::bigint + COALESCE(r.influencers_contacted,0)::bigint)::int FROM daily_reports r WHERE r.student_id = u.id AND r.submitted_at IS NOT NULL AND r.date >= v_week_start AND r.date <= p_today), 0)::int AS emails_this_week,
       COALESCE((SELECT COUNT(*)::int FROM deals d WHERE d.student_id = u.id), 0)::int AS deals_alltime,
       COALESCE((SELECT MAX(rp.step_number) FROM roadmap_progress rp WHERE rp.student_id = u.id AND rp.status IN ('completed', 'active')), 0)::int AS roadmap_step,
       (SELECT GREATEST((SELECT MAX(ws.date) FROM work_sessions ws WHERE ws.student_id = u.id AND ws.status = 'completed'), (SELECT MAX(r.date) FROM daily_reports r WHERE r.student_id = u.id AND r.submitted_at IS NOT NULL))) AS last_active_date,
@@ -2327,7 +2503,7 @@ DECLARE
   v_recent_reports  jsonb;
   v_top_hours_week  jsonb;
 BEGIN
-  IF v_caller IS NOT NULL AND v_caller IS DISTINCT FROM p_coach_id THEN
+  IF coalesce(auth.role(), '') <> 'service_role' THEN
     RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
   END IF;
 
@@ -2368,7 +2544,7 @@ BEGIN
     GROUP BY student_id
   ) s;
 
-  SELECT COALESCE(SUM(COALESCE(brands_contacted, 0) + COALESCE(influencers_contacted, 0)), 0)::int
+  SELECT COALESCE(SUM(COALESCE(brands_contacted,0)::bigint + COALESCE(influencers_contacted,0)::bigint), 0)::int
   INTO v_emails_sent
   FROM daily_reports
   WHERE student_id = ANY(v_student_ids)
@@ -2446,7 +2622,7 @@ DECLARE
   v_student_ids uuid[];
   v_milestones  jsonb;
 BEGIN
-  IF v_caller IS NOT NULL AND v_caller IS DISTINCT FROM p_coach_id THEN
+  IF coalesce(auth.role(), '') <> 'service_role' THEN
     RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
   END IF;
 
@@ -2553,7 +2729,10 @@ DECLARE
   v_now      timestamptz := NOW();
   v_envelope jsonb;
 BEGIN
-  IF v_caller IS NOT NULL THEN
+  -- Hardened (migration 00049): defense-in-depth. anon AND service_role BOTH
+  -- have a NULL auth.uid(), so the old `v_caller IS NOT NULL` check let an
+  -- anonymous caller through. Require the service-role admin client explicitly.
+  IF coalesce(auth.role(), '') <> 'service_role' THEN
     RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
   END IF;
 
@@ -2634,10 +2813,10 @@ BEGIN
   coach_deals_alltime AS (SELECT ROW_NUMBER() OVER (ORDER BY deals_alltime DESC, LOWER(coach_name) ASC, coach_id::text ASC)::int AS rank, coach_id, coach_name, deals_alltime AS deals FROM coach_deals_rows),
   coach_outreach_rows AS (
     SELECT ec.coach_id, ec.coach_name,
-      COALESCE(SUM(COALESCE(dr.brands_contacted,0) + COALESCE(dr.influencers_contacted,0)) FILTER (WHERE dr.date >= (v_now - INTERVAL '7 days')::date), 0)::numeric AS outreach_sum_weekly,
-      COALESCE(SUM(COALESCE(dr.brands_contacted,0) + COALESCE(dr.influencers_contacted,0)) FILTER (WHERE dr.date >= (v_now - INTERVAL '30 days')::date), 0)::numeric AS outreach_sum_monthly,
-      COALESCE(SUM(COALESCE(dr.brands_contacted,0) + COALESCE(dr.influencers_contacted,0)) FILTER (WHERE dr.date >= (v_now - INTERVAL '365 days')::date), 0)::numeric AS outreach_sum_yearly,
-      COALESCE(SUM(COALESCE(dr.brands_contacted,0) + COALESCE(dr.influencers_contacted,0)), 0)::numeric AS outreach_sum_alltime,
+      COALESCE(SUM(COALESCE(dr.brands_contacted,0)::bigint + COALESCE(dr.influencers_contacted,0)::bigint) FILTER (WHERE dr.date >= (v_now - INTERVAL '7 days')::date), 0)::numeric AS outreach_sum_weekly,
+      COALESCE(SUM(COALESCE(dr.brands_contacted,0)::bigint + COALESCE(dr.influencers_contacted,0)::bigint) FILTER (WHERE dr.date >= (v_now - INTERVAL '30 days')::date), 0)::numeric AS outreach_sum_monthly,
+      COALESCE(SUM(COALESCE(dr.brands_contacted,0)::bigint + COALESCE(dr.influencers_contacted,0)::bigint) FILTER (WHERE dr.date >= (v_now - INTERVAL '365 days')::date), 0)::numeric AS outreach_sum_yearly,
+      COALESCE(SUM(COALESCE(dr.brands_contacted,0)::bigint + COALESCE(dr.influencers_contacted,0)::bigint), 0)::numeric AS outreach_sum_alltime,
       COUNT(DISTINCT s.id)::numeric AS student_count,
       GREATEST(1, (CURRENT_DATE - MIN(dr.date))::int)::numeric AS alltime_days
     FROM eligible_coaches ec
@@ -2718,7 +2897,10 @@ AS $$
 DECLARE
   v_caller uuid := (SELECT auth.uid());
 BEGIN
-  IF v_caller IS NOT NULL THEN
+  -- Hardened (migration 00049): defense-in-depth. anon AND service_role BOTH
+  -- have a NULL auth.uid(), so the old `v_caller IS NOT NULL` check let an
+  -- anonymous caller through. Require the service-role admin client explicitly.
+  IF coalesce(auth.role(), '') <> 'service_role' THEN
     RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
   END IF;
 
@@ -2753,7 +2935,10 @@ DECLARE
   v_deals  jsonb;
   v_outreach jsonb;
 BEGIN
-  IF v_caller IS NOT NULL THEN
+  -- Hardened (migration 00049): defense-in-depth. anon AND service_role BOTH
+  -- have a NULL auth.uid(), so the old `v_caller IS NOT NULL` check let an
+  -- anonymous caller through. Require the service-role admin client explicitly.
+  IF coalesce(auth.role(), '') <> 'service_role' THEN
     RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
   END IF;
 
@@ -2795,12 +2980,12 @@ BEGIN
   INTO v_outreach
   FROM (
     SELECT u.id AS student_id, u.name AS student_name,
-      COALESCE(SUM(COALESCE(dr.brands_contacted,0) + COALESCE(dr.influencers_contacted,0)), 0)::int AS outreach
+      COALESCE(SUM(COALESCE(dr.brands_contacted,0)::bigint + COALESCE(dr.influencers_contacted,0)::bigint), 0)::int AS outreach
     FROM users u
     LEFT JOIN daily_reports dr ON dr.student_id = u.id AND dr.submitted_at IS NOT NULL AND dr.date >= p_period_start
     WHERE u.role IN ('student','student_diy') AND u.status = 'active'
     GROUP BY u.id, u.name
-    HAVING COALESCE(SUM(COALESCE(dr.brands_contacted,0) + COALESCE(dr.influencers_contacted,0)), 0) > 0
+    HAVING COALESCE(SUM(COALESCE(dr.brands_contacted,0)::bigint + COALESCE(dr.influencers_contacted,0)::bigint), 0) > 0
     ORDER BY outreach DESC
     LIMIT p_top_n
   ) s;
@@ -2825,7 +3010,7 @@ AS $$
 DECLARE
   v_caller uuid := (SELECT auth.uid());
 BEGIN
-  IF v_caller IS NOT NULL AND v_caller IS DISTINCT FROM p_student_id THEN
+  IF coalesce(auth.role(), '') <> 'service_role' THEN
     RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
   END IF;
 
@@ -2834,7 +3019,7 @@ BEGIN
     'deals_closed', (SELECT COUNT(*) FROM deals WHERE student_id = p_student_id AND created_at >= p_period_start),
     'revenue',      COALESCE((SELECT SUM(revenue) FROM deals WHERE student_id = p_student_id AND created_at >= p_period_start), 0),
     'profit',       COALESCE((SELECT SUM(profit) FROM deals WHERE student_id = p_student_id AND created_at >= p_period_start), 0),
-    'outreach',     COALESCE((SELECT SUM(COALESCE(brands_contacted,0) + COALESCE(influencers_contacted,0)) FROM daily_reports WHERE student_id = p_student_id AND submitted_at IS NOT NULL AND date >= p_period_start), 0),
+    'outreach',     COALESCE((SELECT SUM(COALESCE(brands_contacted,0)::bigint + COALESCE(influencers_contacted,0)::bigint) FROM daily_reports WHERE student_id = p_student_id AND submitted_at IS NOT NULL AND date >= p_period_start), 0),
     'reports_submitted', (SELECT COUNT(*) FROM daily_reports WHERE student_id = p_student_id AND submitted_at IS NOT NULL AND date >= p_period_start)
   );
 END;
@@ -2853,7 +3038,10 @@ AS $$
 DECLARE
   v_caller uuid := (SELECT auth.uid());
 BEGIN
-  IF v_caller IS NOT NULL THEN
+  -- Hardened (migration 00049): defense-in-depth. anon AND service_role BOTH
+  -- have a NULL auth.uid(), so the old `v_caller IS NOT NULL` check let an
+  -- anonymous caller through. Require the service-role admin client explicitly.
+  IF coalesce(auth.role(), '') <> 'service_role' THEN
     RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
   END IF;
 
@@ -2887,7 +3075,10 @@ AS $$
 DECLARE
   v_caller uuid := (SELECT auth.uid());
 BEGIN
-  IF v_caller IS NOT NULL THEN
+  -- Hardened (migration 00049): defense-in-depth. anon AND service_role BOTH
+  -- have a NULL auth.uid(), so the old `v_caller IS NOT NULL` check let an
+  -- anonymous caller through. Require the service-role admin client explicitly.
+  IF coalesce(auth.role(), '') <> 'service_role' THEN
     RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
   END IF;
 
@@ -2935,24 +3126,140 @@ $$;
 
 GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
 
+-- Tables & sequences stay broadly granted — RLS is the access-control layer
+-- for table data, so anon/authenticated reaching a table still hit RLS.
 GRANT ALL ON ALL TABLES IN SCHEMA public TO anon, authenticated, service_role;
 GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated, service_role;
-GRANT ALL ON ALL ROUTINES IN SCHEMA public TO anon, authenticated, service_role;
+
+-- ROUTINES: granted to service_role ONLY. Functions here are SECURITY DEFINER
+-- and bypass RLS, so a blanket anon/authenticated EXECUTE grant is a data-leak
+-- vector (an anonymous PostgREST caller could invoke analytics/detail RPCs).
+-- All app callers use the service-role admin client. See migrations 00049/00050.
+--
+-- The REVOKE FROM PUBLIC is load-bearing and must come FIRST: PostgreSQL grants
+-- EXECUTE on every function to PUBLIC at CREATE time, and anon/authenticated
+-- inherit PUBLIC's privileges. Granting service_role without revoking PUBLIC
+-- leaves every RPC above callable with nothing but the browser-shipped anon key.
+REVOKE EXECUTE ON ALL ROUTINES IN SCHEMA public FROM PUBLIC;
+REVOKE EXECUTE ON ALL ROUTINES IN SCHEMA public FROM anon, authenticated;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE EXECUTE ON ROUTINES FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE EXECUTE ON ROUTINES FROM anon, authenticated;
+
+GRANT ALL ON ALL ROUTINES IN SCHEMA public TO service_role;
+
+-- RLS helpers stay executable by anon/authenticated: policy expressions call
+-- them and are evaluated as the querying role. They resolve only the CALLER's
+-- own id/role via auth.uid(), so they leak nothing.
+GRANT EXECUTE ON FUNCTION public.get_user_id()   TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.get_user_role() TO anon, authenticated, service_role;
 
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO anon, authenticated, service_role;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO anon, authenticated, service_role;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON ROUTINES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON ROUTINES TO service_role;
 
--- Specific execute grants for analytics functions
-GRANT EXECUTE ON FUNCTION public.week_start(date) TO anon, authenticated, service_role;
-GRANT EXECUTE ON FUNCTION public.student_activity_status(uuid, date) TO anon, authenticated, service_role;
-GRANT EXECUTE ON FUNCTION public.get_student_analytics(uuid, text, int, int) TO authenticated, service_role;
-GRANT EXECUTE ON FUNCTION public.get_coach_analytics(uuid, int, date, int, int, int, text, text) TO service_role, authenticated;
-GRANT EXECUTE ON FUNCTION public.get_coach_dashboard(uuid, date, date) TO service_role, authenticated;
-GRANT EXECUTE ON FUNCTION public.get_coach_milestones(uuid, date, boolean) TO service_role, authenticated;
+-- RLS helper functions MUST stay executable by anon/authenticated: RLS policy
+-- expressions call them and are evaluated as the querying role, so revoking
+-- EXECUTE here would break every policy (the whole app for logged-in users).
+-- They are safe to expose: SECURITY DEFINER, but they only resolve the
+-- CALLER's own id/role via auth.uid() (NULL → NULL for anon), leaking nothing.
+GRANT EXECUTE ON FUNCTION public.get_user_id()   TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.get_user_role() TO anon, authenticated, service_role;
+
+-- Specific execute grants (least privilege). Analytics/detail/dashboard RPCs
+-- are all invoked by the service-role admin client (src/lib/rpc/*.ts).
+-- week_start is a pure IMMUTABLE date helper (no data) — kept executable by
+-- authenticated as well; student_activity_status returns per-student status,
+-- so service_role only.
+GRANT EXECUTE ON FUNCTION public.week_start(date) TO authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.student_activity_status(uuid, date) TO service_role;
+GRANT EXECUTE ON FUNCTION public.get_student_analytics(uuid, text, int, int) TO service_role;
+GRANT EXECUTE ON FUNCTION public.get_coach_analytics(uuid, int, date, int, int, int, text, text) TO service_role;
+GRANT EXECUTE ON FUNCTION public.get_coach_dashboard(uuid, date, date) TO service_role;
+GRANT EXECUTE ON FUNCTION public.get_coach_milestones(uuid, date, boolean) TO service_role;
+GRANT EXECUTE ON FUNCTION public.get_student_summary(uuid, date) TO service_role;
+GRANT EXECUTE ON FUNCTION public.get_student_detail(uuid, date, date, boolean) TO service_role;
+GRANT EXECUTE ON FUNCTION public.get_weekly_skip_counts(uuid[], date, integer) TO service_role;
+GRANT EXECUTE ON FUNCTION public.get_owner_dashboard_stats() TO service_role;
+GRANT EXECUTE ON FUNCTION public.get_sidebar_badges(uuid, text) TO service_role;
+GRANT EXECUTE ON FUNCTION public.get_platform_stats() TO service_role;
+GRANT EXECUTE ON FUNCTION public.get_leaderboard(date, int) TO service_role;
+GRANT EXECUTE ON FUNCTION public.get_tier_distribution() TO service_role;
+GRANT EXECUTE ON FUNCTION public.get_coach_performance_summary() TO service_role;
+GRANT EXECUTE ON FUNCTION public.refresh_student_kpi_summaries() TO service_role;
 
 REVOKE EXECUTE ON FUNCTION public.get_owner_analytics() FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.get_owner_analytics() TO service_role;
+
+-- ---------------------------------------------------------------------------
+-- get_owner_platform_metrics() — windowed total hours + roadmap stage funnel
+-- (migration 00048). Separate from get_owner_analytics leaderboards.
+-- ---------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.get_owner_platform_metrics()
+RETURNS jsonb
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_caller   uuid := (SELECT auth.uid());
+  v_now      timestamptz := NOW();
+  v_envelope jsonb;
+BEGIN
+  -- Hardened (migration 00049): defense-in-depth. anon AND service_role BOTH
+  -- have a NULL auth.uid(), so the old `v_caller IS NOT NULL` check let an
+  -- anonymous caller through. Require the service-role admin client explicitly.
+  IF coalesce(auth.role(), '') <> 'service_role' THEN
+    RAISE EXCEPTION 'not_authorized' USING ERRCODE = '42501';
+  END IF;
+
+  WITH hours AS (
+    SELECT
+      COALESCE(SUM(dr.hours_worked) FILTER (WHERE dr.date >= (v_now - INTERVAL '7 days')::date),  0)::numeric  AS weekly,
+      COALESCE(SUM(dr.hours_worked) FILTER (WHERE dr.date >= (v_now - INTERVAL '30 days')::date), 0)::numeric  AS monthly,
+      COALESCE(SUM(dr.hours_worked) FILTER (WHERE dr.date >= (v_now - INTERVAL '90 days')::date), 0)::numeric  AS ninety,
+      COALESCE(SUM(dr.hours_worked),                                                              0)::numeric  AS alltime
+    FROM daily_reports dr
+    JOIN users u ON u.id = dr.student_id AND u.role IN ('student','student_diy')
+  ),
+  per_student AS (
+    SELECT rp.student_id,
+           MAX(rp.step_number) FILTER (WHERE rp.status IN ('active','completed')) AS max_step
+    FROM roadmap_progress rp
+    JOIN users u ON u.id = rp.student_id AND u.role IN ('student','student_diy')
+    GROUP BY rp.student_id
+  ),
+  roadmap AS (
+    SELECT s.step_number,
+           COUNT(ps.student_id) FILTER (WHERE ps.max_step >= s.step_number) AS students_reached
+    FROM generate_series(1, 16) AS s(step_number)
+    LEFT JOIN per_student ps ON TRUE
+    GROUP BY s.step_number
+    ORDER BY s.step_number
+  )
+  SELECT jsonb_build_object(
+    'total_students', (SELECT count(*) FROM users WHERE role IN ('student','student_diy')),
+    'hours', jsonb_build_object(
+      'weekly',  ROUND((SELECT weekly  FROM hours), 1),
+      'monthly', ROUND((SELECT monthly FROM hours), 1),
+      'ninety',  ROUND((SELECT ninety  FROM hours), 1),
+      'alltime', ROUND((SELECT alltime FROM hours), 1)
+    ),
+    'roadmap', (
+      SELECT COALESCE(jsonb_agg(jsonb_build_object(
+        'step_number', step_number,
+        'students_reached', students_reached
+      ) ORDER BY step_number), '[]'::jsonb)
+      FROM roadmap
+    )
+  ) INTO v_envelope;
+
+  RETURN v_envelope;
+END;
+$$;
+
+REVOKE EXECUTE ON FUNCTION public.get_owner_platform_metrics() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.get_owner_platform_metrics() TO service_role;
 
 -- ============================================================================
 -- DONE

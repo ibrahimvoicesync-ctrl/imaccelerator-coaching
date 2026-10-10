@@ -58,7 +58,7 @@ export function WeeklyLeaderboardCard({ rows }: Props) {
                           #1
                         </span>
                       ) : (
-                        <span className="text-ima-text-muted font-semibold text-sm">
+                        <span className="text-ima-text-secondary font-semibold text-sm">
                           #{rank}
                         </span>
                       )}

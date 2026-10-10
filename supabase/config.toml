@@ -149,6 +149,13 @@ max_indexes = 5
 
 [auth]
 enabled = true
+# Legacy HS256 signing secret, supplied from the untracked environment.
+# MUST be set: without it the CLI falls back to the published Supabase demo
+# secret ("super-secret-jwt-token-with-at-least-32-characters-long"), which
+# lands in the JWKS as an `oct` key — meaning anyone can forge a service_role
+# token and read or write the whole database. Set JWT_SECRET before
+# `supabase start`.
+jwt_secret = "env(JWT_SECRET)"
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
 # in emails.
 site_url = "https://members.imaccelerator.com"
@@ -305,6 +312,10 @@ max_frequency = "5s"
 [auth.external.google]
 enabled = true
 client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
+# Supplied from the untracked environment — never inline the literal here, this
+# file is git-tracked. Set SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET before starting
+# the stack. The previously committed value is burned and must be rotated in the
+# Google Cloud console.
 secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
 redirect_uri = "https://api-members.imaccelerator.com/auth/v1/callback"
 url = ""

@@ -40,7 +40,7 @@ export async function OwnerAnalyticsTeaser() {
 
   return (
     <div
-      className="bg-white border border-ima-border rounded-[14px] p-6"
+      className="bg-white border border-ima-border rounded-[14px] shadow-card p-6"
       aria-labelledby="owner-analytics-teaser-h2"
     >
       <div className="flex items-start justify-between gap-3">
@@ -64,7 +64,7 @@ export async function OwnerAnalyticsTeaser() {
           <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
         </Link>
       </div>
-      <div className="h-px bg-ima-surface-light mt-4" aria-hidden="true" />
+      <div className="h-px bg-ima-border mt-4" aria-hidden="true" />
 
       {!hasAnyTop ? (
         <div className="mt-4">
@@ -127,7 +127,7 @@ function TeaserRow({
   iconColor: string;
   isLast: boolean;
 }) {
-  const borderCls = isLast ? "" : "border-b border-ima-surface-light";
+  const borderCls = isLast ? "" : "border-b border-ima-border";
 
   if (!row) {
     return (

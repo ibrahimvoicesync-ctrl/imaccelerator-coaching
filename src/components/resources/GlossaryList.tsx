@@ -44,7 +44,7 @@ export function GlossaryList({ terms, canManage, onEdit, onDelete }: GlossaryLis
       {showSearch && (
         <div className="relative">
           <Search
-            className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-ima-text-muted pointer-events-none"
+            className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-ima-text-secondary pointer-events-none"
             strokeWidth={2.25}
             aria-hidden="true"
           />
@@ -54,7 +54,7 @@ export function GlossaryList({ terms, canManage, onEdit, onDelete }: GlossaryLis
             aria-label="Search glossary terms"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full min-h-[52px] pl-11 pr-4 rounded-2xl bg-ima-surface border border-ima-border text-sm text-ima-text placeholder:text-ima-text-muted focus:border-ima-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2 motion-safe:transition-colors"
+            className="w-full min-h-[52px] pl-11 pr-4 rounded-2xl bg-ima-surface border border-ima-border text-sm text-ima-text placeholder:text-ima-text-secondary focus:border-ima-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2 motion-safe:transition-colors"
           />
         </div>
       )}
@@ -68,7 +68,7 @@ export function GlossaryList({ terms, canManage, onEdit, onDelete }: GlossaryLis
             >
               <BookOpen className="h-6 w-6" strokeWidth={2.25} />
             </span>
-            <p className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted">
+            <p className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary">
               {search ? "No match" : "Empty glossary"}
             </p>
             <h3 className="text-xl md:text-2xl font-semibold tracking-tight text-ima-text leading-tight">
@@ -89,7 +89,7 @@ export function GlossaryList({ terms, canManage, onEdit, onDelete }: GlossaryLis
                 <h3 className="text-3xl md:text-4xl font-semibold tracking-tight text-ima-primary leading-none tabular-nums">
                   {letter}
                 </h3>
-                <p className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted tabular-nums">
+                <p className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary tabular-nums">
                   {`${grouped[letter].length} term${grouped[letter].length !== 1 ? "s" : ""}`}
                 </p>
               </div>
@@ -109,7 +109,7 @@ export function GlossaryList({ terms, canManage, onEdit, onDelete }: GlossaryLis
                             type="button"
                             onClick={() => onEdit(term)}
                             aria-label={"Edit " + term.term}
-                            className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg text-ima-text-muted hover:text-ima-primary hover:bg-ima-surface-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2 motion-safe:transition-colors"
+                            className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg text-ima-text-secondary hover:text-ima-primary hover:bg-ima-surface-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2 motion-safe:transition-colors"
                           >
                             <Pencil className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
                           </button>
@@ -117,7 +117,7 @@ export function GlossaryList({ terms, canManage, onEdit, onDelete }: GlossaryLis
                             type="button"
                             onClick={() => onDelete(term.id)}
                             aria-label={"Delete " + term.term}
-                            className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg text-ima-text-muted hover:text-ima-error hover:bg-ima-error/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-error focus-visible:ring-offset-2 motion-safe:transition-colors"
+                            className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg text-ima-text-secondary hover:text-ima-error hover:bg-ima-error/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-error focus-visible:ring-offset-2 motion-safe:transition-colors"
                           >
                             <Trash2 className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
                           </button>

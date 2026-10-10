@@ -8,9 +8,23 @@ import { verifyOrigin } from "@/lib/csrf";
 
 function generateMagicCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
-  const bytes = new Uint8Array(8);
-  crypto.getRandomValues(bytes);
-  return Array.from(bytes).map(b => chars[b % chars.length]).join("");
+  const codeLength = 8;
+  // Rejection sampling: `chars.length` (55) does not divide 256, so mapping any
+  // byte 0-255 via `b % chars.length` would over-represent the first
+  // (256 % 55) characters. Discard bytes in that biased tail so every character
+  // is equally likely. Same length + alphabet as before.
+  const maxAcceptable = 256 - (256 % chars.length);
+  const out: string[] = [];
+  while (out.length < codeLength) {
+    const buf = new Uint8Array(codeLength - out.length);
+    crypto.getRandomValues(buf);
+    for (const b of buf) {
+      if (b >= maxAcceptable) continue; // biased tail — reject and resample
+      out.push(chars[b % chars.length]);
+      if (out.length === codeLength) break;
+    }
+  }
+  return out.join("");
 }
 
 const postSchema = z.object({

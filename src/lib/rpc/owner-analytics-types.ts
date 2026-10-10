@@ -109,6 +109,34 @@ export type OwnerAnalyticsPayload = {
 };
 
 // ---------------------------------------------------------------------------
+// Platform metrics (migration 00048 — get_owner_platform_metrics).
+// Separate RPC from the leaderboards above. Numbers are embedded in the RPC's
+// jsonb envelope, so supabase-js returns them as JS numbers (the "NUMERIC →
+// string" caveat only applies to top-level column selects).
+//   Windows: weekly = last 7d, monthly = last 30d, ninety = last 90d, alltime.
+//   hours are self-reported daily_reports.hours_worked, rounded to 1 decimal.
+//   roadmap[i].students_reached = students whose furthest reached step
+//   (status active|completed) is >= step_number — cumulative "reached".
+// ---------------------------------------------------------------------------
+export type OwnerHoursTotals = {
+  weekly: number;
+  monthly: number;
+  ninety: number;
+  alltime: number;
+};
+
+export type OwnerRoadmapReachRow = {
+  step_number: number;
+  students_reached: number;
+};
+
+export type OwnerPlatformMetrics = {
+  total_students: number;
+  hours: OwnerHoursTotals;
+  roadmap: OwnerRoadmapReachRow[];
+};
+
+// ---------------------------------------------------------------------------
 // Cache tag — GLOBAL (not per-user). See file header for rationale.
 // Unchanged from Phase 54 — every existing revalidateTag(ownerAnalyticsTag())
 // call site in /api/deals, /api/deals/[id], /api/work-sessions/[id], and

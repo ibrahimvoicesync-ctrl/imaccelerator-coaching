@@ -22,7 +22,7 @@ export function DueSoonIndicator() {
 
       const minutes = Math.floor((deadline.getTime() - now.getTime()) / 60000);
       if (minutes < 60) {
-        setText(`Your report is due in ${minutes} minute${minutes !== 1 ? "s" : ""}.`);
+        setText(`Due in ${minutes} minute${minutes !== 1 ? "s" : ""} — submit when you can.`);
         setTone("warning");
       } else {
         const hours = Math.floor(minutes / 60);
@@ -45,7 +45,7 @@ export function DueSoonIndicator() {
     <p
       className={cn(
         "text-sm",
-        tone === "warning" ? "text-ima-warning font-medium" : "text-ima-text-muted",
+        tone === "warning" ? "text-ima-warning font-medium" : "text-ima-text-secondary",
       )}
     >
       {text}

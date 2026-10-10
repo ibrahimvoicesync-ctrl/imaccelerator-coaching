@@ -20,6 +20,40 @@ function ensureConfigured() {
   configured = true;
 }
 
+/**
+ * Hosts we will dereference a push endpoint against. The endpoint arrives from
+ * the client (POST /api/push/subscribe) and is later fetched server-side by
+ * web-push, so without a host check it is an SSRF primitive: a student could
+ * store `https://10.0.0.5:8443/admin` and have the app server POST to it on
+ * every reminder tick. Entries match the host exactly or as a dot-suffix.
+ */
+const PUSH_HOST_ALLOWLIST = [
+  "fcm.googleapis.com",
+  "push.services.mozilla.com",
+  "notify.windows.com",
+  "push.apple.com",
+] as const;
+
+/**
+ * True when `endpoint` is an https URL on a known push service. Anything else —
+ * another scheme, an IP literal, an internal host, a port on localhost — is
+ * rejected. Validate at subscribe time AND before sending, so rows stored
+ * before this check existed cannot be dereferenced either.
+ */
+export function isAllowedPushEndpoint(endpoint: string): boolean {
+  let url: URL;
+  try {
+    url = new URL(endpoint);
+  } catch {
+    return false;
+  }
+  if (url.protocol !== "https:") return false;
+  const host = url.hostname.toLowerCase();
+  return PUSH_HOST_ALLOWLIST.some(
+    (allowed) => host === allowed || host.endsWith(`.${allowed}`)
+  );
+}
+
 export type PushPayload = {
   title: string;
   body: string;
@@ -48,6 +82,15 @@ export async function sendPush(
   payload: PushPayload
 ): Promise<SendResult> {
   ensureConfigured();
+
+  // Defense in depth: rows predating the subscribe-time allowlist, or written
+  // by any other path, must not be dereferenced. Treat a disallowed host as
+  // expired so the caller prunes it.
+  if (!isAllowedPushEndpoint(sub.endpoint)) {
+    console.error("[push] refusing endpoint on non-allowlisted host");
+    return { ok: false, expired: true };
+  }
+
   try {
     await webpush.sendNotification(
       { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },

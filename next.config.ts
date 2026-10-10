@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Content-Security-Policy",
-            value: "frame-src 'self' https://e.widgetbot.io; upgrade-insecure-requests",
+            value: "frame-src 'self' https://e.widgetbot.io https://ai.imaccelerator.com; upgrade-insecure-requests",
           },
           {
             key: "Strict-Transport-Security",

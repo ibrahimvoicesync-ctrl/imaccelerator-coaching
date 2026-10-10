@@ -11,7 +11,7 @@ interface ErrorCardProps {
 function ErrorCard({ heading, message }: ErrorCardProps) {
   return (
     <main className="flex min-h-screen items-center justify-center bg-ima-bg px-4">
-      <div className="w-full max-w-md rounded-xl bg-ima-surface p-8 shadow-sm border border-ima-border text-center">
+      <div className="w-full max-w-md rounded-[14px] bg-ima-surface p-8 shadow-card border border-ima-border text-center">
         <XCircle
           className="mx-auto h-12 w-12 text-ima-error"
           aria-hidden="true"

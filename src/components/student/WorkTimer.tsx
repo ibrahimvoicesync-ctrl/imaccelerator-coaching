@@ -81,7 +81,7 @@ export function WorkTimer({
     <div
       className="flex flex-col items-center gap-4"
       role="timer"
-      aria-label={`${minutes} minutes and ${seconds} seconds remaining in Session ${cycleNumber}`}
+      aria-label={`${minutes} minutes and ${seconds} seconds left on your timer`}
     >
       {/* Screen reader live region */}
       <div aria-live="polite" className="sr-only">
@@ -131,7 +131,7 @@ export function WorkTimer({
           <span
             className="text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary mt-3"
           >
-            Remaining
+            Left
           </span>
         </div>
       </div>

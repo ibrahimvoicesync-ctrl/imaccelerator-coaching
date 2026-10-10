@@ -80,7 +80,7 @@ export function ReportRow({
                   {studentName}
                 </p>
                 <p
-                  className="mt-[3px] text-[10px] font-medium text-ima-text-secondary tracking-widest uppercase"
+                  className="mt-[3px] text-[10px] font-medium text-ima-text-secondary tracking-[0.08em] uppercase"
                 >
                   {formatDate(report.date)}
                 </p>
@@ -159,7 +159,7 @@ export function ReportRow({
         </summary>
 
         {/* Expanded details */}
-        <div className="px-5 pb-5 pt-0 border-t border-ima-surface-light">
+        <div className="px-5 pb-5 pt-0 border-t border-ima-border">
           {report.wins || report.improvements ? (
             <div className="space-y-4 pt-4">
               {report.wins && (

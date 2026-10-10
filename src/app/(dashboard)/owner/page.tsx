@@ -62,7 +62,7 @@ export default async function OwnerDashboard() {
     <div
       className={`-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg`}
     >
-      <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
+      <div className="mx-auto max-w-[1200px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
         {/* Masthead */}
         <header className="motion-safe:animate-fadeIn">
           <p
@@ -71,9 +71,10 @@ export default async function OwnerDashboard() {
             Dashboard
           </p>
           <h1 className="mt-3 text-[32px] md:text-[36px] font-semibold leading-[1.05] text-ima-text tracking-[-0.02em]">
-            Assalamu3leikum, {firstName}!
+            Assalamu &apos;alaykum, {firstName}!
           </h1>
-          <p className="mt-2 max-w-[58ch] text-[15px] text-ima-text-secondary leading-[1.55]">
+          <div className="mt-3 h-[3px] w-10 rounded-full bg-ima-primary" aria-hidden="true" />
+          <p className="mt-3 max-w-[58ch] text-[15px] text-ima-text-secondary leading-[1.55]">
             Platform overview
           </p>
         </header>
@@ -150,11 +151,11 @@ function OwnerAnalyticsTeaserSkeleton() {
     <div
       aria-busy="true"
       aria-live="polite"
-      className="bg-white border border-ima-border rounded-[14px] p-6"
+      className="bg-white border border-ima-border rounded-[14px] shadow-card p-6"
     >
       <div className="h-5 w-28 rounded bg-ima-surface-light motion-safe:animate-pulse" />
       <div className="mt-2 h-3 w-56 rounded bg-ima-surface-light motion-safe:animate-pulse" />
-      <div className="h-px bg-ima-surface-light mt-4" aria-hidden="true" />
+      <div className="h-px bg-ima-border mt-4" aria-hidden="true" />
       <div className="mt-3 space-y-2">
         {[0, 1, 2].map((i) => (
           <div

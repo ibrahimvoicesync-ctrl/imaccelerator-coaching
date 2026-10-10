@@ -303,7 +303,7 @@ export function CoachAlertsClient({
 
       {/* Grouped feed */}
       {visibleGroups.length === 0 ? (
-        <div className="bg-white border border-ima-border rounded-[14px] p-6">
+        <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-6">
           <EmptyState
             variant="compact"
             icon={<Bell className="h-5 w-5" aria-hidden="true" />}
@@ -362,7 +362,7 @@ export function CoachAlertsClient({
                       key={row.alert_key}
                       aria-label={`milestone alert: ${row.student_name} — ${meta.label}`}
                       className={[
-                        "bg-white border border-ima-border rounded-[14px] p-5 motion-safe:transition-colors",
+                        "bg-white border border-ima-border rounded-[14px] shadow-card p-5 motion-safe:transition-colors",
                         isDismissed && "opacity-70",
                       ]
                         .filter(Boolean)

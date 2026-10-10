@@ -59,7 +59,7 @@ export function StudentHeader({ student, isAtRisk, atRiskReasons }: StudentHeade
               </h1>
               <p className="mt-1 text-sm text-ima-text-secondary truncate">{student.email}</p>
               <p
-                className="mt-1 text-[10px] font-medium text-ima-text-secondary tracking-widest uppercase"
+                className="mt-1 text-[10px] font-medium text-ima-text-secondary tracking-[0.08em] uppercase"
               >
                 Joined {joinDate}
               </p>
@@ -84,7 +84,7 @@ export function StudentHeader({ student, isAtRisk, atRiskReasons }: StudentHeade
         {/* Risk reason line */}
         {isAtRisk && atRiskReasons.length > 0 && (
           <p
-            className="mt-4 text-[10px] font-medium text-ima-warning tracking-widest uppercase"
+            className="mt-4 text-[10px] font-medium text-ima-warning tracking-[0.08em] uppercase"
           >
             {atRiskReasons.join(" · ")}
           </p>

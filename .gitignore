@@ -12,6 +12,14 @@
 # next.js
 /.next/
 /out/
+# Deploy runbook artifacts (CLAUDE.md): the build is snapshotted to .next.old for
+# rollback, and the low-downtime path stages .next.new / .next.broken. These MUST be
+# ignored — Tailwind v4 auto-detects sources from the project root respecting
+# .gitignore, so an unignored stale build output gets scanned and its dead utility
+# classes leak into the new CSS (and ESLint lints ~90MB of compiled JS).
+/.next.old/
+/.next.new/
+/.next.broken/
 
 # production
 /build
@@ -26,6 +34,10 @@ yarn-debug.log*
 yarn-error.log*
 
 # env files (can opt-in for committing if needed)
+# NOTE: bare `.env` is included deliberately — supabase/config.toml resolves
+# env(JWT_SECRET) and env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET) from it, so it
+# holds the stack's signing secret and the Google OAuth client secret.
+.env
 .env*.local
 .env.local
 .env.development.local

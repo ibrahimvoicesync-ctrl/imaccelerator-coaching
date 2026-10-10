@@ -48,7 +48,7 @@ export default async function CoachAnalyticsPage({
   if (hasNoAssignedStudents) {
     return (
       <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg">
-        <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
+        <div className="mx-auto max-w-[1200px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
           <header className="motion-safe:animate-fadeIn">
             <p className="text-xs font-semibold tracking-[0.08em] text-ima-text-secondary uppercase">
               Analytics
@@ -61,7 +61,7 @@ export default async function CoachAnalyticsPage({
             </p>
           </header>
           <div
-            className="mt-10 bg-white border border-ima-border rounded-[14px] p-6 motion-safe:animate-fadeIn"
+            className="mt-10 bg-white border border-ima-border rounded-[14px] shadow-card p-6 motion-safe:animate-fadeIn"
             style={{ animationDelay: "100ms" }}
           >
             <EmptyState
@@ -88,7 +88,7 @@ export default async function CoachAnalyticsPage({
     <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg">
       <section
         aria-labelledby="coach-analytics-h1"
-        className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20"
+        className="mx-auto max-w-[1200px] px-5 md:px-10 pt-8 md:pt-10 pb-16"
       >
         <CoachAnalyticsClient
           payload={payload}

@@ -4,11 +4,20 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { verifyOrigin } from "@/lib/csrf";
-import { isPushConfigured } from "@/lib/push";
+import { isPushConfigured, isAllowedPushEndpoint } from "@/lib/push";
 
 // Shape of a serialized PushSubscription (subscription.toJSON()).
+// `endpoint` is dereferenced server-side by web-push, so a bare url() check is
+// not enough — it must be https on a known push service, or it is an SSRF
+// vector pointed at whatever internal host the caller names.
 const subscribeSchema = z.object({
-  endpoint: z.string().url().max(2048),
+  endpoint: z
+    .string()
+    .url()
+    .max(2048)
+    .refine(isAllowedPushEndpoint, {
+      message: "Unsupported push service endpoint",
+    }),
   keys: z.object({
     p256dh: z.string().min(1).max(512),
     auth: z.string().min(1).max(512),

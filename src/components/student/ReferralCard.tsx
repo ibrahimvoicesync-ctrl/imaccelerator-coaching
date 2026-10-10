@@ -104,7 +104,7 @@ export function ReferralCard() {
     <section
       id="referral"
       tabIndex={-1}
-      className="scroll-mt-6 bg-white border border-ima-border rounded-[14px] p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6 focus:outline-none"
+      className="scroll-mt-6 bg-white border border-ima-border rounded-[14px] shadow-card p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6 focus:outline-none"
     >
       <div className="flex-1">
         <div className="inline-flex items-center gap-2 bg-ima-success/10 text-ima-success px-3 py-1 rounded-full text-[10px] uppercase tracking-[0.08em] font-semibold mb-4">

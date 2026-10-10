@@ -82,6 +82,7 @@ export const ROUTES = {
   student: {
     dashboard: "/student",
     workTracker: "/student/work",
+    calendar: "/student/calendar",
     roadmap: "/student/roadmap",
     askAI: "/student/ask",
     report: "/student/report",
@@ -93,6 +94,7 @@ export const ROUTES = {
   student_diy: {
     dashboard: "/student_diy",
     workTracker: "/student_diy/work",
+    calendar: "/student_diy/calendar",
     roadmap: "/student_diy/roadmap",
     deals: "/student_diy/deals",
     resources: "/student_diy/resources",
@@ -221,12 +223,6 @@ export const COACH_CONFIG = {
 // 9. OWNER DASHBOARD CONFIG
 // ---------------------------------------------------------------------------
 export const OWNER_CONFIG = {
-  statCards: [
-    { key: "total_students", label: "Total Students", icon: "GraduationCap" },
-    { key: "total_coaches", label: "Total Coaches", icon: "Shield" },
-    { key: "daily_active_students", label: "Active Today", icon: "Users" },
-    { key: "reports_submitted_today", label: "Reports Today", icon: "FileText" },
-  ],
   alertThresholds: {
     studentInactiveDays: 3,
     studentDropoffDays: 7,
@@ -258,25 +254,36 @@ export const AI_CONFIG = {
   subtitle: "Your 24/7 AI mentor",
 } as const;
 
-// ---------------------------------------------------------------------------
-// 12. THEME
-// ---------------------------------------------------------------------------
-export const THEME = {
-  mode: "light" as const,
-  colors: {
-    primary: "#2563EB",
-    primaryHover: "#1D4ED8",
-    background: "#F8FAFC",
-    surface: "#FFFFFF",
-    border: "#E2E8F0",
-    text: "#1E293B",
-    textSecondary: "#64748B",
-  },
-  fonts: {
-    heading: "Inter, system-ui, sans-serif",
-    body: "Inter, system-ui, sans-serif",
-  },
+// Business check-in — students refresh a snapshot of their business every
+// `refreshDays` to keep the AI unlocked, so its advice fits where they are.
+export const BUSINESS_CHECKIN = {
+  refreshDays: 30,
+  // Show the "refresh soon" nudge this many days before it lapses.
+  dueSoonDays: 5,
+  moneyMax: 999_999_999_999,
+  textMax: 500,
+  employeesMax: 10_000,
+  rosterMax: 100_000,
+  feelings: [
+    { value: 1, label: "Struggling" },
+    { value: 2, label: "Low" },
+    { value: 3, label: "Okay" },
+    { value: 4, label: "Good" },
+    { value: 5, label: "Fired up" },
+  ],
 } as const;
+
+// ---------------------------------------------------------------------------
+// 12. THEME — REMOVED
+// ---------------------------------------------------------------------------
+// A `THEME` const used to duplicate a subset of the palette here. It had 0
+// importers and was a standing drift hazard: two partial copies of the same
+// colors that had to be hand-synced (and had already diverged on `background`).
+//
+// The palette lives in ONE place — `tailwind.config.ts` under
+// `theme.extend.colors.ima`, consumed as `text-ima-*` / `bg-ima-*` /
+// `border-ima-*`. The font stack lives in `src/app/layout.tsx` (`next/font`).
+// See docs/design/05-style-guide.md. Do not reintroduce a JS color map.
 
 // ---------------------------------------------------------------------------
 // 13. NAVIGATION — V1 with separators and badge support
@@ -307,7 +314,7 @@ export const NAVIGATION: Record<Role, NavItem[]> = {
     { label: "Dashboard",   href: "/owner",             icon: "LayoutDashboard" },
     { label: "Coaches",     href: "/owner/coaches",     icon: "Shield" },
     { label: "Students",    href: "/owner/students",    icon: "Users" },
-    // { label: "Analytics",   href: ROUTES.owner.analytics, icon: "BarChart3" },
+    { label: "Analytics",   href: ROUTES.owner.analytics, icon: "BarChart3" },
     { label: "Invites",     href: "/owner/invites",     icon: "UserPlus",      separator: true },
     { label: "Assignments", href: "/owner/assignments", icon: "ArrowLeftRight" },
     { label: "Alerts",      href: "/owner/alerts",      icon: "Bell",          badge: "active_alerts" },
@@ -326,11 +333,12 @@ export const NAVIGATION: Record<Role, NavItem[]> = {
     // { label: "Resources",       href: ROUTES.coach.resources, icon: "BookOpen",      separator: true },
   ],
   student: [
-    { label: "Dashboard",     href: "/student",         icon: "LayoutDashboard" },
-    { label: "Work Tracker",  href: "/student/work",    icon: "Timer" },
-    { label: "Daily Report",  href: "/student/report",  icon: "FileText" },
-    { label: "Roadmap",       href: "/student/roadmap", icon: "Map" },
-    { label: "Ask Abu Lahya", href: "/student/ask",     icon: "MessageSquare" },
+    // Short, plain labels — they double as the phone bottom-bar labels.
+    { label: "Home",          href: "/student",         icon: "LayoutDashboard" },
+    { label: "Work",          href: "/student/work",    icon: "Timer" },
+    { label: "Report",        href: "/student/report",  icon: "FileText" },
+    { label: "My Steps",      href: "/student/roadmap", icon: "Map" },
+    { label: "Ask AI",        href: "/student/ask",     icon: "MessageSquare" },
     // { label: "Announcements", href: "/student/announcements", icon: "Megaphone" },
     // { label: "Deals",         href: ROUTES.student.deals, icon: "DollarSign" },
     // { label: "Analytics",     href: ROUTES.student.analytics, icon: "BarChart3" },
@@ -339,9 +347,9 @@ export const NAVIGATION: Record<Role, NavItem[]> = {
     // { label: "Referral",      href: ROUTES.student.referral, icon: "Gift" },
   ],
   student_diy: [
-    { label: "Dashboard",    href: "/student_diy",         icon: "LayoutDashboard" },
-    { label: "Work Tracker", href: "/student_diy/work",    icon: "Timer" },
-    { label: "Roadmap",      href: "/student_diy/roadmap", icon: "Map" },
+    { label: "Home",         href: "/student_diy",         icon: "LayoutDashboard" },
+    { label: "Work",         href: "/student_diy/work",    icon: "Timer" },
+    { label: "My Steps",     href: "/student_diy/roadmap", icon: "Map" },
     // { label: "Announcements", href: "/student_diy/announcements", icon: "Megaphone" },
     // { label: "Deals",        href: ROUTES.student_diy.deals, icon: "DollarSign" },
     // { label: "Analytics",    href: ROUTES.student_diy.analytics, icon: "BarChart3" },
@@ -490,13 +498,13 @@ const config = {
   coach: COACH_CONFIG,
   owner: OWNER_CONFIG,
   ai: AI_CONFIG,
+  businessCheckin: BUSINESS_CHECKIN,
   activity: ACTIVITY,
   milestones: MILESTONE_CONFIG,
   milestoneFlags: MILESTONE_FEATURE_FLAGS,
   milestoneKeys: MILESTONES,
   milestoneKeyPatterns: MILESTONE_KEY_PATTERNS,
   invites: INVITE_CONFIG,
-  theme: THEME,
   navigation: NAVIGATION,
   validation: VALIDATION,
 } as const;

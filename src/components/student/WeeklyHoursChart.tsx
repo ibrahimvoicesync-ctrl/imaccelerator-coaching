@@ -17,7 +17,7 @@ import type { DailyHours } from "@/lib/weekly-hours";
 const chartColors = {
   primary: "#2563EB",
   border: "#E2E8F0",
-  textMuted: "#64748B",
+  textMuted: "#5F6E85", // ima-text-secondary
 } as const;
 
 export function WeeklyHoursChart({ data }: { data: DailyHours[] }) {
@@ -26,12 +26,12 @@ export function WeeklyHoursChart({ data }: { data: DailyHours[] }) {
   return (
     <section
       aria-labelledby="weekly-hours-label"
-      className="bg-white border border-ima-border rounded-[14px] p-6 md:p-8"
+      className="bg-white border border-ima-border rounded-[14px] shadow-card p-6 md:p-8"
     >
       <div className="mb-5 flex items-baseline justify-between gap-3">
         <p
           id="weekly-hours-label"
-          className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted"
+          className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary"
         >
           Hours This Week
         </p>

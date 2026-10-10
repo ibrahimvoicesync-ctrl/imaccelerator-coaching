@@ -12,6 +12,15 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Deploy rollback/staging snapshots created by the CLAUDE.md runbook — compiled
+    // output, not source. Without these, `npm run lint` reports ~963 errors from
+    // build artifacts and buries every real finding.
+    ".next.old/**",
+    ".next.new/**",
+    ".next.broken/**",
+    // Vendored Claude Code skill scripts — third-party, not part of the app build
+    ".agents/**",
+    ".claude/**",
     // k6 load test scripts — CommonJS Node.js, not part of Next.js build
     "load-tests/**",
     // Dev-only smoke/verification CommonJS scripts — not part of Next.js build

@@ -84,7 +84,7 @@ export function CycleCard({
           <p
             className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase leading-none"
           >
-            {`Session ${String(cycleNumber).padStart(2, "0")}`}
+            {`Work time ${cycleNumber}`}
           </p>
           <p className="mt-[6px] text-[15px] font-semibold text-ima-text tabular-nums leading-tight">
             {sessionMinutes ? `${sessionMinutes} min` : "—"}
@@ -98,9 +98,9 @@ export function CycleCard({
           <button
             onClick={onResume}
             className="shrink-0 min-h-[44px] px-3 text-[10px] uppercase tracking-[0.08em] font-semibold text-ima-primary hover:bg-ima-surface-accent rounded-[8px] focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 motion-safe:transition-colors"
-            aria-label={`Resume session ${cycleNumber}`}
+            aria-label={`Keep going with work time ${cycleNumber}`}
           >
-            Resume
+            Keep going
           </button>
         )}
 
@@ -109,7 +109,7 @@ export function CycleCard({
             onClick={openEditor}
             disabled={isBusy}
             className="shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center text-ima-text-secondary hover:text-ima-primary hover:bg-ima-surface-accent rounded-[8px] disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 motion-safe:transition-colors"
-            aria-label={`Edit session ${cycleNumber}`}
+            aria-label={`Change work time ${cycleNumber}`}
           >
             <Pencil className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -160,7 +160,7 @@ export function CycleCard({
                   onClick={() => setConfirmingDelete(true)}
                   disabled={isBusy}
                   className="ml-auto min-h-[44px] min-w-[44px] flex items-center justify-center text-ima-text-secondary hover:text-ima-error hover:bg-ima-error/10 rounded-[8px] disabled:opacity-50 motion-safe:transition-colors"
-                  aria-label={`Delete session ${cycleNumber}`}
+                  aria-label={`Delete work time ${cycleNumber}`}
                 >
                   <Trash2 className="h-4 w-4" aria-hidden="true" />
                 </button>

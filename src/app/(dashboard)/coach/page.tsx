@@ -23,6 +23,36 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+type AdminClient = ReturnType<typeof createAdminClient>;
+
+/**
+ * roadmap_progress carries 16 rows per student, so a full roster (≥63 students)
+ * overflows PostgREST's 1000-row cap (config.toml max_rows) and silently
+ * truncates — corrupting per-student step counts. Fetch every student's rows by
+ * paging over student-id batches (≤50 → ≤800 rows/request) and merge, so no
+ * step is dropped.
+ */
+async function fetchRoadmapProgress(admin: AdminClient, ids: string[]) {
+  const BATCH = 50;
+  const batches: string[][] = [];
+  for (let i = 0; i < ids.length; i += BATCH) {
+    batches.push(ids.slice(i, i + BATCH));
+  }
+  const results = await Promise.all(
+    batches.map((batch) =>
+      admin
+        .from("roadmap_progress")
+        .select("student_id, step_number, status")
+        .in("student_id", batch)
+        .order("step_number", { ascending: true }),
+    ),
+  );
+  return {
+    data: results.flatMap((r) => r.data ?? []),
+    error: results.find((r) => r.error)?.error ?? null,
+  };
+}
+
 type EnrichedStudent = {
   id: string;
   name: string;
@@ -108,24 +138,46 @@ export default async function CoachDashboard() {
   const avgStepLabel = Number(dashboard.stats.avg_roadmap_step ?? 0).toFixed(1);
   const emailsSentLabel = intFormat.format(dashboard.stats.emails_sent ?? 0);
 
-  const dashboardNowMs = new Date(today + "T23:59:59Z").getTime();
+  // Relative timestamps ("2H AGO") must measure against the real current time,
+  // not the end of the current day, or a report submitted this morning reads as
+  // "14H AGO". This is an async Server Component rendered once per request, so
+  // reading the wall clock here is deterministic for the render.
+  // eslint-disable-next-line react-hooks/purity
+  const dashboardNowMs = Date.now();
 
-  const [sessionsResult, reportsResult, roadmapResult, skipResult] =
+  // Activity maps only need recent state (today / last-active / last-7-days), so
+  // bound them to a recent window (keeps rows well under the 1000-row cap for
+  // realistic rosters) and order by date DESC so any residual truncation drops
+  // the OLDEST rows rather than arbitrary ones.
+  const ROSTER_LOOKBACK_DAYS = 30;
+  const rosterSince = new Date(
+    new Date(today + "T00:00:00Z").getTime() -
+      ROSTER_LOOKBACK_DAYS * 24 * 60 * 60 * 1000,
+  )
+    .toISOString()
+    .split("T")[0];
+
+  // Kick off the paged roadmap fetch alongside the other queries.
+  const roadmapPromise =
+    studentIds.length > 0
+      ? fetchRoadmapProgress(admin, studentIds)
+      : Promise.resolve({ data: null, error: null });
+
+  const [sessionsResult, reportsResult, skipResult] =
     studentIds.length > 0
       ? await Promise.all([
           admin
             .from("work_sessions")
             .select("student_id, date")
             .in("student_id", studentIds)
+            .gte("date", rosterSince)
             .order("date", { ascending: false }),
           admin
             .from("daily_reports")
-            .select("student_id, date, star_rating, reviewed_by")
-            .in("student_id", studentIds),
-          admin
-            .from("roadmap_progress")
-            .select("student_id, step_number, status")
-            .in("student_id", studentIds),
+            .select("student_id, date, star_rating, reviewed_by, submitted_at")
+            .in("student_id", studentIds)
+            .gte("date", rosterSince)
+            .order("date", { ascending: false }),
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (admin as any).rpc("get_weekly_skip_counts", {
             p_student_ids: studentIds,
@@ -137,8 +189,9 @@ export default async function CoachDashboard() {
           { data: null, error: null },
           { data: null, error: null },
           { data: null, error: null },
-          { data: null, error: null },
         ] as const);
+
+  const roadmapResult = await roadmapPromise;
 
   if (sessionsResult.error) {
     console.error("[coach dashboard] Failed to load sessions:", sessionsResult.error);
@@ -166,7 +219,8 @@ export default async function CoachDashboard() {
     if (!latestReportMap.has(r.student_id) || r.date > (latestReportMap.get(r.student_id) ?? "")) {
       latestReportMap.set(r.student_id, r.date);
     }
-    if (r.date === today) {
+    // Drafts (quick-logged emails, submitted_at NULL) aren't a submitted report.
+    if (r.date === today && r.submitted_at !== null) {
       todayReportMap.set(r.student_id, true);
     }
   }
@@ -186,7 +240,14 @@ export default async function CoachDashboard() {
       arr.push(r.star_rating);
       recentRatings.set(r.student_id, arr);
     }
-    if (r.date >= sevenDaysAgo && r.reviewed_by === null) {
+    if (
+      r.date >= sevenDaysAgo &&
+      r.submitted_at !== null &&
+      r.reviewed_by === null
+    ) {
+      // Match the /coach/reports inbox and the badge RPC, which both count only
+      // submitted (non-draft) reports — submitted_at is nullable, so unsubmitted
+      // drafts would otherwise inflate "Reports Pending".
       pendingReviewCount++;
     }
   }
@@ -288,7 +349,7 @@ export default async function CoachDashboard() {
 
   const atRiskStudents = enrichedStudents.filter((s) => s.isAtRisk);
   const firstName = user.name.split(" ")[0];
-  const greeting = "Assalamu3leikum";
+  const greeting = "Assalamu 'alaykum";
   const eyebrow = "Dashboard";
 
   const statA = [
@@ -357,7 +418,7 @@ export default async function CoachDashboard() {
     <div
       className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg"
     >
-      <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
+      <div className="mx-auto max-w-[1200px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
         {/* Greeting */}
         <header className="motion-safe:animate-fadeIn">
           <p className="text-xs font-semibold tracking-[0.08em] text-ima-text-secondary uppercase">
@@ -434,7 +495,7 @@ export default async function CoachDashboard() {
           style={{ animationDelay: "150ms" }}
         >
           {/* Recent Submissions */}
-          <div className="bg-white border border-ima-border rounded-[14px] p-6">
+          <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-6">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <h2 className="text-sm font-semibold text-ima-text leading-tight">
@@ -452,7 +513,7 @@ export default async function CoachDashboard() {
                 <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
             </div>
-            <div className="h-px bg-ima-surface-light mt-4" aria-hidden="true" />
+            <div className="h-px bg-ima-border mt-4" aria-hidden="true" />
 
             {dashboard.recent_reports.length === 0 ? (
               <div className="mt-4">
@@ -470,7 +531,7 @@ export default async function CoachDashboard() {
                   const rel = formatRelative(r.submitted_at, dashboardNowMs);
                   const isLast = i === arr.length - 1;
                   return (
-                    <li key={r.id} className={!isLast ? "border-b border-ima-surface-light" : ""}>
+                    <li key={r.id} className={!isLast ? "border-b border-ima-border" : ""}>
                       <Link
                         href={`/coach/reports#${r.id}`}
                         aria-label={`${r.student_name} submitted a report, rated ${rating} of 5 stars, ${rel.toLowerCase()}`}
@@ -483,7 +544,7 @@ export default async function CoachDashboard() {
                           <p className="text-sm font-semibold text-ima-text truncate leading-tight">
                             {r.student_name}
                           </p>
-                          <p className="mt-[3px] text-[10px] font-medium text-ima-text-secondary tracking-widest uppercase">
+                          <p className="mt-[3px] text-[10px] font-medium text-ima-text-secondary tracking-[0.08em] uppercase">
                             {rel}
                           </p>
                         </div>
@@ -512,12 +573,12 @@ export default async function CoachDashboard() {
           </div>
 
           {/* Top 3 This Week */}
-          <div className="bg-white border border-ima-border rounded-[14px] p-6">
+          <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-6">
             <h2 className="text-sm font-semibold text-ima-text leading-tight">
               Top 3 This Week
             </h2>
             <p className="mt-1 text-xs text-ima-text-secondary">Hours worked since Monday</p>
-            <div className="h-px bg-ima-surface-light mt-4" aria-hidden="true" />
+            <div className="h-px bg-ima-border mt-4" aria-hidden="true" />
 
             {dashboard.top_hours_week.length === 0 ? (
               <div className="mt-4">
@@ -569,7 +630,7 @@ export default async function CoachDashboard() {
             className="mt-8 motion-safe:animate-fadeIn"
             style={{ animationDelay: "200ms" }}
           >
-            <div className="bg-white border border-ima-border rounded-[14px] p-6">
+            <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-6">
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-[8px] bg-ima-warning/10 flex items-center justify-center shrink-0">
                   <AlertTriangle
@@ -602,7 +663,7 @@ export default async function CoachDashboard() {
                         <p className="text-sm font-semibold text-ima-text truncate leading-tight">
                           {student.name}
                         </p>
-                        <p className="mt-[3px] text-[10px] font-medium text-ima-warning tracking-widest uppercase">
+                        <p className="mt-[3px] text-[10px] font-medium text-ima-warning tracking-[0.08em] uppercase">
                           {student.atRiskReasons.join(" · ")}
                         </p>
                       </div>
@@ -631,7 +692,7 @@ export default async function CoachDashboard() {
             My Students
           </h2>
           {enrichedStudents.length === 0 ? (
-            <div className="mt-4 bg-white border border-ima-border rounded-[14px] p-6">
+            <div className="mt-4 bg-white border border-ima-border rounded-[14px] shadow-card p-6">
               <EmptyState
                 variant="compact"
                 icon={<Users className="h-5 w-5" />}

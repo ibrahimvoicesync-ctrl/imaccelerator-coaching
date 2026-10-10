@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { DayPicker, type DayButtonProps } from "react-day-picker";
 import { formatHoursMinutes } from "@/lib/utils";
 import { CommentForm } from "@/components/shared/CommentForm";
@@ -103,6 +103,9 @@ export function CalendarTab({
     useState<Record<string, CalendarComment>>(comments);
   const [displayMonth, setDisplayMonth] = useState<string>(currentMonth);
   const [isLoadingMonth, setIsLoadingMonth] = useState(false);
+  // Tracks the most recently requested month so a slow, out-of-order response
+  // from an earlier month can't overwrite the month the user is now viewing.
+  const requestedMonthRef = useRef<string>(currentMonth);
   const isDiy = studentRole === "student_diy";
 
   const sessionsByDate = new Map<string, CalendarSessionRow[]>();
@@ -174,6 +177,7 @@ export function CalendarTab({
     setSelectedDate(null);
     const mm = `${newMonth.getFullYear()}-${String(newMonth.getMonth() + 1).padStart(2, "0")}`;
     setDisplayMonth(mm);
+    requestedMonthRef.current = mm;
 
     const basePath =
       viewerRole === "coach"
@@ -184,18 +188,26 @@ export function CalendarTab({
     setIsLoadingMonth(true);
     try {
       const res = await fetch(`/api/calendar?studentId=${studentId}&month=${mm}`);
+      // Drop stale responses: if the user has since navigated to another month,
+      // this older response must not clobber the current one.
+      if (requestedMonthRef.current !== mm) return;
       if (!res.ok) {
         console.error("[CalendarTab] Failed to fetch calendar data:", res.status);
         return;
       }
       const data = await res.json();
+      if (requestedMonthRef.current !== mm) return;
       setDisplaySessions(data.sessions);
       setDisplayReports(data.reports);
       setDisplayComments(data.comments ?? {});
     } catch (err) {
       console.error("[CalendarTab] Error fetching calendar data:", err);
     } finally {
-      setIsLoadingMonth(false);
+      // Only clear the loading flag if this is still the active request, so an
+      // in-flight newer request keeps the calendar in its loading state.
+      if (requestedMonthRef.current === mm) {
+        setIsLoadingMonth(false);
+      }
     }
   }
 
@@ -231,7 +243,7 @@ export function CalendarTab({
       <section
         aria-label="Monthly activity calendar"
         className={[
-          "bg-white border border-ima-border rounded-[14px] p-5 md:p-6 motion-safe:transition-opacity",
+          "bg-white border border-ima-border rounded-[14px] shadow-card p-5 md:p-6 motion-safe:transition-opacity",
           isLoadingMonth ? "opacity-60" : "",
         ].join(" ")}
       >
@@ -272,7 +284,7 @@ export function CalendarTab({
           aria-label="Month totals"
         >
           <span
-            className="text-xs tracking-widest uppercase text-ima-text-secondary"
+            className="text-xs tracking-[0.08em] uppercase text-ima-text-secondary"
           >
             <span className="text-base font-semibold text-ima-text tabular-nums not-italic normal-case tracking-normal mr-[4px]">
               {monthSessionCount}
@@ -281,7 +293,7 @@ export function CalendarTab({
           </span>
           {!isDiy && (
             <span
-              className="text-xs tracking-widest uppercase text-ima-text-secondary"
+              className="text-xs tracking-[0.08em] uppercase text-ima-text-secondary"
             >
               <span className="text-base font-semibold text-ima-text tabular-nums not-italic normal-case tracking-normal mr-[4px]">
                 {monthReportCount}
@@ -349,7 +361,7 @@ export function CalendarTab({
 
           <div className={isDiy ? "mt-4 grid gap-[14px]" : "mt-4 grid md:grid-cols-2 gap-[14px]"}>
             {/* Work Sessions card */}
-            <div className="bg-white border border-ima-border rounded-[14px] p-5">
+            <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-5">
               <p
                 className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
               >
@@ -370,7 +382,7 @@ export function CalendarTab({
                           className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
                         >
                           <span
-                            className="text-xs tracking-widest uppercase text-ima-text-secondary"
+                            className="text-xs tracking-[0.08em] uppercase text-ima-text-secondary"
                           >
                             <span className="text-sm font-semibold tabular-nums text-ima-text normal-case tracking-normal mr-[4px]">
                               {String(s.cycle_number).padStart(2, "0")}
@@ -417,7 +429,7 @@ export function CalendarTab({
 
             {/* Daily Report card — suppressed for DIY */}
             {!isDiy && (
-              <div className="bg-white border border-ima-border rounded-[14px] p-5">
+              <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-5">
                 <div className="flex items-center justify-between gap-2">
                   <p
                     className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
@@ -503,8 +515,9 @@ export function CalendarTab({
                       </div>
                     )}
 
-                    <div className="mt-5 pt-4 border-t border-ima-surface-light">
+                    <div className="mt-5 pt-4 border-t border-ima-border">
                       <CommentForm
+                        key={selectedReport.id}
                         reportId={selectedReport.id}
                         initialComment={displayComments[selectedReport.id]?.comment ?? null}
                       />

@@ -11,15 +11,17 @@ import type { LucideIcon } from "lucide-react";
 import { requireRole } from "@/lib/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getStreakInfo } from "@/lib/streak";
-import { getWeeklyWorkLeaderboard } from "@/lib/leaderboard";
+import { getWeeklyMomentum } from "@/lib/leaderboard";
 import { getWeeklyHoursByDay } from "@/lib/weekly-hours";
 import { getLatestCoachComment } from "@/lib/coach-comment";
 import { StreakCard } from "@/components/student/StreakCard";
-import { WeeklyWorkLeaderboard } from "@/components/student/WeeklyWorkLeaderboard";
+import { WeeklyMomentum } from "@/components/student/WeeklyMomentum";
 import { WeeklyHoursChart } from "@/components/student/WeeklyHoursChart";
 import { CoachNoteCard } from "@/components/student/CoachNoteCard";
+import { TodaysWorkMetric } from "@/components/student/TodaysWorkMetric";
+import { NextActionButton } from "@/components/student/NextActionButton";
 import { ROADMAP_STEPS, WORK_TRACKER } from "@/lib/config";
-import { cn, formatHoursMinutes, getToday } from "@/lib/utils";
+import { cn, getToday } from "@/lib/utils";
 import type { Database } from "@/lib/types";
 
 type WorkSession = Database["public"]["Tables"]["work_sessions"]["Row"];
@@ -30,11 +32,11 @@ function getNextAction(
   activeSession: WorkSession | undefined,
   pausedSession: WorkSession | undefined,
 ): { label: string; href: string } {
-  if (activeSession) return { label: "Continue session", href: "/student_diy/work" };
-  if (pausedSession) return { label: "Resume session", href: "/student_diy/work" };
+  if (activeSession) return { label: "Jump back into your session", href: "/student_diy/work" };
+  if (pausedSession) return { label: "Pick up where you left off", href: "/student_diy/work" };
   if (totalMinutesWorked < WORK_TRACKER.dailyGoalHours * 60) {
     return {
-      label: `Begin session ${String(completedCount + 1).padStart(2, "0")}`,
+      label: completedCount === 0 ? "Start your first session" : "Start your next session",
       href: "/student_diy/work",
     };
   }
@@ -51,7 +53,7 @@ export default async function StudentDiyDashboard() {
     { data: roadmapRows, error: roadmapError },
     { data: deals, error: dealsError },
     streakInfo,
-    leaderboard,
+    momentum,
     weeklyHours,
     coachNote,
   ] = await Promise.all([
@@ -68,7 +70,7 @@ export default async function StudentDiyDashboard() {
       .order("step_number", { ascending: true }),
     admin.from("deals").select("revenue, profit").eq("student_id", user.id),
     getStreakInfo(user.id),
-    getWeeklyWorkLeaderboard(5),
+    getWeeklyMomentum(user.id),
     getWeeklyHoursByDay(user.id),
     getLatestCoachComment(user.id),
   ]);
@@ -93,7 +95,6 @@ export default async function StudentDiyDashboard() {
   const dailyGoalMinutes = WORK_TRACKER.dailyGoalHours * 60;
   const rawPercent =
     dailyGoalMinutes > 0 ? Math.round((totalMinutesWorked / dailyGoalMinutes) * 100) : 0;
-  const progressBarWidth = Math.min(100, rawPercent);
   const goalMet = rawPercent >= 100;
   const firstName = user.name.split(" ")[0];
 
@@ -125,30 +126,31 @@ export default async function StudentDiyDashboard() {
     <div
       className={`-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg`}
     >
-      <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
+      <div className="mx-auto max-w-[880px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
         {/* Masthead */}
-        <header className="motion-safe:animate-fadeIn">
+        <header className="motion-safe:animate-riseIn">
           <p
             className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
           >
             Dashboard
           </p>
           <h1 className="mt-3 text-[32px] md:text-[36px] font-semibold leading-[1.05] text-ima-text tracking-[-0.02em]">
-            Assalamu3leikum, {firstName}.
+            Assalamu &apos;alaykum, {firstName}.
           </h1>
-          <p className="mt-2 max-w-[58ch] text-[15px] text-ima-text-secondary leading-[1.55]">
+          <div className="mt-3 h-[3px] w-10 rounded-full bg-ima-primary" aria-hidden="true" />
+          <p className="mt-3 max-w-[58ch] text-[15px] text-ima-text-secondary leading-[1.55]">
             Here&apos;s how today is tracking.
           </p>
         </header>
 
         {/* Hero — Today's Work (left) + Consistency (right) */}
         <section
-          className="mt-9 grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-[14px] items-start motion-safe:animate-fadeIn"
+          className="mt-9 grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-[14px] items-start motion-safe:animate-riseIn"
           style={{ animationDelay: "100ms" }}
         >
           {/* Left column — Today's Work + next-action CTA */}
           <div className="flex flex-col gap-5">
-          <div className="bg-white border border-ima-border rounded-[14px] p-6 md:p-8">
+          <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-6 md:p-8">
             <div className="flex items-center justify-between gap-3">
               <p
                 id="todays-work-label"
@@ -170,48 +172,10 @@ export default async function StudentDiyDashboard() {
               )}
             </div>
 
-            <div className="mt-6 flex items-end gap-3 flex-wrap">
-              <span
-                className={cn(
-                  "text-6xl md:text-7xl font-semibold tabular-nums tracking-tight leading-[0.95]",
-                  goalMet ? "text-ima-success" : "text-ima-primary",
-                )}
-              >
-                {formatHoursMinutes(totalMinutesWorked)}
-              </span>
-              <span className="pb-2 text-[15px] font-medium text-ima-text-secondary tabular-nums">
-                / {WORK_TRACKER.dailyGoalHours}h
-              </span>
-            </div>
-
-            <div
-              className="mt-5 h-[6px] rounded-full bg-ima-surface-light overflow-hidden"
-              role="progressbar"
-              aria-valuenow={totalMinutesWorked}
-              aria-valuemin={0}
-              aria-valuemax={dailyGoalMinutes}
-              aria-label={`Daily hours progress: ${formatHoursMinutes(totalMinutesWorked)} of ${WORK_TRACKER.dailyGoalHours}h`}
-            >
-              <div
-                className={cn(
-                  "h-full rounded-full motion-safe:transition-[width] duration-700 ease-out",
-                  goalMet ? "bg-ima-success" : "bg-ima-primary",
-                )}
-                style={{ width: `${progressBarWidth}%` }}
-              />
-            </div>
+            <TodaysWorkMetric totalMinutes={totalMinutesWorked} goalMet={goalMet} />
           </div>
 
-          <Link
-            href={nextAction.href}
-            className="group inline-flex items-center justify-center gap-3 w-full rounded-[14px] bg-ima-primary text-white text-[15px] md:text-[17px] font-bold tracking-tight min-h-[60px] md:min-h-[64px] px-6 motion-safe:transition-all motion-safe:duration-200 ease-out hover:bg-ima-primary-hover hover:shadow-[0_14px_32px_-14px_rgba(37,99,235,0.65)] hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2"
-          >
-            {nextAction.label}
-            <ArrowRight
-              className="h-5 w-5 motion-safe:transition-transform duration-200 ease-out group-hover:translate-x-1"
-              aria-hidden="true"
-            />
-          </Link>
+          <NextActionButton href={nextAction.href} label={nextAction.label} />
           </div>
 
           {/* Right column — Consistency */}
@@ -220,7 +184,7 @@ export default async function StudentDiyDashboard() {
 
         {coachNote && (
           <div
-            className="mt-[14px] motion-safe:animate-fadeIn"
+            className="mt-[14px] motion-safe:animate-riseIn"
             style={{ animationDelay: "120ms" }}
           >
             <CoachNoteCard note={coachNote} basePath="/student_diy" />
@@ -230,7 +194,7 @@ export default async function StudentDiyDashboard() {
         {/* Deals — compact horizontal stat cards (matches coach Row A) */}
         <section
           aria-label="Deals summary"
-          className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-[14px] motion-safe:animate-fadeIn"
+          className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-[14px] motion-safe:animate-riseIn"
           style={{ animationDelay: "150ms" }}
         >
           <CompactStat
@@ -259,10 +223,10 @@ export default async function StudentDiyDashboard() {
         {/* Roadmap */}
         <section
           aria-label="Roadmap"
-          className="mt-10 motion-safe:animate-fadeIn"
+          className="mt-10 motion-safe:animate-riseIn"
           style={{ animationDelay: "200ms" }}
         >
-          <div className="bg-white border border-ima-border rounded-[14px] p-6 flex flex-col">
+          <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-6 flex flex-col">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="w-9 h-9 rounded-[8px] bg-ima-surface-accent flex items-center justify-center shrink-0">
@@ -314,24 +278,26 @@ export default async function StudentDiyDashboard() {
                     ? `Continue step ${activeRoadmapStep.step_number}`
                     : "View roadmap"
               }
-              className="group mt-auto pt-5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-ima-primary hover:text-ima-primary-hover min-h-[44px] focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2 rounded-md"
+              className="group mt-auto pt-5"
             >
-              {allRoadmapDone
-                ? "View roadmap"
-                : activeRoadmapStep
-                  ? `Continue step ${activeRoadmapStep.step_number}`
-                  : "View roadmap"}
-              <ArrowRight
-                className="h-3.5 w-3.5 motion-safe:transition-transform group-hover:translate-x-0.5"
-                aria-hidden="true"
-              />
+              <span className="flex items-center justify-center gap-2 rounded-[10px] bg-ima-surface-accent text-ima-primary text-[13px] font-semibold min-h-[44px] px-4 motion-safe:transition-all duration-200 ease-expo-out group-hover:bg-ima-primary group-hover:text-white group-hover:shadow-[0_8px_20px_-10px_rgba(37,99,235,0.7)] group-focus-visible:outline-2 group-focus-visible:outline-ima-primary group-focus-visible:outline-offset-2">
+                {allRoadmapDone
+                  ? "View roadmap"
+                  : activeRoadmapStep
+                    ? `Continue step ${activeRoadmapStep.step_number}`
+                    : "View roadmap"}
+                <ArrowRight
+                  className="h-4 w-4 motion-safe:transition-transform group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </span>
             </Link>
           </div>
         </section>
 
         {/* Hours this week — visual */}
         <div
-          className="mt-[14px] motion-safe:animate-fadeIn"
+          className="mt-[14px] motion-safe:animate-riseIn"
           style={{ animationDelay: "250ms" }}
         >
           <WeeklyHoursChart data={weeklyHours} />
@@ -339,10 +305,10 @@ export default async function StudentDiyDashboard() {
 
         {/* Weekly leaderboard — community motivation */}
         <div
-          className="mt-[14px] motion-safe:animate-fadeIn"
+          className="mt-[14px] motion-safe:animate-riseIn"
           style={{ animationDelay: "300ms" }}
         >
-          <WeeklyWorkLeaderboard rows={leaderboard} currentStudentId={user.id} />
+          <WeeklyMomentum data={momentum} />
         </div>
 
       </div>

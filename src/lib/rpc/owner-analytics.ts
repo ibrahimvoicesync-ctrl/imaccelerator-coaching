@@ -30,6 +30,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import {
   ownerAnalyticsTag,
   type OwnerAnalyticsPayload,
+  type OwnerPlatformMetrics,
 } from "@/lib/rpc/owner-analytics-types";
 
 // Re-export so server-side callers grab everything from one path.
@@ -47,6 +48,9 @@ export type {
   OwnerCoachDealsRow,
   OwnerLeaderboardsV2,
   OwnerAnalyticsPayload,
+  OwnerHoursTotals,
+  OwnerRoadmapReachRow,
+  OwnerPlatformMetrics,
 } from "@/lib/rpc/owner-analytics-types";
 
 /**
@@ -96,6 +100,51 @@ export async function getOwnerAnalyticsCached(): Promise<OwnerAnalyticsPayload> 
   const cached = unstable_cache(
     async () => fetchOwnerAnalytics(),
     ["owner-analytics-v2"],
+    {
+      revalidate: 60,
+      tags: [ownerAnalyticsTag()],
+    },
+  );
+  return cached();
+}
+
+/**
+ * Uncached call to public.get_owner_platform_metrics (migration 00048) —
+ * windowed total hours (self-reported daily_reports.hours_worked) + roadmap
+ * "reached" counts per step. Separate RPC from the leaderboards.
+ *
+ * Never swallows errors — logs and rethrows (CLAUDE.md Hard Rule #5).
+ */
+export async function fetchOwnerPlatformMetrics(): Promise<OwnerPlatformMetrics> {
+  const admin = createAdminClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (admin as any).rpc("get_owner_platform_metrics");
+
+  if (error) {
+    console.error("[owner-platform-metrics] RPC failed:", error);
+    throw new Error(
+      `Failed to load owner platform metrics: ${error.message ?? "unknown"} (code=${error.code ?? "?"})`,
+    );
+  }
+  if (!data) {
+    console.error("[owner-platform-metrics] RPC returned no data");
+    throw new Error("Failed to load owner platform metrics: RPC returned no data");
+  }
+
+  return data as unknown as OwnerPlatformMetrics;
+}
+
+/**
+ * Cached variant — unstable_cache(60s), keyed `["owner-platform-metrics-v1"]`,
+ * tagged with the shared OWNER_ANALYTICS_TAG so existing daily_reports mutation
+ * invalidations (/api/reports) already refresh the hours totals. Roadmap
+ * mutations (/api/roadmap, /api/roadmap/undo) also call revalidateTag so the
+ * funnel stays fresh when students advance.
+ */
+export async function getOwnerPlatformMetricsCached(): Promise<OwnerPlatformMetrics> {
+  const cached = unstable_cache(
+    async () => fetchOwnerPlatformMetrics(),
+    ["owner-platform-metrics-v1"],
     {
       revalidate: 60,
       tags: [ownerAnalyticsTag()],

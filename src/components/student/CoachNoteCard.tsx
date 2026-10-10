@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
@@ -14,18 +17,29 @@ function initials(name: string): string {
 
 export function CoachNoteCard({ note, basePath }: { note: CoachNote; basePath: string }) {
   const when = formatDistanceToNow(new Date(note.created_at), { addSuffix: true });
-  // Recency proxy for "new" — avoids needing a read-state column.
-  const isNew = Date.now() - new Date(note.created_at).getTime() < 48 * 60 * 60 * 1000;
+  // Recency proxy for "new" — avoids needing a read-state column. Computed after
+  // mount (client-only) so render stays pure and server/client markup matches;
+  // calling Date.now() during render would mismatch near the 48h boundary.
+  const [isNew, setIsNew] = useState(false);
+  useEffect(() => {
+    // Client-only recency proxy: initial render is always `false` on both server
+    // and client so SSR/hydration markup matches, then we flip it post-mount.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsNew(Date.now() - new Date(note.created_at).getTime() < 48 * 60 * 60 * 1000);
+  }, [note.created_at]);
+
+  // The full feedback history route only exists in the `student` lane.
+  const showAllFeedback = basePath === "/student";
 
   return (
     <section
       aria-labelledby="coach-note-label"
-      className="bg-white border border-ima-border rounded-[14px] p-6 md:p-8"
+      className="bg-white border border-ima-border rounded-[14px] shadow-card p-6 md:p-8"
     >
       <div className="mb-3 flex items-center justify-between gap-3">
         <p
           id="coach-note-label"
-          className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted"
+          className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary"
         >
           From your coach
         </p>
@@ -47,18 +61,20 @@ export function CoachNoteCard({ note, basePath }: { note: CoachNote; basePath: s
             {initials(note.coach_name)}
           </div>
           <p className="text-sm font-medium text-ima-text">{note.coach_name}</p>
-          <span className="text-[11px] text-ima-text-muted">· {when}</span>
+          <span className="text-[11px] text-ima-text-secondary">· {when}</span>
         </div>
-        <Link
-          href={`${basePath}/report/history`}
-          className="group inline-flex items-center gap-1.5 text-[13px] font-semibold text-ima-primary hover:text-ima-primary-hover min-h-[44px] rounded-md focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2"
-        >
-          All feedback
-          <ArrowRight
-            className="h-3.5 w-3.5 motion-safe:transition-transform group-hover:translate-x-0.5"
-            aria-hidden="true"
-          />
-        </Link>
+        {showAllFeedback && (
+          <Link
+            href={`${basePath}/report/history`}
+            className="group inline-flex items-center gap-1.5 text-[13px] font-semibold text-ima-primary hover:text-ima-primary-hover min-h-[44px] rounded-md focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2"
+          >
+            All feedback
+            <ArrowRight
+              className="h-3.5 w-3.5 motion-safe:transition-transform group-hover:translate-x-0.5"
+              aria-hidden="true"
+            />
+          </Link>
+        )}
       </div>
     </section>
   );

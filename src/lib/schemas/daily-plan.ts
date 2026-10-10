@@ -22,12 +22,14 @@ export const sessionEntrySchema = z.object({
  * Zod schema for the full plan_json object stored in daily_plans.plan_json.
  * Per D-07: version: 1 is required for schema evolution safety.
  * total_work_minutes is the sum of all session_minutes, capped at the daily
- * cap (dailyCapHours = 8h). sessions array must have at least 1 entry.
+ * cap (dailyCapHours = 8h). sessions array must have at least 1 entry, and is
+ * capped at 50 to bound payload size — a realistic day can't have hundreds of
+ * planned sessions.
  */
 export const planJsonSchema = z.object({
   version: z.literal(1),
   total_work_minutes: z.number().int().min(1).max(WORK_TRACKER.dailyCapHours * 60),
-  sessions: z.array(sessionEntrySchema).min(1),
+  sessions: z.array(sessionEntrySchema).min(1).max(50),
 });
 
 /** TypeScript type inferred from planJsonSchema */

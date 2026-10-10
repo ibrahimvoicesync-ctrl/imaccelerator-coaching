@@ -28,7 +28,7 @@ export function PlannedSessionList({
         <p className="text-xs uppercase tracking-[0.08em] font-semibold text-ima-text">
           Today&apos;s plan
         </p>
-        <p className="text-[11px] uppercase tracking-[0.08em] font-medium text-ima-text-muted tabular-nums">
+        <p className="text-[11px] uppercase tracking-[0.08em] font-medium text-ima-text-secondary tabular-nums">
           {`${completedCount} / ${plan.sessions.length} sessions`}
         </p>
       </div>
@@ -67,7 +67,7 @@ export function PlannedSessionList({
 
               {/* Editorial label + duration */}
               <div className="flex-1 min-w-0">
-                <p className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-muted leading-none">
+                <p className="text-[11px] uppercase tracking-[0.08em] font-semibold text-ima-text-secondary leading-none">
                   {`Session ${String(index + 1).padStart(2, "0")}`}
                 </p>
                 <p className="mt-2 text-lg font-semibold text-ima-text tabular-nums leading-tight">

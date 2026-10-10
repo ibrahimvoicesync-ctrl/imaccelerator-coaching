@@ -10,6 +10,7 @@ import { studentAnalyticsTag } from "@/lib/rpc/student-analytics";
 import { coachDashboardTag } from "@/lib/rpc/coach-dashboard-types";
 import { coachAnalyticsTag } from "@/lib/rpc/coach-analytics-types";
 import { coachMilestonesTag } from "@/lib/rpc/coach-milestones-types";
+import { ownerAnalyticsTag } from "@/lib/rpc/owner-analytics-types";
 
 const patchSchema = z.object({
   step_number: z.number().int().min(1).max(ROADMAP_STEPS.length),
@@ -122,6 +123,12 @@ export async function PATCH(request: NextRequest) {
     // Invalidate the coach's caches + sidebar badge so the notification surfaces
     // within one render instead of one TTL.
     revalidateTag("badges", "default");
+    // Owner platform metrics (roadmap stage funnel) reflect this advance.
+    try {
+      revalidateTag(ownerAnalyticsTag(), "default");
+    } catch (e) {
+      console.error("[revalidate-tag owner-analytics]", e);
+    }
     try {
       const { data: studentRow } = await admin
         .from("users")

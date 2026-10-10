@@ -1,7 +1,7 @@
 export default function Loading() {
   return (
     <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg">
-      <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
+      <div className="mx-auto max-w-[1200px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
         {/* Header */}
         <div className="h-[14px] w-20 rounded bg-ima-surface-light motion-safe:animate-pulse" />
         <div className="mt-3 h-10 w-44 rounded bg-ima-surface-light motion-safe:animate-pulse" />
@@ -32,7 +32,7 @@ export default function Loading() {
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className="h-[80px] bg-white border border-ima-border rounded-[14px] motion-safe:animate-pulse"
+              className="h-[80px] bg-white border border-ima-border rounded-[14px] shadow-card motion-safe:animate-pulse"
             />
           ))}
         </div>

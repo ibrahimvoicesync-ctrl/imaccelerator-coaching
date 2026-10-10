@@ -12,6 +12,36 @@ import {
   Sparkles,
 } from "lucide-react";
 
+type AdminClient = ReturnType<typeof createAdminClient>;
+
+/**
+ * roadmap_progress carries 16 rows per student, so a full roster (≥63 students)
+ * overflows PostgREST's 1000-row cap (config.toml max_rows) and silently
+ * truncates — corrupting per-student step counts. Fetch every student's rows by
+ * paging over student-id batches (≤50 → ≤800 rows/request) and merge, so no
+ * step is dropped.
+ */
+async function fetchRoadmapProgress(admin: AdminClient, ids: string[]) {
+  const BATCH = 50;
+  const batches: string[][] = [];
+  for (let i = 0; i < ids.length; i += BATCH) {
+    batches.push(ids.slice(i, i + BATCH));
+  }
+  const results = await Promise.all(
+    batches.map((batch) =>
+      admin
+        .from("roadmap_progress")
+        .select("student_id, step_number, status")
+        .in("student_id", batch)
+        .order("step_number", { ascending: true }),
+    ),
+  );
+  return {
+    data: results.flatMap((r) => r.data ?? []),
+    error: results.find((r) => r.error)?.error ?? null,
+  };
+}
+
 type EnrichedStudent = {
   id: string;
   name: string;
@@ -51,28 +81,46 @@ export default async function CoachStudentsPage() {
   const studentList = students ?? [];
   const studentIds = studentList.map((s) => s.id);
 
-  const [sessionsResult, reportsResult, roadmapResult] =
+  // Activity maps only need recent state (today / last-active / last-7-days), so
+  // bound them to a recent window (keeps rows well under the 1000-row cap for
+  // realistic rosters) and order by date DESC so any residual truncation drops
+  // the OLDEST rows rather than arbitrary ones. roadmap_progress needs all rows
+  // per student, so it's paged over student-id batches.
+  const ROSTER_LOOKBACK_DAYS = 30;
+  const rosterSince = new Date(
+    new Date(today + "T00:00:00Z").getTime() -
+      ROSTER_LOOKBACK_DAYS * 24 * 60 * 60 * 1000,
+  )
+    .toISOString()
+    .split("T")[0];
+
+  const roadmapPromise =
+    studentIds.length > 0
+      ? fetchRoadmapProgress(admin, studentIds)
+      : Promise.resolve({ data: null, error: null });
+
+  const [sessionsResult, reportsResult] =
     studentIds.length > 0
       ? await Promise.all([
           admin
             .from("work_sessions")
             .select("student_id, date")
             .in("student_id", studentIds)
+            .gte("date", rosterSince)
             .order("date", { ascending: false }),
           admin
             .from("daily_reports")
-            .select("student_id, date, star_rating, reviewed_by")
-            .in("student_id", studentIds),
-          admin
-            .from("roadmap_progress")
-            .select("student_id, step_number, status")
-            .in("student_id", studentIds),
+            .select("student_id, date, star_rating, reviewed_by, submitted_at")
+            .in("student_id", studentIds)
+            .gte("date", rosterSince)
+            .order("date", { ascending: false }),
         ])
       : ([
           { data: null, error: null },
           { data: null, error: null },
-          { data: null, error: null },
         ] as const);
+
+  const roadmapResult = await roadmapPromise;
 
   if (sessionsResult.error) {
     console.error("[coach students] Failed to load sessions:", sessionsResult.error);
@@ -98,7 +146,8 @@ export default async function CoachStudentsPage() {
     if (!latestReportMap.has(r.student_id) || r.date > (latestReportMap.get(r.student_id) ?? "")) {
       latestReportMap.set(r.student_id, r.date);
     }
-    if (r.date === today) {
+    // Drafts (quick-logged emails, submitted_at NULL) aren't a submitted report.
+    if (r.date === today && r.submitted_at !== null) {
       todayReportMap.set(r.student_id, true);
     }
   }
@@ -236,7 +285,7 @@ export default async function CoachStudentsPage() {
 
   return (
     <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg">
-      <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
+      <div className="mx-auto max-w-[1200px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
         {/* Header */}
         <header className="motion-safe:animate-fadeIn">
           <p className="text-xs font-semibold tracking-[0.08em] text-ima-text-secondary uppercase">
@@ -291,7 +340,7 @@ export default async function CoachStudentsPage() {
           </h2>
 
           {enrichedStudents.length === 0 ? (
-            <div className="mt-4 bg-white border border-ima-border rounded-[14px] p-6">
+            <div className="mt-4 bg-white border border-ima-border rounded-[14px] shadow-card p-6">
               <EmptyState
                 variant="compact"
                 icon={<Users className="h-5 w-5" aria-hidden="true" />}
@@ -401,7 +450,7 @@ export default async function CoachStudentsPage() {
 
                     {/* Risk reasons row */}
                     {atRisk && student.atRiskReasons.length > 0 && (
-                      <p className="mt-5 text-[10px] font-medium text-ima-warning tracking-widest uppercase">
+                      <p className="mt-5 text-[10px] font-medium text-ima-warning tracking-[0.08em] uppercase">
                         {student.atRiskReasons.join(" · ")}
                       </p>
                     )}

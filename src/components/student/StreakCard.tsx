@@ -1,3 +1,4 @@
+import { Flame } from "lucide-react";
 import type { StreakInfo } from "@/lib/streak";
 
 
@@ -10,34 +11,33 @@ interface StreakCardProps {
 
 /**
  * Calm, understated daily-consistency streak — a reason to return without the
- * gamified hype the brand avoids. Blue is the signal; the dot strip reads as
- * "don't break the chain" at a glance.
+ * gamified hype the brand avoids. Rendered as a solid `ima-primary` card so it
+ * carries weight on the dashboard and balances the large blue hero metric on
+ * the left. White is the foreground; the dot strip reads as "don't break the
+ * chain" at a glance.
  */
 export function StreakCard({ info, className = "" }: StreakCardProps) {
   const { current, longest, activeToday, week } = info;
   const hasStreak = current > 0;
 
   const headline = !hasStreak
-    ? "Start your streak"
+    ? "Start your streak today"
     : activeToday
-    ? "Logged today — keep it going"
-    : "Keep your streak alive today";
+    ? "Logged today — keep it alive"
+    : "One session keeps it going";
 
   return (
     <section
       aria-label="Work consistency streak"
-      className={`bg-white border border-ima-border rounded-[14px] p-6 md:p-8 ${className}`}
+      className={`relative overflow-hidden bg-ima-primary rounded-[14px] shadow-card p-6 md:p-8 text-white ${className}`}
     >
       <div className="flex items-center justify-between gap-3">
-        <p
-          className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"
-        >
+        <p className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.08em] text-white/80 uppercase">
+          <Flame className="h-3.5 w-3.5 text-white" aria-hidden="true" />
           Consistency
         </p>
         {longest > 0 && (
-          <span
-            className="text-[10px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase tabular-nums"
-          >
+          <span className="text-[10px] font-semibold tracking-[0.08em] text-white/70 uppercase tabular-nums">
             Best {longest}d
           </span>
         )}
@@ -45,30 +45,28 @@ export function StreakCard({ info, className = "" }: StreakCardProps) {
 
       <div className="mt-5 flex items-end gap-2">
         <span
-          className={`text-[44px] md:text-[52px] font-bold tabular-nums tracking-[-0.02em] leading-none ${
-            hasStreak ? "text-ima-primary" : "text-ima-border"
+          className={`text-[44px] md:text-[52px] font-semibold tabular-nums tracking-[-0.02em] leading-none ${
+            hasStreak ? "text-white" : "text-white/55"
           }`}
         >
           {current}
         </span>
-        <span className="pb-[6px] text-[15px] font-medium text-ima-text-secondary">
+        <span className="pb-[6px] text-[15px] font-medium text-white/75">
           {current === 1 ? "day" : "days"}
         </span>
       </div>
 
-      <p className="mt-3 text-[13px] text-ima-text-secondary leading-snug">{headline}</p>
+      <p className="mt-3 text-[13px] text-white/80 leading-snug">{headline}</p>
 
       {/* Week dot strip — oldest → newest */}
-      <div className="mt-5 flex items-center justify-between max-w-[280px]">
+      <div className="mt-6 flex items-center justify-between max-w-[280px]">
         {week.map((d) => {
           const letter = WEEKDAY_LETTERS[new Date(d.date + "T00:00:00Z").getUTCDay()];
           const dotClass = d.active
-            ? d.isToday
-              ? "bg-ima-success"
-              : "bg-ima-primary"
+            ? "bg-white"
             : d.isToday
-            ? "bg-white border-2 border-ima-primary"
-            : "bg-ima-surface-light";
+            ? "bg-transparent border-2 border-white/70"
+            : "bg-white/20";
           return (
             <div key={d.date} className="flex flex-col items-center gap-2">
               <span
@@ -77,7 +75,7 @@ export function StreakCard({ info, className = "" }: StreakCardProps) {
               />
               <span
                 className={`text-[9px] font-semibold uppercase tracking-[0.08em] tabular-nums ${
-                  d.isToday ? "text-ima-primary" : "text-ima-text-muted"
+                  d.isToday ? "text-white" : "text-white/55"
                 }`}
               >
                 {letter}

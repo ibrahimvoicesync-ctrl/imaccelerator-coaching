@@ -37,7 +37,7 @@ import {
 const chartColors = {
   primary: "#2563EB", // ima-primary
   border: "#E2E8F0", // ima-border
-  textMuted: "#64748B", // ima-text-secondary
+  textMuted: "#5F6E85", // ima-text-secondary
 } as const;
 
 
@@ -143,7 +143,7 @@ export function AnalyticsClient({
         className="motion-safe:animate-fadeIn"
         style={{ animationDelay: "100ms" }}
       >
-        <div className="bg-white border border-ima-border rounded-[14px] p-6 md:p-8">
+        <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-6 md:p-8">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <p
               id="analytics-hero-label"
@@ -558,7 +558,7 @@ function TrendCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white border border-ima-border rounded-[14px] p-5 md:p-6">
+    <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-5 md:p-6">
       <div className="flex items-baseline justify-between gap-3 mb-5">
         <p
           className="text-[11px] font-semibold tracking-[0.08em] text-ima-text-secondary uppercase"

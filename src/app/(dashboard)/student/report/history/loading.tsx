@@ -1,7 +1,7 @@
 export default function Loading() {
   return (
     <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg">
-      <div className="mx-auto max-w-3xl px-6 md:px-14 pt-10 md:pt-14 pb-20">
+      <div className="mx-auto max-w-[880px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
         {/* Back link */}
         <div className="h-4 w-28 rounded bg-ima-surface-light motion-safe:animate-pulse" />
 
@@ -17,7 +17,7 @@ export default function Loading() {
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className="rounded-[14px] border border-ima-border bg-white p-6 space-y-3 motion-safe:animate-pulse"
+              className="rounded-[14px] border border-ima-border bg-white shadow-card p-6 space-y-3 motion-safe:animate-pulse"
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="h-4 w-48 rounded bg-ima-surface-light" />

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback, useLayoutEffect } from "react";
 import { Copy, Check, Share2, Gift, X } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useToast } from "@/components/ui/Toast";
 
 type PillState = "initial" | "loading" | "ready";
@@ -11,12 +12,14 @@ function detectShareSupport(): boolean {
 }
 
 /**
- * Floating "Get my referral link" pill. Lives bottom-right on every student
- * page (replaces the former Referral nav tab). Click generates the short link
- * via /api/referral-link, then expands into a copy/share panel.
+ * "Get my referral link" row at the foot of the student sidebar, above the
+ * account card (replaces the former Referral nav tab and floating pill). Click
+ * generates the short link via /api/referral-link, then expands in place into
+ * a copy/share panel.
  */
 export function ReferralPill() {
   const { toast } = useToast();
+  const reduced = useReducedMotion() ?? false;
   const toastRef = useRef(toast);
   useLayoutEffect(() => {
     toastRef.current = toast;
@@ -110,77 +113,82 @@ export function ReferralPill() {
   }, [shortUrl]);
 
   return (
-    <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-40 print:hidden">
-      {pillState === "ready" && shortUrl ? (
-        <div className="w-[min(20rem,calc(100vw-2rem))] rounded-[14px] border border-ima-border bg-white p-4 shadow-lg motion-safe:animate-fadeIn">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-ima-success/10 text-ima-success">
-                <Gift className="h-4 w-4" aria-hidden="true" />
-              </span>
-              <div>
-                <p className="text-[13px] font-semibold leading-tight text-ima-text">
-                  Your referral link
-                </p>
-                <p className="text-[11px] leading-tight text-ima-text-muted">
-                  Earn $500 per friend who joins
-                </p>
+    <div className="print:hidden">
+      <AnimatePresence initial={false} mode="wait">
+        {pillState === "ready" && shortUrl ? (
+          <motion.div
+            key="panel"
+            initial={reduced ? { opacity: 0 } : { opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={reduced ? { opacity: 0 } : { opacity: 0, height: 0 }}
+            transition={reduced ? { duration: 0.12 } : { type: "spring", bounce: 0, duration: 0.35 }}
+            className="overflow-hidden"
+          >
+            <div className="rounded-[12px] bg-white p-[10px] shadow-card ring-1 ring-ima-sidebar-border">
+              <div className="flex items-center justify-between gap-2 pl-1">
+                <p className="text-[12px] font-semibold text-ima-text">Your referral link</p>
+                <button
+                  type="button"
+                  className="-my-2 -mr-2 flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-lg text-ima-text-secondary hover:bg-ima-sidebar-hover hover:text-ima-text motion-safe:transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary"
+                  aria-label="Close referral link panel"
+                  onClick={() => setPillState("initial")}
+                >
+                  <X className="h-4 w-4" aria-hidden="true" />
+                </button>
+              </div>
+              <p className="pl-1 text-[11px] leading-tight text-ima-text-secondary">
+                Earn $500 per friend who joins
+              </p>
+              <div className="mt-2 flex items-center gap-1 rounded-[8px] bg-ima-surface-light py-0.5 pl-2 pr-0.5">
+                <span className="min-w-0 flex-1 truncate font-mono text-[12px] text-ima-text" title={shortUrl}>
+                  {shortUrl.replace(/^https?:\/\//, "")}
+                </span>
+                <button
+                  type="button"
+                  className="flex min-h-[40px] min-w-[40px] shrink-0 items-center justify-center rounded-[6px] hover:bg-white motion-safe:transition-colors motion-safe:active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary"
+                  aria-label={copied ? "Copied to clipboard" : "Copy referral link"}
+                  title={copied ? "Copied!" : "Copy"}
+                  onClick={handleCopy}
+                >
+                  {copied ? (
+                    <Check className="h-4 w-4 text-ima-success" aria-hidden="true" />
+                  ) : (
+                    <Copy className="h-4 w-4 text-ima-text-secondary" aria-hidden="true" />
+                  )}
+                </button>
+                {shareSupported && (
+                  <button
+                    type="button"
+                    className="flex min-h-[40px] min-w-[40px] shrink-0 items-center justify-center rounded-[6px] hover:bg-white motion-safe:transition-colors motion-safe:active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary"
+                    aria-label="Share referral link"
+                    title="Share"
+                    onClick={handleShare}
+                  >
+                    <Share2 className="h-4 w-4 text-ima-text-secondary" aria-hidden="true" />
+                  </button>
+                )}
               </div>
             </div>
-            <button
-              type="button"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-ima-text-secondary hover:bg-ima-surface-light motion-safe:transition-colors"
-              aria-label="Close referral link panel"
-              onClick={() => setPillState("initial")}
-            >
-              <X className="h-4 w-4" aria-hidden="true" />
-            </button>
-          </div>
-
-          <div className="mt-3 flex items-center gap-2 rounded-[10px] bg-ima-surface-light px-2 py-2">
-            <span className="min-w-0 flex-1 truncate font-mono text-sm text-ima-text">
-              {shortUrl}
+          </motion.div>
+        ) : (
+          <motion.button
+            key="button"
+            type="button"
+            initial={reduced ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.08 } }}
+            className="group flex w-full min-h-[44px] items-center gap-3 rounded-[10px] px-3 text-[14px] font-medium text-ima-text-secondary hover:bg-ima-sidebar-hover hover:text-ima-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary disabled:opacity-70 motion-safe:transition-[color,background-color,transform] motion-safe:duration-150 motion-safe:active:scale-[0.98]"
+            aria-busy={pillState === "loading" || undefined}
+            disabled={pillState === "loading"}
+            onClick={handleGetLink}
+          >
+            <Gift className="h-[18px] w-[18px] shrink-0" aria-hidden="true" />
+            <span className="truncate">
+              {pillState === "loading" ? "Generating…" : "Get my referral link"}
             </span>
-            <button
-              type="button"
-              className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-lg hover:bg-white motion-safe:transition-colors"
-              aria-label={copied ? "Copied to clipboard" : "Copy referral link"}
-              onClick={handleCopy}
-            >
-              {copied ? (
-                <>
-                  <Check className="h-4 w-4 text-ima-success" aria-hidden="true" />
-                  <span className="ml-1 text-xs font-semibold text-ima-success">Copied!</span>
-                </>
-              ) : (
-                <Copy className="h-4 w-4 text-ima-text-secondary" aria-hidden="true" />
-              )}
-            </button>
-            {shareSupported && (
-              <button
-                type="button"
-                className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-lg hover:bg-white motion-safe:transition-colors"
-                aria-label="Share referral link"
-                onClick={handleShare}
-              >
-                <Share2 className="h-4 w-4 text-ima-text-secondary" aria-hidden="true" />
-              </button>
-            )}
-          </div>
-        </div>
-      ) : (
-        <button
-          type="button"
-          className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-ima-primary px-5 py-2.5 text-[14px] font-semibold text-white shadow-md hover:bg-ima-primary-hover hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary focus-visible:ring-offset-2 disabled:opacity-70 motion-safe:transition-all"
-          aria-label="Get my referral link"
-          aria-busy={pillState === "loading" || undefined}
-          disabled={pillState === "loading"}
-          onClick={handleGetLink}
-        >
-          <Gift className="h-4 w-4" aria-hidden="true" />
-          {pillState === "loading" ? "Generating…" : "Get my referral link"}
-        </button>
-      )}
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

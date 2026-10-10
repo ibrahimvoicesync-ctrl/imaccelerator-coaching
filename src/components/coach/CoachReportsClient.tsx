@@ -170,7 +170,7 @@ export function CoachReportsClient({
 
       {/* Report list */}
       {localReports.length === 0 ? (
-        <div className="bg-white border border-ima-border rounded-[14px] p-6">
+        <div className="bg-white border border-ima-border rounded-[14px] shadow-card p-6">
           <EmptyState
             variant="compact"
             icon={<FileText className="h-5 w-5" aria-hidden="true" />}

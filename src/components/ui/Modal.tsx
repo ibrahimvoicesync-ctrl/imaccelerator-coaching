@@ -83,14 +83,16 @@ export function Modal({ open, onClose, title, description, children, size = "md"
     document.addEventListener("keydown", handleEscape);
     setTimeout(() => closeButtonRef.current?.focus(), 0);
 
-    // Mark the rest of the page as inert for screen readers
-    const appRoot = document.getElementById("__next");
-    if (appRoot) appRoot.setAttribute("inert", "");
+    // Mark the rest of the page as inert for screen readers. The modal is
+    // portaled to document.body, so #main-content is a sibling — making it
+    // inert removes the page from the a11y tree without touching the modal.
+    const mainContent = document.getElementById("main-content");
+    if (mainContent) mainContent.setAttribute("inert", "");
 
     return () => {
       document.body.style.overflow = prevOverflow;
       document.removeEventListener("keydown", handleEscape);
-      if (appRoot) appRoot.removeAttribute("inert");
+      if (mainContent) mainContent.removeAttribute("inert");
       if (previousActiveElement.current instanceof HTMLElement) {
         previousActiveElement.current.focus();
       }
@@ -135,7 +137,7 @@ export function Modal({ open, onClose, title, description, children, size = "md"
             <button
               ref={closeButtonRef}
               onClick={onClose}
-              className="text-ima-text-muted hover:text-ima-text motion-safe:transition-colors -mt-1 -mr-1 min-h-[44px] min-w-[44px] flex items-center justify-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary"
+              className="text-ima-text-secondary hover:text-ima-text motion-safe:transition-colors -mt-1 -mr-1 min-h-[44px] min-w-[44px] flex items-center justify-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-primary"
               aria-label="Close"
             >
               <X className="h-5 w-5" aria-hidden="true" />

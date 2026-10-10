@@ -15,27 +15,36 @@ export type CoachNote = {
 export async function getLatestCoachComment(studentId: string): Promise<CoachNote | null> {
   const admin = createAdminClient();
 
-  const { data: reports } = await admin
+  const { data: reports, error: reportsError } = await admin
     .from("daily_reports")
     .select("id")
     .eq("student_id", studentId);
+  if (reportsError) {
+    console.error("[coach-comment] Failed to load reports:", reportsError);
+  }
   const reportIds = (reports ?? []).map((r) => r.id);
   if (reportIds.length === 0) return null;
 
-  const { data: comment } = await admin
+  const { data: comment, error: commentError } = await admin
     .from("report_comments")
     .select("comment, created_at, coach_id")
     .in("report_id", reportIds)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
+  if (commentError) {
+    console.error("[coach-comment] Failed to load comment:", commentError);
+  }
   if (!comment) return null;
 
-  const { data: coach } = await admin
+  const { data: coach, error: coachError } = await admin
     .from("users")
     .select("name")
     .eq("id", comment.coach_id)
     .single();
+  if (coachError) {
+    console.error("[coach-comment] Failed to load coach:", coachError);
+  }
 
   return {
     comment: comment.comment,

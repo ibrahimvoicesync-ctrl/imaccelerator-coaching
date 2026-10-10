@@ -38,9 +38,22 @@ function hostnameOf(url: string): string {
   }
 }
 
+// Defense-in-depth: only http(s) links are safe to render into href. A
+// pre-existing bad stored value (e.g. javascript:/data:) must never become a
+// clickable script-scheme link.
+function isSafeHttpUrl(url: string): boolean {
+  try {
+    const { protocol } = new URL(url);
+    return protocol === "http:" || protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 export function ResourceLinkCard({ resource, canManage, onDelete }: ResourceLinkCardProps) {
   const pinned = resource.is_pinned;
   const host = hostnameOf(resource.url);
+  const safeUrl = isSafeHttpUrl(resource.url);
 
   return (
     <article
@@ -76,20 +89,24 @@ export function ResourceLinkCard({ resource, canManage, onDelete }: ResourceLink
                 Pinned
               </p>
             )}
-            <p className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-muted tabular-nums leading-none truncate">
+            <p className="text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-secondary tabular-nums leading-none truncate">
               {host}
             </p>
           </div>
 
           <h3 className="mt-2 text-lg md:text-xl font-semibold tracking-tight leading-tight break-words">
-            <a
-              href={resource.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-ima-text hover:text-ima-primary focus-visible:outline-none focus-visible:text-ima-primary focus-visible:underline underline-offset-4 motion-safe:transition-colors"
-            >
-              {resource.title}
-            </a>
+            {safeUrl ? (
+              <a
+                href={resource.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-ima-text hover:text-ima-primary focus-visible:outline-none focus-visible:text-ima-primary focus-visible:underline underline-offset-4 motion-safe:transition-colors"
+              >
+                {resource.title}
+              </a>
+            ) : (
+              <span className="text-ima-text">{resource.title}</span>
+            )}
           </h3>
 
           {resource.comment && (
@@ -98,7 +115,7 @@ export function ResourceLinkCard({ resource, canManage, onDelete }: ResourceLink
             </p>
           )}
 
-          <div className="mt-3 flex items-center gap-3 text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-muted">
+          <div className="mt-3 flex items-center gap-3 text-[10px] uppercase tracking-[0.08em] font-medium text-ima-text-secondary">
             <span className="truncate">
               {resource.created_by_user?.name ?? "Unknown"}
             </span>
@@ -114,7 +131,7 @@ export function ResourceLinkCard({ resource, canManage, onDelete }: ResourceLink
             type="button"
             onClick={() => onDelete(resource.id)}
             aria-label={"Delete " + resource.title}
-            className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] flex-shrink-0 -mr-2 -mt-1 rounded-lg text-ima-text-muted hover:text-ima-error hover:bg-ima-error/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-error focus-visible:ring-offset-2 motion-safe:transition-colors"
+            className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] flex-shrink-0 -mr-2 -mt-1 rounded-lg text-ima-text-secondary hover:text-ima-error hover:bg-ima-error/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ima-error focus-visible:ring-offset-2 motion-safe:transition-colors"
           >
             <Trash2 className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
           </button>

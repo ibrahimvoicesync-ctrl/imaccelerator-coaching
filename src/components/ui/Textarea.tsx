@@ -26,7 +26,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           aria-invalid={!!error}
           aria-describedby={errorId}
           className={cn(
-            "w-full min-h-[44px] px-3 py-2 bg-ima-surface border border-ima-border rounded-lg text-ima-text placeholder:text-ima-text-muted focus:outline-none focus:ring-2 focus:ring-ima-primary focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed resize-none",
+            "w-full min-h-[44px] px-3 py-2 bg-ima-surface border border-ima-border rounded-lg text-ima-text placeholder:text-ima-text-secondary focus:outline-none focus:ring-2 focus:ring-ima-primary focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed resize-none",
             error && "border-ima-error focus:ring-ima-error",
             className
           )}

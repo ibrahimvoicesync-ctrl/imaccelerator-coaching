@@ -95,7 +95,9 @@ export function PushOptIn({ initialHour = 17 }: { initialHour?: number }) {
         const err = await response.json().catch(() => ({ error: null }));
         console.error("[PushOptIn] subscribe save failed:", err);
         // Roll back the browser subscription so state stays consistent.
-        await sub.unsubscribe().catch(() => {});
+        await sub
+          .unsubscribe()
+          .catch((err) => console.error("[PushOptIn] rollback unsubscribe failed:", err));
         toastRef.current.toast({ type: "error", title: err.error || "Couldn't enable reminders" });
         return;
       }
@@ -115,12 +117,20 @@ export function PushOptIn({ initialHour = 17 }: { initialHour?: number }) {
       const registration = await navigator.serviceWorker.getRegistration();
       const sub = await registration?.pushManager.getSubscription();
       if (sub) {
-        await fetch("/api/push/unsubscribe", {
+        const response = await fetch("/api/push/unsubscribe", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ endpoint: sub.endpoint }),
-        }).catch((err) => console.error("[PushOptIn] unsubscribe save failed:", err));
-        await sub.unsubscribe().catch(() => {});
+        }).catch((err) => {
+          console.error("[PushOptIn] unsubscribe save failed:", err);
+          return null;
+        });
+        if (response && !response.ok) {
+          console.error("[PushOptIn] unsubscribe save failed:", response.status);
+        }
+        await sub
+          .unsubscribe()
+          .catch((err) => console.error("[PushOptIn] browser unsubscribe failed:", err));
       }
       setSubscribed(false);
       toastRef.current.toast({ type: "success", title: "Daily reminders off" });
@@ -168,7 +178,7 @@ export function PushOptIn({ initialHour = 17 }: { initialHour?: number }) {
   const blocked = permission === "denied";
 
   return (
-    <div className="bg-white border border-ima-border rounded-[14px] px-6 py-5">
+    <div className="bg-white border border-ima-border rounded-[14px] shadow-card px-6 py-5">
       <div className="flex items-center gap-4 min-h-[60px]">
         <div className="w-9 h-9 rounded-[8px] bg-ima-surface-accent flex items-center justify-center shrink-0">
         <Bell className="h-[18px] w-[18px] text-ima-primary" aria-hidden="true" />

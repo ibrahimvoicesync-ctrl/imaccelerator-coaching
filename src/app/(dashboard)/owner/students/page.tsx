@@ -33,9 +33,15 @@ export default async function OwnerStudentsPage({
     .order("name")
     .range(from, to);
 
-  if (search) {
+  // PostgREST's .or() uses , ( ) as grammar delimiters and " \ for quoting, and
+  // treats * as a wildcard. Raw user input containing any of them corrupts the
+  // filter string → 400 → "No students found". Strip those characters so the
+  // name/email ilike search stays valid. Dots and @ are kept — they're legal in
+  // the value segment and needed for email search.
+  const safeSearch = (search ?? "").replace(/[,()"\\*]/g, "").trim();
+  if (safeSearch) {
     studentsQuery = studentsQuery.or(
-      `name.ilike.%${search}%,email.ilike.%${search}%`,
+      `name.ilike.%${safeSearch}%,email.ilike.%${safeSearch}%`,
     );
   }
 
@@ -148,7 +154,7 @@ export default async function OwnerStudentsPage({
     <div
       className={`-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg`}
     >
-      <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20">
+      <div className="mx-auto max-w-[1200px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
         {/* Masthead */}
         <header className="motion-safe:animate-fadeIn">
           <p
@@ -228,7 +234,7 @@ export default async function OwnerStudentsPage({
         {/* Student grid */}
         {(students ?? []).length === 0 ? (
           <div
-            className="mt-6 bg-white border border-ima-border rounded-[14px] p-6 motion-safe:animate-fadeIn"
+            className="mt-6 bg-white border border-ima-border rounded-[14px] shadow-card p-6 motion-safe:animate-fadeIn"
             style={{ animationDelay: "150ms" }}
           >
             <EmptyState
@@ -267,7 +273,7 @@ export default async function OwnerStudentsPage({
                     <Link
                       href={`/owner/students/${s.id}`}
                       aria-label={`${s.name} — ${s.status}`}
-                      className="block rounded-[14px] border border-ima-border bg-white p-5 min-h-[88px] motion-safe:transition-[transform,border-color] hover:-translate-y-[1px] hover:border-ima-border focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2"
+                      className="block rounded-[14px] border border-ima-border bg-white shadow-card p-5 min-h-[88px] motion-safe:transition-[transform,border-color] hover:-translate-y-[1px] hover:border-ima-border focus-visible:outline-2 focus-visible:outline-ima-primary focus-visible:outline-offset-2"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-ima-surface-light border border-ima-border flex items-center justify-center text-[12px] font-semibold text-ima-text-secondary shrink-0">

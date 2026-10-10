@@ -129,7 +129,7 @@ export function OwnerAnalyticsClient({ payload }: Props) {
   if (!anyData) {
     return (
       <div
-        className="mt-10 bg-white border border-ima-border rounded-[14px] p-6 motion-safe:animate-fadeIn"
+        className="mt-10 bg-white border border-ima-border rounded-[14px] shadow-card p-6 motion-safe:animate-fadeIn"
         style={{ animationDelay: "100ms" }}
       >
         <EmptyState

@@ -1,7 +1,7 @@
 export default function AnalyticsLoading() {
   return (
     <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg">
-      <div className="mx-auto max-w-[1200px] px-6 md:px-14 pt-10 md:pt-14 pb-20 space-y-10">
+      <div className="mx-auto max-w-[1200px] px-5 md:px-10 pt-8 md:pt-10 pb-16 space-y-10">
         {/* Masthead */}
         <div className="motion-safe:animate-pulse">
           <div className="h-[11px] w-32 rounded bg-ima-surface-light" />
@@ -10,7 +10,7 @@ export default function AnalyticsLoading() {
         </div>
 
         {/* Hero — Lifetime Hours */}
-        <div className="rounded-[14px] border border-ima-border bg-white p-6 md:p-8 motion-safe:animate-pulse">
+        <div className="rounded-[14px] border border-ima-border bg-white shadow-card p-6 md:p-8 motion-safe:animate-pulse">
           <div className="flex items-center justify-between gap-3">
             <div className="h-3 w-32 rounded bg-ima-surface-light" />
             <div className="h-5 w-28 rounded-full bg-ima-surface-light" />
@@ -40,7 +40,7 @@ export default function AnalyticsLoading() {
           {Array.from({ length: 2 }).map((_, i) => (
             <div
               key={i}
-              className="rounded-[14px] border border-ima-border bg-white p-5 md:p-6 motion-safe:animate-pulse"
+              className="rounded-[14px] border border-ima-border bg-white shadow-card p-5 md:p-6 motion-safe:animate-pulse"
             >
               <div className="flex items-baseline justify-between gap-3 mb-5">
                 <div className="h-3 w-24 rounded bg-ima-surface-light" />

@@ -302,6 +302,21 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "student_id is required" }, { status: 400 });
     }
 
+    // 7b. Assignment check — a coach may only read deals for their own students
+    // (admin client bypasses RLS, so this MUST be enforced here to prevent IDOR
+    // via student_id enumeration). Owner may read any student's deals.
+    if (profile.role === "coach") {
+      const { data: assigned } = await admin
+        .from("users")
+        .select("id")
+        .eq("id", studentId)
+        .eq("coach_id", profile.id)
+        .maybeSingle();
+      if (!assigned) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+    }
+
     // 8. Parse page with bounds
     const page = Math.max(1, parseInt(pageParam, 10) || 1);
     const pageSize = 25;

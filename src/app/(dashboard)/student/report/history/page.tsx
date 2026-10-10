@@ -19,6 +19,13 @@ type ReportWithComment = DailyReport & {
   }> | null;
 };
 
+function formatCurrency(value: number): string {
+  return `$${value.toLocaleString("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })}`;
+}
+
 function formatDateDisplay(dateStr: string): string {
   const date = new Date(dateStr + "T00:00:00");
   return date.toLocaleDateString("en-US", {
@@ -47,6 +54,7 @@ export default async function ReportHistoryPage() {
     `,
     )
     .eq("student_id", user.id)
+    .not("submitted_at", "is", null)
     .order("date", { ascending: false })
     .limit(30);
 
@@ -60,7 +68,7 @@ export default async function ReportHistoryPage() {
     <div
       className={`-mx-4 md:-mx-8 -mt-4 md:-mt-8 -mb-4 md:-mb-8 min-h-screen bg-ima-bg`}
     >
-      <div className="mx-auto max-w-3xl px-6 md:px-14 pt-10 md:pt-14 pb-20">
+      <div className="mx-auto max-w-[880px] px-5 md:px-10 pt-8 md:pt-10 pb-16">
         {/* Back link */}
         <Link
           href="/student/report"
@@ -88,7 +96,7 @@ export default async function ReportHistoryPage() {
         {/* Empty state */}
         {reportList.length === 0 ? (
           <div
-            className="mt-9 bg-white border border-ima-border rounded-[14px] p-6 motion-safe:animate-fadeIn"
+            className="mt-9 bg-white border border-ima-border rounded-[14px] shadow-card p-6 motion-safe:animate-fadeIn"
             style={{ animationDelay: "100ms" }}
           >
             <EmptyState
@@ -113,10 +121,15 @@ export default async function ReportHistoryPage() {
             style={{ animationDelay: "100ms" }}
           >
             {reportList.map((report) => {
-              const feedbackComment = report.report_comments?.[0] ?? null;
+              // Embedded comments come back unordered; pick the most recently
+              // updated one so the surfaced feedback is deterministic per load.
+              const feedbackComment =
+                [...(report.report_comments ?? [])].sort((a, b) =>
+                  b.updated_at.localeCompare(a.updated_at),
+                )[0] ?? null;
               return (
                 <div key={report.id} className="space-y-2">
-                  <article className="bg-white border border-ima-border rounded-[14px] p-6">
+                  <article className="bg-white border border-ima-border rounded-[14px] shadow-card p-6">
                     <div className="flex items-center justify-between gap-3">
                       <p className="text-[15px] font-semibold text-ima-text">
                         {formatDateDisplay(report.date)}
@@ -150,6 +163,20 @@ export default async function ReportHistoryPage() {
                       >
                         {report.outreach_count} Outreach
                       </span>
+                      {report.revenue > 0 && (
+                        <span
+                          className="inline-flex items-center px-2 py-[2px] rounded-full bg-ima-surface-accent border border-ima-primary/20 text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-primary tabular-nums"
+                        >
+                          {formatCurrency(report.revenue)} Revenue
+                        </span>
+                      )}
+                      {report.profit > 0 && (
+                        <span
+                          className="inline-flex items-center px-2 py-[2px] rounded-full bg-ima-success/10 border border-ima-success/20 text-[10px] font-semibold uppercase tracking-[0.08em] text-ima-success tabular-nums"
+                        >
+                          {formatCurrency(report.profit)} Profit
+                        </span>
+                      )}
                     </div>
 
                     {report.wins && (
